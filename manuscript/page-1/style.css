@@ -13,8 +13,12 @@ h1 {
 }
 
 h2 {
-  color: white;
-  font-size: 3vw;
+  color: #5f5;
+  font-size: 4vw;
+}
+
+.tiny {
+  font-size: 2.5vw;
 }
 
 .shadow {
@@ -56,7 +60,7 @@ ul.solarsystem li.active.sun,
 ul.solarsystem li.active span {
   -webkit-transform: scale(1.3);
   -ms-transform: scale(1.3);
-      transform: scale(1.3);
+  transform: scale(1.3);
 }
 
 ul.solarsystem li.active.sun span,
@@ -355,7 +359,6 @@ ul.solarsystem li.pluto {
   }
 }
 
-
 ul.solarsystem li.saturn span {
   background: #dfd3a9;
   top: 0vw;
@@ -374,5 +377,5 @@ ul.solarsystem li.saturn span.ring {
   top: -.5vw;
   -webkit-transform: skewY(50deg);
   -ms-transform: skewY(50deg);
-      transform: skewY(50deg);
+  transform: skewY(50deg);
 }

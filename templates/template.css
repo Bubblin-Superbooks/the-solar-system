@@ -1,6 +1,36 @@
 @import url("https://fonts.googleapis.com/css?family=PT+Sans+Narrow");
+@import url(https://fonts.googleapis.com/css?family=Merriweather);
 
 
 body {
   font: 4vw/1 "PT Sans Narrow", sans-serif;
+  margin: 0 0;
+  overflow: hidden; /* No reflow */
+  background: #fff;
+}
+
+.leaf {
+  height: 100vh;
+  width: 80%;
+  margin: auto;
+}
+
+.inner {
+  margin: 10% auto;
+  width: 100%;
+}
+
+.flex {
+  display: -webkit-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.justify {
+  text-align: justify;
+}
+
+.center {
+  text-align:center;
 }
