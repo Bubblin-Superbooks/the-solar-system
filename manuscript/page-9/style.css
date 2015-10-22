@@ -1,1 +1,43 @@
-body{background:rgba(200, 235, 255, 0.99); margin:0 0; overflow:hidden;}
+body {
+  font: 3vw/1.05 "PT Sans Narrow", sans-serif;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+ul li {
+  line-height: 3.5vw;
+  list-style: outside none none;
+  margin: 0;
+}
+
+a {
+  background: #eFEceF;
+  float: left;
+  width: 90%;
+  clear: both;
+  text-decoration: none;
+  color: #333;
+  margin: .1vw 0;
+  padding: .5vw 5%;
+  -webkit-border-radius: 1vw;
+  -moz-border-radius: 1vw;
+  -o-border-radius: 1vw;
+  -ms-border-radius: 1vw;
+  border-radius: 1vw;
+}
+
+a:hover {
+  background: #CFE0FF;
+  float: left;
+  width: 90%;
+  clear: both;
+  text-decoration: none;
+}
+
+a span {
+  float: right;
+  font-size: 80%;
+}
