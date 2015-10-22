@@ -1,1 +1,41 @@
-body{background:rgba(200, 235, 255, 0.99); margin:0 0; overflow:hidden;}
+body {
+  background: #ffe;
+}
+
+.philosopher {
+  font-size: 3vw;
+}
+
+.footnote {
+  text-align: center;
+  height: 20vh;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  font-size: 2.5vw;
+}
+
+blockquote {
+  background: transparent;
+  margin: 1vw 4vw;
+  padding: 0;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 6vw;
+  line-height: 0.1vw;
+  margin-right: 0.25vw;
+  vertical-align: -0.9vw;
+}
+
+blockquote:after {
+  color: #aaa;
+  content: close-quote;
+  font-size: 6vw;
+  line-height: 0.4vw;
+  margin-right: 0.5vw;
+  vertical-align: -0.9vw;
+}

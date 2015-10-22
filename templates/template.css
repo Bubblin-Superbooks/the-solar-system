@@ -1,12 +1,19 @@
-@import url("https://fonts.googleapis.com/css?family=PT+Sans+Narrow");
-@import url(https://fonts.googleapis.com/css?family=Merriweather);
-
+@import url("https://fonts.googleapis.com/css?family=PT+Sans+Narrow|Merriweather");
 
 body {
   font: 4vw/1 "PT Sans Narrow", sans-serif;
   margin: 0 0;
   overflow: hidden; /* No reflow */
   background: #fff;
+  color:#555;
+}
+
+h1{
+  font-family: 'PT Sans Narrow', serif;
+}
+
+h2{
+  font-family: 'PT Sans Narrow', serif;
 }
 
 .leaf {
@@ -34,3 +41,11 @@ body {
 .center {
   text-align:center;
 }
+
+.small {
+  font-size:80%;
+}
+
+a{ color: #3377ff; outline: 0 none; text-decoration: none; text-rendering: optimizelegibility; } 
+
+a:focus, a:active, a:hover { outline: 0 none; color: #4466ee;}
