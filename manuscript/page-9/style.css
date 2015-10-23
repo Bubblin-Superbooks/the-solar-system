@@ -30,7 +30,7 @@ a {
 }
 
 a:hover {
-  background: #CFE0FF;
+  background: hsla(90,70%,30%, .1);
   float: left;
   width: 90%;
   clear: both;

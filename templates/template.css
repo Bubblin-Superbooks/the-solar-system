@@ -9,13 +9,10 @@ body {
   color:#555;
 }
 
-h1{
+h1, h2, h3, h4{
   font-family: 'PT Sans Narrow', serif;
 }
 
-h2{
-  font-family: 'PT Sans Narrow', serif;
-}
 
 p{
   margin: 2vw 0;
