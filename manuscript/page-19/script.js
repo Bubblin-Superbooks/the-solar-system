@@ -6,8 +6,13 @@ $(document).ready(function() {
       return;
     }
     THREE.ImageUtils.crossOrigin = '';
-    var width = window.innerWidth,
-      height = window.innerHeight;
+    
+    var width  = webglEl.clientWidth;
+    var height = webglEl.clientHeight;
+
+    webglEl.width = width;
+    webglEl.height = height;
+
     var radius = 0.5,
       segments = 32,
       rotation = 5;
@@ -31,6 +36,9 @@ $(document).ready(function() {
     var controls = new THREE.TrackballControls(camera);
     webglEl.appendChild(renderer.domElement);
     render();
+    $(document).on('resize', function() {
+      render();
+    });
 
     function render() {
       controls.update();

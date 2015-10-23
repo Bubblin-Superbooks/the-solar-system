@@ -1,1 +1,9 @@
-body{background:rgba(200, 235, 255, 0.99); margin:0 0; overflow:hidden;}
+p.chapter-begin:first-letter {
+  display: inline-block;
+  margin: 5vw 1vw .1vw;
+  float: left;
+  line-height: 13vw;
+  font-size: 22vw;
+  color: hsl(90, 70%, 30%);
+  font-family: 'UnifrakturMaguntia', cursive;
+}

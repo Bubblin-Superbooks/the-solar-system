@@ -1,6 +1,7 @@
-/**
+/*
  * @author Eberhard Graether / http://egraether.com/
  */
+
 THREE.TrackballControls = function(object, domElement) {
 
     var _this = this;
