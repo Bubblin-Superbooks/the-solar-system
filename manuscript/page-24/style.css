@@ -1,1 +1,19 @@
-body{background:rgba(200, 235, 255, 0.99); margin:0 0; overflow:hidden;}
+h1 {
+  position: absolute;
+  font-size: 10vw;
+  text-align: center;
+  width: 100%;
+  margin: 20vw 10vw;
+  color: white;
+  z-index: 1;
+}
+
+canvas {
+  width: 100vw;
+  background: gray;
+  position: absolute;
+  left: -20vw;
+  bottom: -20vh;
+  z-index: -10;
+  text-align: center;
+}

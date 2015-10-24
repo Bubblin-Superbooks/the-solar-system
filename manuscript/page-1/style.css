@@ -10,10 +10,11 @@ h1 {
   font-size: 8vw;
   font-weight: bold;
   text-transform: uppercase;
+  margin-top: 5vw;
 }
 
 h2 {
-  color: #5f5;
+  color: #afa;
   font-size: 4vw;
 }
 
@@ -343,19 +344,23 @@ ul.solarsystem li.pluto {
 
 @keyframes orbit {
   from {
-    transform: rotate(0deg)
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg)
   }
   to {
-    transform: rotate(-360deg)
+    -webkit-transform: rotate(-360deg);
+            transform: rotate(-360deg)
   }
 }
 
 @keyframes moon {
   from {
-    transform: rotate(0deg)
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg)
   }
   to {
-    transform: rotate(-360deg)
+    -webkit-transform: rotate(-360deg);
+            transform: rotate(-360deg)
   }
 }
 

@@ -1,1 +1,92 @@
-body{background:rgba(200, 235, 255, 0.99); margin:0 0; overflow:hidden;}
+h1 {
+  font-size: 5vw;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  font-size: 4vw;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  padding: 0;
+  margin: 1.5vw 0 3vw 0;
+}
+
+blockquote {
+  margin: 1vw 3vw;
+  color: #555;
+}
+
+.centerize {
+  padding: 2vw auto;
+  text-align: center;
+}
+
+.diagram {
+  margin: 4vw auto;
+  width: 60vw;
+  height: 10vw;
+  position: relative;
+}
+
+.line1 {
+  height: 1px;
+  width: 52.5vw;
+  margin: 5vw auto;
+  background-color: #f44;
+  position: absolute;
+  left: 5vw;
+}
+
+.line1 p {
+  margin: 1px auto;
+  font-size: 2vw;
+  text-align: center;
+  color: #f44;
+}
+
+.line2 {
+  height: 1px;
+  width: 18vw;
+  margin: 6vw auto;
+  background-color: #000;
+  position: absolute;
+  left: 5vw;
+}
+
+.line2 p {
+  margin: 1px auto;
+  font-size: 2vw;
+  text-align: center;
+  color: #000
+}
+
+.earth {
+  height: 10vw;
+  width: 10vw;
+  position: relative;
+  margin: auto;
+  border-radius: 50%;
+  background-color: transparent;
+  box-shadow: 0 0 10vw #00aaff;
+  background-image: url('https://raw.githubusercontent.com/marvindanig/Images/master/Earth/2_no_clouds_1k.jpg');
+  background-size: cover;
+  float: left;
+  position: absolute;
+}
+
+.moon {
+  position: relative;
+  height: 5vw;
+  width: 5vw;
+  background-color: transparent;
+  margin: 2.5vw auto;
+  padding: 0;
+  background-image: url('https://raw.githubusercontent.com/marvindanig/Images/master/moon/moon_trans.png');
+  background-size: cover;
+  position: absolute;
+  left: 55vw;
+}

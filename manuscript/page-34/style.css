@@ -1,1 +1,135 @@
-body{background:rgba(200, 235, 255, 0.99); margin:0 0; overflow:hidden;}
+body {
+  background: #222;
+  margin: 0 0;
+  overflow: hidden;
+  padding: 1vw;
+  color: #aaa;
+  font: 3.5vw/1.2 "PT Sans Narrow", sans-serif;
+  overflow: hidden;
+  text-align: center;
+}
+
+h1 {
+  font-size: 5vw;
+}
+
+p {
+  margin-top: 10vw;
+}
+
+.dot {
+  height: 2vw;
+  width: 2vw;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background-color: #777;
+}
+
+.line1 {
+  height: 41vw;
+  width: 1px;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 41vw;
+  border-radius: 50%;
+  background-color: #aaa;
+}
+
+.annotation {
+  padding: 4vw 2vw;
+}
+
+.earth {
+  height: 20vw;
+  width: 20vw;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0vw;
+  border-radius: 50%;
+  background-color: #0072f9;
+  border: 1px solid #47aaff;
+  box-shadow: 0 0 10vw #47aaff;
+  background-image: url('https://raw.githubusercontent.com/bubblin/The-Solar-System/master/images/page-30/polar-earth-arctic.png');
+  background-size: cover;
+}
+
+.moon {
+  position: absolute;
+  top: 6vw;
+  left: 7vw;
+  height: 10vw;
+  width: 10vw;
+  border-radius: 50%;
+  border-color: #444 #f44 #f44 #444;
+  -webkit-border-image: none;
+  -o-border-image: none;
+  border-image: none;
+  border-style: solid;
+  border-width: 5px;
+  background-color: transparent;
+  margin: 0 auto;
+  padding: 0;
+  /* animation: spin 40s linear infinite; animation-direction: reverse;*/
+  
+  background-image: url('https://raw.githubusercontent.com/bubblin/The-Solar-System/master/images/page-30/moon_trans.png');
+  background-size: cover;
+}
+
+.orbit2 {
+  height: 82vw;
+  width: 82vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 2px dashed #aaa;
+  border-radius: 42vw;
+  margin: auto;
+  -webkit-animation: spin 10s linear infinite;
+  animation: spin 10s linear infinite;
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+  -webkit-animation: spin 10s linear infinite;
+  -webkit-animation-direction: reverse;
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.label {
+  position: absolute;
+  bottom: 0;
+  margin: 10vw auto;
+  width: 100%;
+}
