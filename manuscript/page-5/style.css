@@ -1,9 +1,11 @@
 body {
-  background: #ffe;
+  background: #fff;
+  color: #777;
 }
 
 .philosopher {
   font-size: 3vw;
+  float: right;
 }
 
 .footnote {

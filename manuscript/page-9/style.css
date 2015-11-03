@@ -1,9 +1,15 @@
 body {
   font: 3vw/1.05 "PT Sans Narrow", sans-serif;
+  padding: 8vh 0
+}
+
+h1 {
+  color: red;
+  font-size: 4vw;
 }
 
 ul {
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
 }
 
