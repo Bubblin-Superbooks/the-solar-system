@@ -3,6 +3,18 @@ body {
   color: #aaa;
 }
 
+h2 {
+  padding: 0;
+  margin: 10vw
+}
+
+.absolute {
+  width: 100%;
+  position: absolute;
+  bottom: 10vw;
+  margin: 0 auto;
+}
+
 .earth {
   height: 8vw;
   width: 8vw;
