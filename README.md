@@ -7,7 +7,7 @@ Learn how our planetary system works, what it's like in space and how astronomy 
 Book is live here: [The Solar System](https://bubbl.in/cover/the-solar-system-by-marvin-danig)
 
 # Project
-This project was composed using [Bookiza](https://bookiza.io), the book baking tool. The manuscript of the book is structured like so:
+This project was composed using [Bookiza](http://bookiza.io), the book baking tool. The manuscript of the book is structured like so:
 
 
 ```
