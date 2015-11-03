@@ -6,13 +6,10 @@ $(document).ready(function() {
       return;
     }
     THREE.ImageUtils.crossOrigin = '';
-    
-    var width  = webglEl.clientWidth;
+    var width = webglEl.clientWidth;
     var height = webglEl.clientHeight;
-
     webglEl.width = width;
     webglEl.height = height;
-
     var radius = 0.5,
       segments = 32,
       rotation = 5;
@@ -50,24 +47,24 @@ $(document).ready(function() {
 
     function createSphere(radius, segments) {
       return new THREE.Mesh(new THREE.SphereGeometry(radius, segments, segments), new THREE.MeshPhongMaterial({
-        map: THREE.ImageUtils.loadTexture(' https://cdn.rawgit.com/bubblin/The-Solar-System/master/images/page-17/earth/2_no_clouds_1k.jpg'),
-        bumpMap: THREE.ImageUtils.loadTexture('https://cdn.rawgit.com/bubblin/The-Solar-System/master/images/page-17/earth/elev_bump_1k.jpg'),
+        map: THREE.ImageUtils.loadTexture(' https://cdn.rawgit.com/marvindanig/The-Solar-System/master/assets/images/2_no_clouds_1k.jpg'),
+        bumpMap: THREE.ImageUtils.loadTexture('https://cdn.rawgit.com/marvindanig/The-Solar-System/master/assets/images/elev_bump_1k.jpg'),
         bumpScale: 0.005,
-        specularMap: THREE.ImageUtils.loadTexture('https://cdn.rawgit.com/bubblin/The-Solar-System/master/images/page-17/earth/water_1k.png'),
+        specularMap: THREE.ImageUtils.loadTexture('https://cdn.rawgit.com/marvindanig/The-Solar-System/master/assets/images/water_1k.png'),
         specular: new THREE.Color('grey')
       }));
     }
 
     function createClouds(radius, segments) {
       return new THREE.Mesh(new THREE.SphereGeometry(radius + 0.003, segments, segments), new THREE.MeshPhongMaterial({
-        map: THREE.ImageUtils.loadTexture('https://cdn.rawgit.com/bubblin/The-Solar-System/master/images/page-17/earth/fair_clouds_1k.png'),
+        map: THREE.ImageUtils.loadTexture('https://cdn.rawgit.com/marvindanig/The-Solar-System/master/assets/images/fair_clouds_1k.png'),
         transparent: true
       }));
     }
 
     function createStars(radius, segments) {
       return new THREE.Mesh(new THREE.SphereGeometry(radius, segments, segments), new THREE.MeshBasicMaterial({
-        map: THREE.ImageUtils.loadTexture('https://cdn.rawgit.com/bubblin/The-Solar-System/master/images/shared/galaxy_starfield.jpg'),
+        map: THREE.ImageUtils.loadTexture('https://cdn.rawgit.com/marvindanig/The-Solar-System/master/assets/images/galaxy_starfield.jpg'),
         side: THREE.BackSide
       }));
     }
