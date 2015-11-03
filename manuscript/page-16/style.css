@@ -1,5 +1,5 @@
 h1 {
-  font-size:7vw;
+  font-size: 7vw;
 }
 
 @keyframes mapfront_spin {
@@ -49,7 +49,7 @@ h1 {
 .front {
   width: 30vw;
   height: 30vw;
-  background: url(https://cdn.rawgit.com/bubblin/The-Solar-System/master/images/page-17/earth/SphereForeground.png);
+  background: url(https://cdn.rawgit.com/marvindanig/The-Solar-System/master/assets/images/SphereForeground.png);
   background-size: cover;
   z-index: 5;
   position: absolute;
@@ -60,7 +60,7 @@ h1 {
 .back {
   width: 30vw;
   height: 30vw;
-  background: url(https://cdn.rawgit.com/bubblin/The-Solar-System/master/images/page-17/earth/SphereBackground.png);
+  background: url(https://cdn.rawgit.com/marvindanig/The-Solar-System/master/assets/images/SphereBackground.png);
   z-index: 2;
   background-size: cover;
   position: absolute;
@@ -80,14 +80,14 @@ h1 {
 }
 
 .mapfront {
-  background: url(https://cdn.rawgit.com/bubblin/The-Solar-System/master/images/page-17/earth/CartoForeground.png) repeat-x;
+  background: url(https://cdn.rawgit.com/marvindanig/The-Solar-System/master/assets/images/CartoForeground.png) repeat-x;
   background-size: cover;
   -webkit-animation: mapfront_spin 15s linear infinite;
   animation: mapfront_spin 15s linear infinite;
 }
 
 .mapback {
-  background: url(https://cdn.rawgit.com/bubblin/The-Solar-System/master/images/page-17/earth/CartoBackground.png) repeat-x;
+  background: url(https://cdn.rawgit.com/marvindanig/The-Solar-System/master/assets/images/CartoBackground.png) repeat-x;
   background-size: cover;
   position: absolute;
   -webkit-animation: mapback_spin 15s linear infinite;
