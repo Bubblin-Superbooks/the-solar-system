@@ -1,1 +1,197 @@
-body{background:rgba(200, 235, 255, 0.99); margin:0 0; overflow:hidden;}
+h1 {
+  color: #ccc;
+  font-size: 8vw;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 10vh;
+}
+
+h2 {
+  color: #ccc;
+  font-size: 4vw;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 10vh;
+}
+
+@-moz-keyframes rot {
+  from {
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(-360deg);
+    transform: rotate(-360deg);
+  }
+}
+
+@-webkit-keyframes rot {
+  from {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(-360deg);
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes rot {
+  from {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(-360deg);
+    -ms-transform: rotate(-360deg);
+    -webkit-transform: rotate(-360deg);
+    transform: rotate(-360deg);
+  }
+}
+
+body,
+html {
+  background: #000;
+  margin: 0 auto;
+  background: url(https://raw.githubusercontent.com/marvindanig/Images/master/galaxy_starfield_resized.png);
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+}
+
+html {
+  min-height: 100%;
+  min-width: 100%;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  top: 50%;
+}
+
+.orbit {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.orbit:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 0%;
+}
+
+.sun {
+  background: #ffcc00;
+  height: 60vw;
+  width: 60vw;
+  margin-left: -30vw;
+  margin-top: -30vw;
+  -moz-border-radius: 60vw / 60vw;
+  -webkit-border-radius: 60vw 60vw;
+  border-radius: 60vw / 60vw;
+}
+
+.mercury {
+  width: 66vw;
+  height: 66vw;
+  margin-top: -33vw;
+  margin-left: -33vw;
+  -moz-border-radius: 66vw / 66vw;
+  -webkit-border-radius: 66vw 66vw;
+  border-radius: 66vw / 66vw;
+  -moz-animation: rot 2.41s infinite linear;
+  -webkit-animation: rot 2.41s infinite linear;
+  animation: rot 2.41s infinite linear;
+}
+
+.mercury:before {
+  background: #ff9000;
+  height: 1.915px;
+  width: 1.915px;
+  margin-left: -0.9575px;
+  margin-top: -0.9575px;
+  -moz-border-radius: 1.915px / 1.915px;
+  -webkit-border-radius: 1.915px 1.915px;
+  border-radius: 1.915px / 1.915px;
+}
+
+.venus {
+  width: 70vw;
+  height: 70vw;
+  margin-top: -35vw;
+  margin-left: -35vw;
+  -moz-border-radius: 70vw / 70vw;
+  -webkit-border-radius: 70vw 70vw;
+  border-radius: 70vw / 70vw;
+  -moz-animation: rot 6.15s infinite linear;
+  -webkit-animation: rot 6.15s infinite linear;
+  animation: rot 6.15s infinite linear;
+}
+
+.venus:before {
+  background: #ffde00;
+  height: 4.745px;
+  width: 4.745px;
+  margin-left: -2.3725px;
+  margin-top: -2.3725px;
+  -moz-border-radius: 4.745px / 4.745px;
+  -webkit-border-radius: 4.745px 4.745px;
+  border-radius: 4.745px / 4.745px;
+}
+
+.earth {
+  width: 74vw;
+  height: 74vw;
+  margin-top: -37vw;
+  margin-left: -37vw;
+  -moz-border-radius: 74vw / 74vw;
+  -webkit-border-radius: 74vw 74vw;
+  border-radius: 74vw / 74vw;
+  -moz-animation: rot 10s infinite linear;
+  -webkit-animation: rot 10s infinite linear;
+  animation: rot 10s infinite linear;
+}
+
+.earth:before {
+  background: #00aaff;
+  height: 5px;
+  width: 5px;
+  margin-left: -2.5px;
+  margin-top: -2.5px;
+  -moz-border-radius: 5px / 5px;
+  -webkit-border-radius: 5px 5px;
+  border-radius: 5px / 5px;
+}
+
+.mars {
+  width: 78vw;
+  height: 78vw;
+  margin-top: -39vw;
+  margin-left: -39vw;
+  -moz-border-radius: 78vw / 78vw;
+  -webkit-border-radius: 78vw 78vw;
+  border-radius: 78vw / 78vw;
+  -moz-animation: rot 18.81s infinite linear;
+  -webkit-animation: rot 18.81s infinite linear;
+  animation: rot 18.81s infinite linear;
+}
+
+.mars:before {
+  background: #ff0036;
+  height: 2.66px;
+  width: 2.66px;
+  margin-left: -1.33px;
+  margin-top: -1.33px;
+  -moz-border-radius: 2.66px / 2.66px;
+  -webkit-border-radius: 2.66px 2.66px;
+  border-radius: 2.66px / 2.66px;
+}

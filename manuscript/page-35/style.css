@@ -15,11 +15,6 @@ p {
   margin: 1.5vw 0 3vw 0;
 }
 
-blockquote {
-  margin: 1vw 3vw;
-  color: #555;
-}
-
 .centerize {
   padding: 2vw auto;
   text-align: center;
@@ -27,9 +22,15 @@ blockquote {
 
 .diagram {
   margin: 4vw auto;
-  width: 60vw;
-  height: 10vw;
+  width: 70vw;
+  padding: 5vw;
   position: relative;
+  background: #000;
+}
+
+.figure {
+  width: 100%;
+  height: 8vh;
 }
 
 .line1 {
@@ -38,7 +39,7 @@ blockquote {
   margin: 5vw auto;
   background-color: #f44;
   position: absolute;
-  left: 5vw;
+  left: 10vw;
 }
 
 .line1 p {
@@ -52,16 +53,16 @@ blockquote {
   height: 1px;
   width: 18vw;
   margin: 6vw auto;
-  background-color: #000;
+  background-color: #cfc;
   position: absolute;
-  left: 5vw;
+  left: 10vw;
 }
 
 .line2 p {
   margin: 1px auto;
   font-size: 2vw;
   text-align: center;
-  color: #000
+  color: #cfc;
 }
 
 .earth {
@@ -88,5 +89,5 @@ blockquote {
   background-image: url('https://raw.githubusercontent.com/marvindanig/Images/master/moon/moon_trans.png');
   background-size: cover;
   position: absolute;
-  left: 55vw;
+  left: 60vw;
 }
