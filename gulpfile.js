@@ -17,21 +17,18 @@ var reload = browserSync.reload;
 var historyApiFallback = require('connect-history-api-fallback')
 
 
-/*
-  Styles Task
-*/
+/* Styles Task */
 
 gulp.task('styles',function() {
   // move over fonts
+  gulp.src('source/css/fonts/**.*')
+    .pipe(gulp.dest('build/source/css/fonts'))
 
-  gulp.src('css/fonts/**.*')
-    .pipe(gulp.dest('build/css/fonts'))
-
-  // Compiles CSS
-  gulp.src('css/style.styl')
+  // Compile CSS
+  gulp.src('source/css/style.styl')
     .pipe(stylus())
     .pipe(autoprefixer())
-    .pipe(gulp.dest('./build/css/'))
+    .pipe(gulp.dest('./build/source/css/'))
     .pipe(reload({stream:true}))
 });
 
@@ -39,8 +36,8 @@ gulp.task('styles',function() {
   Images
 */
 gulp.task('images',function(){
-  gulp.src('css/images/**')
-    .pipe(gulp.dest('./build/css/images'))
+  gulp.src('source/images/**')
+    .pipe(gulp.dest('./build/source/images'))
 });
 
 /*
@@ -48,7 +45,7 @@ gulp.task('images',function(){
 */
 gulp.task('browser-sync', function() {
     browserSync({
-        // we need to disable clicks and forms for when we test multiple rooms
+        // we need to disable clicks and forms
         server : {},
         middleware : [ historyApiFallback() ],
         ghostMode: false
@@ -66,7 +63,7 @@ function handleErrors() {
 
 function buildScript(file, watch) {
   var props = {
-    entries: ['./scripts/' + file],
+    entries: ['./source/scripts/' + file],
     debug : true,
     transform:  [babelify.configure({stage : 0 })]
   };
@@ -79,7 +76,7 @@ function buildScript(file, watch) {
     return stream
       .on('error', handleErrors)
       .pipe(source(file))
-      .pipe(gulp.dest('./build/'))
+      .pipe(gulp.dest('./build/source/scripts'))
       // If you also want to uglify it
       // .pipe(buffer())
       // .pipe(uglify())
@@ -91,7 +88,7 @@ function buildScript(file, watch) {
   // listen for an update and run rebundle
   bundler.on('update', function() {
     rebundle();
-    gutil.log('Rebundle...');
+    gutil.log('Rebundling...');
   });
 
   // run it once the first time buildScript is called
@@ -104,6 +101,6 @@ gulp.task('scripts', function() {
 
 // run 'scripts' task first, then watch for future changes
 gulp.task('default', ['images','styles','scripts','browser-sync'], function() {
-  gulp.watch('css/**/*', ['styles']); // gulp watch for stylus changes
+  gulp.watch('source/css/**/*', ['styles']); // gulp watch for stylus changes
   return buildScript('main.js', true); // browserify watch for JS changes
 });

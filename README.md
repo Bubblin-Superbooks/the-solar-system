@@ -104,7 +104,7 @@ The-Solar-System/
 
 ```
 ## TODOs:
-List of things to do/ bugfixes:
+List of things to do/bugfixes:
 
 1. Add an ellipical orbit depicting equal areas covered by an orbiting planet around the Sun. 
 2. Add tilt to Earth's rotational axis to depict seasons. 
@@ -115,7 +115,7 @@ List of things to do/ bugfixes:
 
 ## Contributing
 
-Feel free to contribute, fix or help improve code of this book. Astronomy is a never ending field, therefore, any piece of information or knowledge or visual or  explanation is  simply more than welcome.
+Contributions are more than welcome. 
 
 1. Fork it ( https://github.com/bubblin/The-Solar-System/fork )
 2. Create your feature branch (`git checkout -b my-new-page`)
@@ -123,6 +123,9 @@ Feel free to contribute, fix or help improve code of this book. Astronomy is a n
 4. Push to the branch (`git push origin my-new-page`)
 5. Create a new Pull Request
 6. <a href = "mailto:marvin@bubbl.in">Contact me</a> if I don't respond within 24 hours.
+
+## Co-authoring
+Astronomy is a vast field and no single person is in the know of all the knowledge of space out there. If you wish to join me as a co-author and contribute a chapter, feel free to  href = "mailto:marvin@bubbl.in">write to me</a>.
 
 ## License
 The content of this project itself is licensed under the <a href="http://creativecommons.org/licenses/by/3.0/us/deed.en_US">Creative Commons Attribution 3.0 </a> license, and the underlying source code used to format and display that content is licensed under the <a href="http://opensource.org/licenses/mit-license.php">MIT license </a>.

@@ -3,20 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>Book of the Day!</title>
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="/build/css/style.css">
-  <link rel="shortcut icon" href="https://bubbl.in/assets/favicon-e3b814a2e0d025b2584b48e3ec37777b.ico">
+  <link rel="stylesheet" href="/build/source/css/style.css">
+  <link rel="shortcut icon" href="/build/source/images/favicon.png">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"> </script>
+
+  <!-- <script src="/build/source/scripts/head.js"></script> -->
+
 </head>
-<body>
-  
-    <input type="checkbox" id="fold">
-    <label for="fold">Fold</label>
-    
-    <div id="main">
-      <!-- This is where our React app will go -->
+<body class="book">
+  <div id="viewer">
+    <div id="superbook">
+      <div class="page"> <iframe> </iframe></div>
+      <div class="page"> <iframe> </iframe></div>
+      <div class="page"> <iframe> </iframe></div>
+      <div class="page"> <iframe> </iframe></div>
+
     </div>
 
-  <script src="/build/main.js"></script>
+  </div>
+
+  <script src="build/source/scripts/main.js"></script>
 
 </body>
 </html>
