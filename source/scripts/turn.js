@@ -1,6 +1,4 @@
-/*! turn.js 5.0.0  24-01-2014 ~ (c) 2014 Emmanuel Garcia ~ http://turnjs.com*/ 
-
-! function(a) {
+/*! turn.js 5.0.0  24-01-2014 ~ (c) 2014 Emmanuel Garcia ~ http://turnjs.com*/ ! function(a) {
   var b = {};
   b.version = "5.0.0", b.PI = Math.PI, b.A90 = Math.PI / 2, b.isTouch = !1, b.corners = {
     backward: ["bl", "tl", "l"],

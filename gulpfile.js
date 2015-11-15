@@ -5,13 +5,11 @@ var browserify = require('browserify');
 var babelify = require('babelify');
 var watchify = require('watchify');
 var notify = require('gulp-notify');
-
 var stylus = require('gulp-stylus');
 var autoprefixer = require('gulp-autoprefixer');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var buffer = require('vinyl-buffer');
-
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var historyApiFallback = require('connect-history-api-fallback')
@@ -21,8 +19,8 @@ var historyApiFallback = require('connect-history-api-fallback')
 
 gulp.task('styles',function() {
   // move over fonts
-  gulp.src('source/css/fonts/**.*')
-    .pipe(gulp.dest('build/source/css/fonts'))
+  // gulp.src('source/css/fonts/**.*')
+  //   .pipe(gulp.dest('build/source/css/fonts'))
 
   // Compile CSS
   gulp.src('source/css/style.styl')
@@ -65,7 +63,7 @@ function buildScript(file, watch) {
   var props = {
     entries: ['./source/scripts/' + file],
     debug : true,
-    transform:  [babelify.configure({stage : 0 })]
+    transform:  [babelify.configure({stage : 0, compact : false})]
   };
 
   // watchify() if watch requested, otherwise run browserify() once 
@@ -76,12 +74,10 @@ function buildScript(file, watch) {
     return stream
       .on('error', handleErrors)
       .pipe(source(file))
-      .pipe(gulp.dest('./build/source/scripts'))
-      // If you also want to uglify it
       // .pipe(buffer())
       // .pipe(uglify())
-      // .pipe(rename('app.min.js'))
-      // .pipe(gulp.dest('./build'))
+      .pipe(rename('book.min.js'))
+      .pipe(gulp.dest('./build/source/scripts'))
       .pipe(reload({stream:true}))
   }
 
