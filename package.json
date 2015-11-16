@@ -37,11 +37,13 @@
     "gulp-util": "3.0.7",
     "history": "1.12.5",
     "install": "0.1.8",
-    "re-base": "1.2.1",
     "jquery": "^2.1.4",
     "keymaster": "^1.6.2",
+    "re-base": "1.2.1",
+    "shelljs": "^0.5.3",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
     "watchify": "3.4.0"
-  }
+  },
+  "dependencies": {}
 }

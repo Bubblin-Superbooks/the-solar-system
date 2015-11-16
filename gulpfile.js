@@ -38,9 +38,7 @@ gulp.task('images',function(){
     .pipe(gulp.dest('./build/source/images'))
 });
 
-/*
-  Browser Sync
-*/
+/* Browser Sync */
 gulp.task('browser-sync', function() {
     browserSync({
         // we need to disable clicks and forms
@@ -50,6 +48,7 @@ gulp.task('browser-sync', function() {
     });
 });
 
+/* Errors */
 function handleErrors() {
   var args = Array.prototype.slice.call(arguments);
   notify.onError({
@@ -59,9 +58,9 @@ function handleErrors() {
   this.emit('end'); // Keep gulp from hanging on this task
 }
 
-function buildScript(file, watch) {
+function buildBodyScript(file, watch) {
   var props = {
-    entries: ['./source/scripts/' + file],
+    entries: ['./source/scripts/body/' + file],
     debug : true,
     transform:  [babelify.configure({stage : 0, compact : false})]
   };
@@ -76,8 +75,8 @@ function buildScript(file, watch) {
       .pipe(source(file))
       // .pipe(buffer())
       // .pipe(uglify())
-      .pipe(rename('book.min.js'))
-      .pipe(gulp.dest('./build/source/scripts'))
+      .pipe(rename('body.min.js'))
+      .pipe(gulp.dest('./build/source/scripts/body/'))
       .pipe(reload({stream:true}))
   }
 
@@ -92,11 +91,51 @@ function buildScript(file, watch) {
 }
 
 gulp.task('scripts', function() {
-  return buildScript('main.js', false); // this will run once because we set watch to false
+  return buildBodyScript('body.js', false); // this will run once because we set watch to false
 });
+
+
+function buildHeadScript(file, watch) {
+  var props = {
+    entries: ['./source/scripts/head/' + file],
+    debug : true,
+    transform:  [babelify.configure({stage : 0, compact : false})]
+  };
+
+  // watchify() if watch requested, otherwise run browserify() once 
+  var bundler = watch ? watchify(browserify(props)) : browserify(props);
+
+  function rebundle() {
+    var stream = bundler.bundle();
+    return stream
+      .on('error', handleErrors)
+      .pipe(source(file))
+      // .pipe(buffer())
+      // .pipe(uglify())
+      .pipe(rename('head.min.js'))
+      .pipe(gulp.dest('./build/source/scripts/head/'))
+      .pipe(reload({stream:true}))
+  }
+
+  // listen for an update and run rebundle
+  bundler.on('update', function() {
+    rebundle();
+    gutil.log('Rebundling...');
+  });
+
+  // run it once the first time buildScript is called
+  return rebundle();
+}
+
+gulp.task('scripts', function() {
+  return buildHeadScript('head.js', false); // this will run once because we set watch to false
+});
+
 
 // run 'scripts' task first, then watch for future changes
 gulp.task('default', ['images','styles','scripts','browser-sync'], function() {
-  gulp.watch('source/css/**/*', ['styles']); // gulp watch for stylus changes
-  return buildScript('main.js', true); // browserify watch for JS changes
+  
+  gulp.watch('source/css/**/*', ['styles']); 
+  return buildBodyScript('body.js', true); 
+  return buildHeadScript('head.js', true); 
 });
