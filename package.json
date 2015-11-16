@@ -27,6 +27,7 @@
     "babelify": "6.4.0",
     "browser-sync": "2.9.11",
     "browserify": "11.2.0",
+    "browserify-shim": "^3.8.0",
     "connect-history-api-fallback": "1.1.0",
     "gulp": "3.9.0",
     "gulp-autoprefixer": "3.1.0",
@@ -44,6 +45,14 @@
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
     "watchify": "3.4.0"
+  },
+  "browserify-shim": {
+    "jquery": "$"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
   },
   "dependencies": {}
 }

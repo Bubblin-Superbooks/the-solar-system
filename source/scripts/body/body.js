@@ -1,6 +1,6 @@
-$(document).ready(function() {
+jQuery(document).ready(function() {
 
-  var $superbook = $('#superbook');
+  var $superbook = jQuery('#superbook');
 
   // Initialize superbook
   $superbook.turn({
@@ -18,17 +18,17 @@ $(document).ready(function() {
   });
 
   if (Turn.isTouchDevice) {
-    $('body .ui-arrow-next-page').on('tap', function(e) {
+    jQuery('body .ui-arrow-next-page').on('tap', function(e) {
       $superbook.turn('next');
     });
-    $('body .ui-arrow-previous-page').on('tap', function(e) {
+    jQuery('body .ui-arrow-previous-page').on('tap', function(e) {
       $superbook.turn('previous');
     });
   } else {
-    $('.ui-arrow-next-page').on('click', function(e) {
+    jQuery('.ui-arrow-next-page').on('click', function(e) {
       $superbook.turn('next');
     });
-    $('.ui-arrow-previous-page').on('click', function(e) {
+    jQuery('.ui-arrow-previous-page').on('click', function(e) {
       $superbook.turn('previous');
     });
   }

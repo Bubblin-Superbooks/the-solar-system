@@ -1,5 +1,6 @@
-// var $ = require('jquery')
+// var $ = require('jquery')(window);
+global.jQuery = require("jquery");
 
-// var t = require('./turn');
+var t = require('../turn');
 
-// var key = require('keymaster');
+var key = require('keymaster');
