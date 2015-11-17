@@ -60,7 +60,7 @@ function handleErrors() {
 
 function buildBodyScript(file, watch) {
   var props = {
-    entries: ['./source/scripts/body/' + file],
+    entries: ['./source/scripts/' + file],
     debug : true,
     transform:  [babelify.configure({stage : 0, compact : false})]
   };
@@ -76,7 +76,7 @@ function buildBodyScript(file, watch) {
       // .pipe(buffer())
       // .pipe(uglify())
       .pipe(rename('body.min.js'))
-      .pipe(gulp.dest('./build/source/scripts/body/'))
+      .pipe(gulp.dest('./build/source/scripts/'))
       .pipe(reload({stream:true}))
   }
 
@@ -95,47 +95,8 @@ gulp.task('scripts', function() {
 });
 
 
-function buildHeadScript(file, watch) {
-  var props = {
-    entries: ['./source/scripts/head/' + file],
-    debug : true,
-    transform:  [babelify.configure({stage : 0, compact : false})]
-  };
-
-  // watchify() if watch requested, otherwise run browserify() once 
-  var bundler = watch ? watchify(browserify(props)) : browserify(props);
-
-  function rebundle() {
-    var stream = bundler.bundle();
-    return stream
-      .on('error', handleErrors)
-      .pipe(source(file))
-      // .pipe(buffer())
-      // .pipe(uglify())
-      .pipe(rename('head.min.js'))
-      .pipe(gulp.dest('./build/source/scripts/head/'))
-      .pipe(reload({stream:true}))
-  }
-
-  // listen for an update and run rebundle
-  bundler.on('update', function() {
-    rebundle();
-    gutil.log('Rebundling...');
-  });
-
-  // run it once the first time buildScript is called
-  return rebundle();
-}
-
-gulp.task('scripts', function() {
-  return buildHeadScript('head.js', false); // this will run once because we set watch to false
-});
-
-
 // run 'scripts' task first, then watch for future changes
 gulp.task('default', ['images','styles','scripts','browser-sync'], function() {
-  
   gulp.watch('source/css/**/*', ['styles']); 
   return buildBodyScript('body.js', true); 
-  return buildHeadScript('head.js', true); 
 });

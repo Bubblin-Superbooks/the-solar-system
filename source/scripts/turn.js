@@ -2548,4 +2548,4 @@
     var c = this._data;
     return void 0 === b ? c.options : (c.options = a.extend(c.options, b), void 0)
   }, b.widgetFactory("menu", u)
-}(jQuery);
+}($);
