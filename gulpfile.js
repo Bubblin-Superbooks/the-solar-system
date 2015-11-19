@@ -1,54 +1,27 @@
-var source = require('vinyl-source-stream');
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var browserify = require('browserify');
-var babelify = require('babelify');
-var watchify = require('watchify');
-var notify = require('gulp-notify');
-var stylus = require('gulp-stylus');
-var autoprefixer = require('gulp-autoprefixer');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
-var buffer = require('vinyl-buffer');
-var browserSync = require('browser-sync');
-var reload = browserSync.reload;
-var historyApiFallback = require('connect-history-api-fallback')
+var 
+  source = require('vinyl-source-stream'),
+  gulp = require('gulp'),
+  gutil = require('gulp-util'),    
+  browserify = require('browserify'),
+  babelify = require('babelify'),
+  watchify = require('watchify'),
+  notify = require('gulp-notify'),
+  uglify = require('gulp-uglify'),
+  rename = require('gulp-rename'),
+  buffer = require('vinyl-buffer'),
+  browserSync = require('browser-sync'),
+  reload = browserSync.reload,
+  historyApiFallback = require('connect-history-api-fallback'),
+  jshint = require('gulp-jshint');
 
 
-/* Styles Task */
 
-gulp.task('styles',function() {
-  // move over fonts
-  // gulp.src('source/css/fonts/**.*')
-  //   .pipe(gulp.dest('build/source/css/fonts'))
+var require_dir = require('require-dir');
+require_dir('./tasks');
 
-  // Compile CSS
-  gulp.src('source/css/style.styl')
-    .pipe(stylus())
-    .pipe(autoprefixer())
-    .pipe(gulp.dest('./build/source/css/'))
-    .pipe(reload({stream:true}))
-});
-
-/*
-  Images
-*/
-gulp.task('images',function(){
-  gulp.src('source/images/**')
-    .pipe(gulp.dest('./build/source/images'))
-});
-
-/* Browser Sync */
-gulp.task('browser-sync', function() {
-    browserSync({
-        // we need to disable clicks and forms
-        server : {},
-        middleware : [ historyApiFallback() ],
-        ghostMode: false
-    });
-});
 
 /* Errors */
+
 function handleErrors() {
   var args = Array.prototype.slice.call(arguments);
   notify.onError({
@@ -58,11 +31,13 @@ function handleErrors() {
   this.emit('end'); // Keep gulp from hanging on this task
 }
 
+
+
 function buildBodyScript(file, watch) {
   var props = {
     entries: ['./source/scripts/' + file],
     debug : true,
-    transform:  [babelify.configure({stage : 0, compact : false})]
+    transform:  [babelify.configure({compact : false})]
   };
 
   // watchify() if watch requested, otherwise run browserify() once 
