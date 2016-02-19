@@ -4,7 +4,7 @@ body {
 }
 
 h1 {
-  color: red;
+  color: #a00;
   font-size: 4vw;
 }
 
@@ -28,10 +28,6 @@ a {
   color: #333;
   margin: .1vw 0;
   padding: .5vw 5%;
-  -webkit-border-radius: 1vw;
-  -moz-border-radius: 1vw;
-  -o-border-radius: 1vw;
-  -ms-border-radius: 1vw;
   border-radius: 1vw;
 }
 
