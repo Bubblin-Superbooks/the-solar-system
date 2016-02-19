@@ -4,11 +4,27 @@ A quick and immersive journey through our Solar System with a soft primer on Gra
 Learn how our planetary system works, what it's like in space and how astronomy connects all pieces of science together!
 # Superbook
 
-Book is live here: [The Solar System](https://bubbl.in/cover/the-solar-system-by-marvin-danig)
+The book is deployed here: [The Solar System](https://bubbl.in/cover/the-solar-system-by-marvin-danig)
 
 # Project
-This book was written using the [Bookiza Framework](http://bookiza.io) - the book baking tool of the web. The manuscript is structured like so:
+This book was written using [Bookiza Framework](http://bookiza.io) - the book baking tool. 
 
+# Development
+
+Merely install dependencies and run the application using `bookiza server`. The server command will compile and build all pages, set up watchers and serve over `localhost:4567` via browser-sync so that you're able to write/edit continuously and "develop" the book.
+
+```
+$ git clone https://github.com/marvindanig/The-Solar-System.git
+$ cd The-Solar-System && npm install
+$ bookiza server
+
+```
+You're all set!
+
+
+# Structure
+
+The manuscript is structured like so:
 
 ```
 
@@ -31,7 +47,7 @@ The-Solar-System/
 │   │   ├── sun-layers.jpg
 │   │   ├── water_1k.png
 │   │   └── water_4k.png
-│   └── plugins
+│   └── javascript
 │       ├── detector.js
 │       ├── lazyYT.js
 │       └── trackBallControls.js
@@ -69,17 +85,6 @@ The-Solar-System/
 │   └── page-9
 │       ├── body.html
 │       └── style.css
-├── server.js
-├── source
-│   ├── book.html
-│   ├── core
-│   │   ├── controller.js
-│   │   └── dispatcher.js
-│   ├── cover.html
-│   ├── index.html
-│   └── lib
-│       ├── _book.scss
-│       └── book.js
 ├── templates
 │   ├── head.html
 │   ├── template.css
