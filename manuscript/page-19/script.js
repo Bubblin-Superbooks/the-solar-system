@@ -1,5 +1,5 @@
-$(document).ready(function() {
-  (function() {
+document.addEventListener('DOMContentLoaded', function() {
+
     var webglEl = document.getElementById('webgl');
 
     if (!Detector.webgl) {
@@ -7,8 +7,10 @@ $(document).ready(function() {
       return;
     }
 
+
     var loader = new THREE.TextureLoader();
     loader.crossOrigin = true;
+    
 
     // var width = webglEl.clientWidth;
     // var height = webglEl.clientHeight;
@@ -29,9 +31,10 @@ $(document).ready(function() {
     camera.position.z = 3;
 
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);
+    
+      renderer.setSize(width, height);
 
-    scene.add(new THREE.AmbientLight(0x333333));
+      scene.add(new THREE.AmbientLight(0x333333));
 
     var light = new THREE.DirectionalLight(0xffffff, 0.5);
       light.position.set(5, 3, 5);
@@ -49,9 +52,32 @@ $(document).ready(function() {
 
     render();
 
-    $(document).on('resize', function() {
+  
+    window.onresize = function(event) {
+
+      if (scene) {
+         while (scene.children.length > 0) {
+             scene.remove(scene.children[scene.children.length - 1]);
+         }
+
+         // cleanup without calling render (data needs to be cleaned up before a new scene can be generated)
+         renderer.dispose(scene.children);
+      }
+
+
+
+      scene = null;
+      scene = new THREE.Scene();
+
+
+      width   = window.innerWidth,
+      height  = window.innerHeight;
+
+      renderer.setSize(width, height);
       render();
-    });
+
+    };
+
 
     function render() {
       controls.update();
@@ -84,5 +110,5 @@ $(document).ready(function() {
         side: THREE.BackSide
       }));
     }
-  }());
+
 });
