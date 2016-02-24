@@ -1,0 +1,13 @@
+body {
+  background-color: black;
+}
+
+.leaf {
+	width:100vw;
+	height: 100vh;
+}
+
+.inner {
+  height: 100vh;
+  width: 100vw;
+}
