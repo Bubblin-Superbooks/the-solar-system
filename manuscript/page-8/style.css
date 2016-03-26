@@ -1,5 +1,21 @@
+
 body {
-  font: 3vw/1.05 "PT Sans Narrow", sans-serif;
+  font: 3.5vw/1.15 "PT Sans Narrow", sans-serif;
+}
+
+.leaf {
+    height: 100vh;
+    width: 80%;
+    margin: auto;
+}
+
+.inner {
+    margin: 5% auto;
+    width: 100%;
+}
+
+h1{
+  font: 6vw/1.05 'EB Garamond', serif;
 }
 
 ul {
@@ -21,7 +37,7 @@ a {
   text-decoration: none;
   color: #333;
   margin: .1vw 0;
-  padding: .5vw 5%;
+  padding: 0.8vw 5%;
   -webkit-border-radius: 1vw;
   -moz-border-radius: 1vw;
   -o-border-radius: 1vw;
@@ -35,6 +51,7 @@ a:hover {
   width: 90%;
   clear: both;
   text-decoration: none;
+  cursor: pointer;
 }
 
 a span {

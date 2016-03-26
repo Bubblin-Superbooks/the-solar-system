@@ -1,53 +1,92 @@
 body {
-  font: 4vw/1.05 'EB Garamond', serif;
-  margin: 0 0;
-  overflow: hidden; /* No reflow */
-  background: #fff;
-  color:#555;
+    font: 4vw/1.05 'EB Garamond', serif;
+    margin: 0 0;
+    overflow: hidden;
+    /* No reflow */
+    background: #fff;
+    color: #444;
 }
 
-h1, h2, h3, h4, h5, h6{
-  font-family: 'PT Sans Narrow', serif;
-  margin: 2vw 0;
-  padding:0;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'PT Sans Narrow', serif;
+    margin: 2vw 0;
+    padding: 0;
 }
 
-p{
-  margin: 2vw 0;
+p {
+    margin: 2vw 0;
 }
 
 .leaf {
-  height: 100vh;
-  width: 80%;
-  margin: auto;
+    height: 100vh;
+    width: 80%;
+    margin: auto;
 }
 
 .inner {
-  margin: 10% auto;
-  width: 100%;
+    margin: 10% auto;
+    width: 100%;
 }
 
 .flex {
-  display: -webkit-box;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
+    display: -webkit-box;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
 .justify {
-  text-align: justify;
+    text-align: justify;
 }
 
 .center {
-  text-align:center;
+    text-align: center;
 }
 
 .small {
-  font-size:80%;
+    font-size: 80%;
 }
 
-a{ color: hsl(90,70%,30%); outline: 0 none; text-decoration: none; text-rendering: optimizelegibility; } 
+a {
+    color: hsl(90, 70%, 30%);
+    outline: 0 none;
+    text-decoration: none;
+    text-rendering: optimizelegibility;
+}
 
-a:focus, a:active, a:hover { outline: 0 none;   color: hsl(90,70%,30%);  }
+a:focus,
+a:active,
+a:hover {
+    outline: 0 none;
+    color: hsl(90, 70%, 30%);
+}
 
-blockquote {border-left: 1vw solid #ccc; margin: 1vw 0; padding: 2vw 5vw; quotes: "\201C""\201D""\2018""\2019"; } blockquote:before { color: #ccc; content: open-quote; font-size: 6vw; line-height: 0.1vw; margin-right: 0.5vw; vertical-align: -0.9vw; } blockquote:after { color: #aaa; content: close-quote; font-size: 6vw; line-height: 0.4vw; margin-right: 0.5vw; vertical-align: -0.9vw; }
+blockquote {
+    border-left: 1vw solid #0c0;
+    margin: 1vw 0;
+    padding: 2vw 5vw;
+    quotes: "\201C""\201D""\2018""\2019";
+}
+
+blockquote:before {
+    color: #0c0;
+    content: open-quote;
+    font-size: 6vw;
+    line-height: 0.1vw;
+    margin-right: 0.5vw;
+    vertical-align: -0.9vw;
+}
+
+blockquote:after {
+    color: #0c0;
+    content: close-quote;
+    font-size: 6vw;
+    line-height: 0.4vw;
+    margin-right: 0.5vw;
+    vertical-align: -0.9vw;
+}
