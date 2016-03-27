@@ -1,6 +1,8 @@
 body {
-  background: #000;
+  background: #080e24 url(https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/galaxy_starfield.jpg) repeat;
   color: #aaa;
+  text-align: center;
+  overflow: hidden;
 }
 
 h2 {
