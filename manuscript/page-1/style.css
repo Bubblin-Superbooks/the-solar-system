@@ -13,9 +13,10 @@ h1 {
   margin-top: 5vw;
 }
 
-h2 {
-  color: #4fc;
+h2 a {
+  color: #4f4;
   font-size: 4vw;
+  font-weight: 100;
 }
 
 .tiny {
