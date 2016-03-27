@@ -1,9 +1,23 @@
-p.chapter-begin:first-letter {
-  display: inline-block;
-  margin: 4.5vw 1vw .1vw;
-  float: left;
-  line-height: 10vw;
-  font-size: 20vw;
-  color: hsl(90, 70%, 30%);
-  font-family: 'UnifrakturMaguntia', cursive;
+table {
+  font-family: 'PT Sans Narrow', serif;
+  margin: 20% auto;
+  position: absolute;
+  top: 7%;
+  border-spacing: 0px;
+}
+
+td,
+th {
+  width: 14vw;
+  height: 5vh;
+  border: 1px solid #ccc;
+  text-align: center;
+  white-space: nowrap;
+  padding: 0.2vw 2vw;
+}
+
+th {
+  background: #777;
+  color: white;
+  border-color: 1px solid #777;
 }

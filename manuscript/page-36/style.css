@@ -1,93 +1,135 @@
-h1 {
-  font-size: 5vw;
-  margin: 0;
-  padding: 0;
+body {
+  background: #222;
+  margin: 0 0;
+  overflow: hidden;
+  padding: 1vw;
+  color: #aaa;
+  font: 3.4vw/1.2 "PT Sans Narrow", sans-serif;
+  overflow: hidden;
+  text-align: center;
 }
 
-h2 {
-  font-size: 4vw;
-  margin: 0;
-  padding: 0;
+h1 {
+  font-size: 5vw;
 }
 
 p {
-  padding: 0;
-  margin: 1.5vw 0 3vw 0;
+  margin-top: 10vw;
 }
 
-.centerize {
-  padding: 2vw auto;
-  text-align: center;
-}
-
-.diagram {
-  margin: 4vw auto;
-  width: 70vw;
-  padding: 5vw;
-  position: relative;
-  background: #000;
-}
-
-.figure {
-  width: 100%;
-  height: 8vh;
+.dot {
+  height: 2vw;
+  width: 2vw;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background-color: #777;
 }
 
 .line1 {
-  height: 1px;
-  width: 52.5vw;
-  margin: 5vw auto;
-  background-color: #f44;
+  height: 41vw;
+  width: 1px;
   position: absolute;
-  left: 10vw;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 41vw;
+  border-radius: 50%;
+  background-color: #aaa;
 }
 
-.line1 p {
-  margin: 1px auto;
-  font-size: 2vw;
-  text-align: center;
-  color: #f44;
-}
-
-.line2 {
-  height: 1px;
-  width: 18vw;
-  margin: 6vw auto;
-  background-color: #cfc;
-  position: absolute;
-  left: 10vw;
-}
-
-.line2 p {
-  margin: 1px auto;
-  font-size: 2vw;
-  text-align: center;
-  color: #cfc;
+.annotation {
+  padding: 4vw 2vw;
 }
 
 .earth {
-  height: 10vw;
-  width: 10vw;
-  position: relative;
-  margin: auto;
-  border-radius: 50%;
-  background-color: transparent;
-  box-shadow: 0 0 10vw #00aaff;
-  background-image: url('https://raw.githubusercontent.com/marvindanig/Images/master/Earth/2_no_clouds_1k.jpg');
-  background-size: cover;
-  float: left;
+  height: 20vw;
+  width: 20vw;
   position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0vw;
+  border-radius: 50%;
+  background-color: #0072f9;
+  border: 1px solid #47aaff;
+  box-shadow: 0 0 10vw #47aaff;
+  background-image: url('https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/polar-earth-arctic.png');
+  background-size: cover;
 }
 
 .moon {
-  position: relative;
-  height: 5vw;
-  width: 5vw;
-  background-color: transparent;
-  margin: 2.5vw auto;
-  padding: 0;
-  background-image: url('https://raw.githubusercontent.com/marvindanig/Images/master/moon/moon_trans.png');
-  background-size: cover;
   position: absolute;
-  left: 60vw;
+  top: 6vw;
+  left: 7vw;
+  height: 10vw;
+  width: 10vw;
+  border-radius: 50%;
+  border-color: #444 #f44 #f44 #444;
+  -webkit-border-image: none;
+  -o-border-image: none;
+  border-image: none;
+  border-style: solid;
+  border-width: 5px;
+  background-color: transparent;
+  margin: 0 auto;
+  padding: 0;
+  /* animation: spin 40s linear infinite; animation-direction: reverse;*/
+  
+  background-image: url('https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/moon_trans_light.png');
+  background-size: cover;
+}
+
+.orbit2 {
+  height: 82vw;
+  width: 82vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 2px dashed #aaa;
+  border-radius: 42vw;
+  margin: auto;
+  -webkit-animation: spin 10s linear infinite;
+  animation: spin 10s linear infinite;
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+  -webkit-animation: spin 10s linear infinite;
+  -webkit-animation-direction: reverse;
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.label {
+  position: absolute;
+  bottom: 0;
+  margin: 10vw auto;
+  width: 100%;
 }

@@ -1,13 +1,353 @@
 body {
-  background-color: black;
+  background: #000;
+  color: #aaa;
 }
 
-.leaf {
-  width:100vw;
-  height: 100vh;
+h2 {
+  padding: 0;
+  margin: 10vw
 }
 
-.inner {
-  height: 100vh;
-  width: 100vw;
+.absolute {
+  width: 100%;
+  position: absolute;
+  bottom: 10vw;
+  margin: 0 auto;
+}
+
+.earth {
+  height: 8vw;
+  width: 8vw;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background-color: #02a3d8;
+  background-image: url(https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/2_no_clouds_1k.jpg);
+  background-size: cover;
+  box-shadow: 0 0 5vw #0099e6;
+}
+
+.planet1 {
+  height: 0.8vw;
+  width: 0.8vw;
+  position: absolute;
+  top: 1vw;
+  left: -.5vw;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #eee;
+  border: .25vw solid #eee;
+}
+
+.epicycle1 {
+  position: absolute;
+  top: 0;
+  left: -2.25vw;
+  height: 3.6vw;
+  width: 3.6vw;
+  border-radius: 50%;
+  text-align: center;
+  margin: 0 auto;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+  border: 2px dotted #fff;
+}
+
+.orbit1 {
+  height: 15vw;
+  width: 15vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 4.5vw solid #666;
+  border-radius: 50%;
+  margin: auto;
+  -webkit-animation: spin 10s linear infinite;
+  animation: spin 10s linear infinite;
+}
+
+.planet2 {
+  height: .4vw;
+  width: .4vw;
+  position: absolute;
+  top: 0;
+  left: 2.5vw;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #af9;
+  border: .4vw solid #af9;
+}
+
+.epicycle2 {
+  position: absolute;
+  top: 1vw;
+  left: -.7vw;
+  height: 3.6vw;
+  width: 3.6vw;
+  border-radius: 50%;
+  text-align: center;
+  margin: 0 auto;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+  border: 2px dotted #fff;
+}
+
+.orbit2 {
+  height: 25vw;
+  width: 25vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 4.5vw solid #444;
+  border-radius: 50%;
+  margin: auto;
+  -webkit-animation: spin 20s linear infinite;
+  animation: spin 20s linear infinite;
+}
+
+.planet3 {
+  height: 0.5vw;
+  width: 0.5vw;
+  position: absolute;
+  top: 0;
+  left: 2.5vw;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #efefef;
+  border: 0.6vw solid #efefef;
+}
+
+.epicycle3 {
+  position: absolute;
+  top: 1vw;
+  left: 2vw;
+  height: 3.6vw;
+  width: 3.6vw;
+  border-radius: 50%;
+  text-align: center;
+  margin: 0 auto;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+  border: 2px dotted #fff;
+}
+
+.orbit3 {
+  height: 35vw;
+  width: 35vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 4.5vw solid #543400;
+  border-radius: 50%;
+  margin: auto;
+  -webkit-animation: spin 30s linear infinite;
+  animation: spin 30s linear infinite;
+}
+
+.orbit4 {
+  height: 45vw;
+  width: 45vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 4.5vw solid #243434;
+  border-radius: 50%;
+  margin: auto;
+  -webkit-animation: spin 40s linear infinite;
+  animation: spin 40s linear infinite;
+}
+
+.planet4 {
+  height: 0.8vw;
+  width: 0.8vw;
+  position: absolute;
+  top: 0;
+  left: 2.5vw;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #ff0;
+  border: .5vw solid #ff0;
+}
+
+.epicycle4 {
+  position: absolute;
+  top: 4.15vw;
+  left: 2vw;
+  height: 3.6vw;
+  width: 3.6vw;
+  border-radius: 50%;
+  text-align: center;
+  margin: 0 auto;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+  border: 2px dotted #fff;
+}
+
+.orbit5 {
+  height: 55vw;
+  width: 55vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 4.5vw solid #243400;
+  border-radius: 50%;
+  margin: auto;
+  -webkit-animation: spin 50s linear infinite;
+  animation: spin 50s linear infinite;
+}
+
+.planet5 {
+  height: 0.8vw;
+  width: 0.8vw;
+  position: absolute;
+  top: 0;
+  left: 2.5vw;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #0ff;
+  border: .5vw solid #0ff;
+}
+
+.epicycle5 {
+  position: absolute;
+  top: 4.25vw;
+  left: 4.25vw;
+  height: 3.6vw;
+  width: 3.6vw;
+  border-radius: 50%;
+  text-align: center;
+  margin: 0 auto;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+  border: 2px dotted #fff;
+}
+
+.orbit6 {
+  height: 65vw;
+  width: 65vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 4.5vw solid #002434;
+  border-radius: 50%;
+  margin: auto;
+  -webkit-animation: spin 60s linear infinite;
+  animation: spin 60s linear infinite;
+}
+
+.planet6 {
+  height: 0.8vw;
+  width: 0.8vw;
+  position: absolute;
+  top: 0;
+  left: 0vw;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #f9f;
+  border: .5vw solid #f9f;
+}
+
+.epicycle6 {
+  position: absolute;
+  top: 4.25vw;
+  left: 7.25vw;
+  height: 3.6vw;
+  width: 3.6vw;
+  border-radius: 50%;
+  text-align: center;
+  margin: 0 auto;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+  border: 2px dotted #fff;
+}
+
+.orbit7 {
+  height: 75vw;
+  width: 75vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 4.5vw solid #342434;
+  border-radius: 50%;
+  margin: auto;
+  -webkit-animation: spin 70s linear infinite;
+  animation: spin 70s linear infinite;
+}
+
+.planet7 {
+  height: 0.8vw;
+  width: 0.8vw;
+  position: absolute;
+  top: 0;
+  left: -.5vw;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #900;
+  border: .5vw solid #900;
+}
+
+.epicycle7 {
+  position: absolute;
+  top: 4.25vw;
+  left: 10.5vw;
+  height: 3.6vw;
+  width: 3.6vw;
+  border-radius: 50%;
+  text-align: center;
+  margin: 0 auto;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+  border: 2px dotted #fff;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(-360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(-360deg);
+    transform: rotate(-360deg);
+  }
 }

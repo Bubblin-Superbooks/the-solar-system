@@ -1,1 +1,9 @@
-.small { margin: 1vw auto; }
+p.chapter-begin:first-letter {
+  display: inline-block;
+  margin: 4.5vw 1vw .1vw;
+  float: left;
+  line-height: 12vw;
+  font-size: 22vw;
+  color: hsl(90, 70%, 30%);
+  font-family: 'UnifrakturMaguntia', cursive;
+}

@@ -1,31 +1,9 @@
-body {
-  margin: 0;
-  overflow: hidden;
-  background-color: #000;
-  height: 100vh;
-  width: 100vw;
+p.chapter-begin:first-letter {
+  display: inline;
+  margin: 5vw 2vw .1vw 0;
+  float: left;
+  line-height: 11vw;
+  font-size: 22vw;
+  color: hsl(90, 70%, 30%);
+  font-family: 'UnifrakturMaguntia', cursive;
 }
-
-#webgl {
-  height: 100vh;
-  width: 100vw;
-}
-
-.tm {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.webgl-error {
-  font: 15px/30px monospace;
-  text-align: center;
-  color: #fff;
-  margin: 50px;
-}
-
-.webgl-error a {
-  color: #fff;
-}
-
-h1{color: white;}
