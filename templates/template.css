@@ -1,10 +1,9 @@
 body {
-    font: 4vw/1.05 'EB Garamond', serif;
-    margin: 0 0;
-    overflow: hidden;
-    /* No reflow */
-    background: #fff;
-    color: #444;
+  font: 4vw/1.05 'Crimson Text', serif;
+  margin: 0 0;
+  overflow: hidden;
+  background: #fff;
+  color: #545;
 }
 
 h1,
@@ -53,7 +52,7 @@ p {
 }
 
 a {
-    color: hsl(90, 70%, 30%);
+    color: #090;
     outline: 0 none;
     text-decoration: none;
     text-rendering: optimizelegibility;
@@ -63,18 +62,18 @@ a:focus,
 a:active,
 a:hover {
     outline: 0 none;
-    color: hsl(90, 70%, 30%);
+    color: #0cf;
 }
 
 blockquote {
-    border-left: 1vw solid #0c0;
+    border-left: 1vw solid #ccc;
     margin: 1vw 0;
     padding: 2vw 5vw;
     quotes: "\201C""\201D""\2018""\2019";
 }
 
 blockquote:before {
-    color: #0c0;
+    color: #ccc;
     content: open-quote;
     font-size: 6vw;
     line-height: 0.1vw;
@@ -83,7 +82,7 @@ blockquote:before {
 }
 
 blockquote:after {
-    color: #0c0;
+    color: #ccc;
     content: close-quote;
     font-size: 6vw;
     line-height: 0.4vw;

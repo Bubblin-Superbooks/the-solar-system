@@ -47,6 +47,7 @@ a {
 
 a:hover {
   background: hsla(90, 70%, 30%, .1);
+  color: #090;
   float: left;
   width: 90%;
   clear: both;

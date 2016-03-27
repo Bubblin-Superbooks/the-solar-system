@@ -1,15 +1,25 @@
+
 body {
-  font: 3vw/1.05 "PT Sans Narrow", sans-serif;
-  padding: 8vh 0
+  font: 3.5vw/1.15 "PT Sans Narrow", sans-serif;
 }
 
-h1 {
-  color: #a00;
-  font-size: 4vw;
+.leaf {
+    height: 100vh;
+    width: 80%;
+    margin: auto;
+}
+
+.inner {
+    margin: 15% auto;
+    width: 100%;
+}
+
+h1{
+  font: 6vw/1.05 'EB Garamond', serif;
 }
 
 ul {
-  margin: 0 auto;
+  margin: 0;
   padding: 0;
 }
 
@@ -27,16 +37,22 @@ a {
   text-decoration: none;
   color: #333;
   margin: .1vw 0;
-  padding: .5vw 5%;
+  padding: 0.8vw 5%;
+  -webkit-border-radius: 1vw;
+  -moz-border-radius: 1vw;
+  -o-border-radius: 1vw;
+  -ms-border-radius: 1vw;
   border-radius: 1vw;
 }
 
 a:hover {
   background: hsla(90, 70%, 30%, .1);
+  color: #090;
   float: left;
   width: 90%;
   clear: both;
   text-decoration: none;
+  cursor: pointer;
 }
 
 a span {
