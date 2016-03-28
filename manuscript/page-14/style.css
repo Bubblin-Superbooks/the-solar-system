@@ -1,5 +1,11 @@
-body {
-  background-color: black;
+html, body {
+  background: #000 url(https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/galaxy_starfield.jpg) repeat;
+  color: #aaa;
+  text-align: center;
+  overflow: hidden;
+  height:100vh;
+  margin: 0;
+  padding:0;
 }
 
 .leaf {
@@ -7,7 +13,34 @@ body {
   height: 100vh;
 }
 
-.inner {
+.lower {
+  position: absolute;
+  top:0;
+  left: 0;
   height: 100vh;
   width: 100vw;
+  z-index: 0;
+  margin: 0% auto;
+
+}
+
+.upper {
+  position: absolute;
+  top:0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+  margin: 0% auto;
+
+}
+
+
+h1 {
+  position: absolute;
+  top:10vw;
+  left:0;
+  width:100%;
+  text-align: center;
+  z-index: 10;
 }
