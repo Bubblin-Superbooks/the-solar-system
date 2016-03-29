@@ -66,9 +66,9 @@ a:hover {
 }
 
 blockquote {
-    border-left: 1vw solid #ccc;
+    font-family: 'EB Garamond', serif;
     margin: 1vw 0;
-    padding: 2vw 5vw;
+    padding: 2vw 2vw;
     quotes: "\201C""\201D""\2018""\2019";
 }
 
