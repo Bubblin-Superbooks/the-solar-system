@@ -1,19 +1,32 @@
-h1 {
-  position: absolute;
-  font-size: 10vw;
-  text-align: center;
-  width: 100%;
-  margin: 20vw 10vw;
-  color: white;
-  z-index: 1;
+html,
+body {
+    background: #000 no-repeat;
+    color: #aaa;
+    text-align: center;
+    overflow: hidden;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
-canvas {
-  width: 100vw;
-  background: gray;
-  position: absolute;
-  left: -20vw;
-  bottom: -20vh;
-  z-index: -10;
-  text-align: center;
+.leaf {
+    width: 100vw;
+    height: 100vh;
+}
+
+.inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1;
+    margin: 0% auto;
+}
+
+#shadertoy {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
 }
