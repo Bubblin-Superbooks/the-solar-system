@@ -1,9 +1,32 @@
-p.chapter-begin:first-letter {
-  display: inline-block;
-  margin: 4.5vw 1vw .1vw;
-  float: left;
-  line-height: 10vw;
-  font-size: 20vw;
-  color: hsl(90, 70%, 30%);
-  font-family: 'UnifrakturMaguntia', cursive;
+html,
+body {
+    background: #000 no-repeat;
+    color: #aaa;
+    text-align: center;
+    overflow: hidden;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.leaf {
+    width: 100vw;
+    height: 100vh;
+}
+
+.inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1;
+    margin: 0% auto;
+}
+
+#shadertoy {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
 }
