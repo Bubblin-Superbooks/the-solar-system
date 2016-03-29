@@ -36,9 +36,9 @@ html, body {
 }
 
 
-h1 {
+p {
   position: absolute;
-  top:10vw;
+  bottom:10vw;
   left:0;
   width:100%;
   text-align: center;
