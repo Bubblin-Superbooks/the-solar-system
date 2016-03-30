@@ -8,7 +8,6 @@
   width: 70vw;
   padding: 5vw;
   position: relative;
-  background: #000;
 }
 
 .figure {
@@ -17,60 +16,86 @@
 }
 
 .line1 {
-  height: 1px;
-  width: 52.5vw;
-  margin: 5vw auto;
-  background-color: #f44;
+  height: 2px;
+  width: 50vw;
+  margin: 10vw auto;
+  background-color: #444;
   position: absolute;
-  left: 10vw;
+  left: 15vw;
 }
 
 .line1 p {
   margin: 1px auto;
   font-size: 2vw;
   text-align: center;
-  color: #f44;
+  color: #444;
 }
 
 .line2 {
-  height: 1px;
-  width: 18vw;
-  margin: 6vw auto;
-  background-color: #cfc;
+  height: 2px;
+  width: 25vw;
+  margin: 0vw auto;
+  background-color: #a00;
   position: absolute;
-  left: 10vw;
+  left: 15vw;
 }
 
 .line2 p {
   margin: 1px auto;
   font-size: 2vw;
   text-align: center;
-  color: #cfc;
+  color: #a00;
 }
 
-.earth {
+
+.line3 {
   height: 10vw;
-  width: 10vw;
+  width: 2px;
+  margin: 0vw auto;
+  border-right: 2px dotted blue;
+  position: absolute;
+  left: 40vw;
+}
+
+.line3 p {
+  margin: 5vw 1vw;
+  font-size: 3vw;
+  text-align: center;
+  color: blue;
+}
+
+
+
+.earth {
+  height: 20vw;
+  width: 20vw;
   position: relative;
   margin: auto;
   border-radius: 50%;
   background-color: transparent;
-  box-shadow: 0 0 10vw #00aaff;
+  border: 2px dotted blue;
+  box-shadow: 0 0 1vw #00aaff;
   background-image: url('https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/2_no_clouds_1k.jpg');
   background-size: cover;
   float: left;
   position: absolute;
+  color:white;
 }
 
 .moon {
   position: relative;
-  height: 5vw;
-  width: 5vw;
+  height: 10vw;
+  width: 10vw;
   background-color: transparent;
-  margin: 2.5vw auto;
+  margin: 5vw auto;
   padding: 0;
   background-image: url('https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/small-moon.png');
   background-size: cover;
   position: absolute;
   left: 60vw;
+}
+
+.origin {
+  height: 5vw;
+  width: 10vw;
 }
