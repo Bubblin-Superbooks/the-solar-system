@@ -1,66 +1,22 @@
-h1 {
-  font-size: 4.5vw;
+body {
   margin: 0;
-  padding: 0;
+  overflow: hidden;
+  background-color: #000;
 }
 
-p {
-  padding: 0;
-  margin: 1vw 0 2.6vw 0;
-}
-
-ol {
-  counter-reset: li;
-  list-style: none;
-  *list-style: decimal;
-  font-size: 3vw;
-  padding: 0;
-}
-
-.rectangle-list a {
-  position: relative;
-  display: block;
-  padding: .4em .4em .4em .6em;
-  *padding: .4em;
-  margin: .5vw 0 .5vw 2.5em;
-  background: #efefef;
-  color: #444;
-  text-decoration: none;
-  -webkit-transition: all .3s ease-out;
-  transition: all .3s ease-out;
-}
-
-.rectangle-list a:hover {
-  background: #eee;
-}
-
-.rectangle-list a:before {
-  content: counter(li);
-  counter-increment: li;
+.tm {
   position: absolute;
-  left: -2.1em;
-  top: 50%;
-  margin-top: -1em;
-  background: #ddeeff;
-  height: 2em;
-  width: 2em;
-  line-height: 2em;
+  top: 10px;
+  right: 10px;
+}
+
+.webgl-error {
+  font: 15px/30px monospace;
   text-align: center;
-  font-weight: bold;
+  color: #fff;
+  margin: 50px;
 }
 
-.rectangle-list a:after {
-  position: absolute;
-  content: '';
-  border: .5em solid transparent;
-  left: -1em;
-  top: 50%;
-  margin-top: -.5em;
-  -webkit-transition: all .3s ease-out;
-  transition: all .3s ease-out;
-}
-
-.rectangle-list a:hover:after {
-  left: -.1em;
-  border-left-color: #ddeeff;
+.webgl-error a {
+  color: #fff;
 }

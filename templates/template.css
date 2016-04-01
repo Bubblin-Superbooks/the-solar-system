@@ -67,25 +67,37 @@ a:hover {
 
 blockquote {
     font-family: 'EB Garamond', serif;
-    margin: 1vw 0;
-    padding: 2vw 2vw;
+    margin: 0;
+    padding: 0;
     quotes: "\201C""\201D""\2018""\2019";
+    color: #666
+    font-weight:100;
 }
 
 blockquote:before {
-    color: #ccc;
+    color: #0c0;
     content: open-quote;
     font-size: 6vw;
     line-height: 0.1vw;
-    margin-right: 0.5vw;
+    margin-right: -0.1vw;
     vertical-align: -0.9vw;
 }
 
 blockquote:after {
-    color: #ccc;
+    color: #0c0;
     content: close-quote;
     font-size: 6vw;
     line-height: 0.4vw;
-    margin-right: 0.5vw;
+    margin-left: 0.5vw;
     vertical-align: -0.9vw;
+}
+
+p.chapter-begin:first-letter {
+  display: inline-block;
+  margin: 4.5vw 1vw .1vw;
+  float: left;
+  line-height: 10vw;
+  font-size: 20vw;
+  color: hsl(90, 70%, 30%);
+  font-family: 'UnifrakturMaguntia', cursive;
 }
