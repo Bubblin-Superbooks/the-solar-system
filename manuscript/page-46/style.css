@@ -53,11 +53,10 @@ h2 {
   }
 }
 
-body,
-html {
-  background: #000;
+html, body {
+  background-color: #000;
   margin: 0 auto;
-  background: url(https://raw.githubusercontent.com/marvindanig/Images/master/galaxy_starfield_resized.png);
+  background-image: url(https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/galaxy_starfield.jpg);
   background-size: cover;
   height: 100vh;
   width: 100vw;
