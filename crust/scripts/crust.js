@@ -1,3164 +1,7319 @@
-! function(a) {
-  var b = {};
-  b.isFirefoxOrIE = (typeof InstallTrigger !== 'undefined') || ( /*@cc_on!@*/ false || !!document.documentMode);
-  b.version = "6.0.0", b.PI = Math.PI, b.A90 = Math.PI / 2, b.isTouch = !1, b.corners = {
-    backward: ["bl", "tl", "l"],
-    forward: ["br", "tr", "r"],
-    all: ["tl", "bl", "tr", "br", "l", "r"]
-  }, b.DISPLAY_SINGLE = 1, b.DISPLAY_DOUBLE = 2, b.DIRECTION_LTR = 1, b.DIRECTION_RTL = 2, b.EVENT_PREVENTED = 1, b.EVENT_STOPPED = 2, b.fragStatus = {
-    assigned: 0,
-    requested: 1,
-    waiting: 2,
-    nsplit: 6,
-    fetched: 3,
-    splitted: 4,
-    full: 5
-  }, b.getVendorPrefix = function() {
-    for (var a = ["Moz", "Webkit", "Khtml", "O", "ms"], b = a.length, c = ""; b--;) a[b] + "Transform" in document.body.style && (c = "-" + a[b].toLowerCase() + "-");
-    return c;
-  }, b.addCssWithPrefix = function(a) {
-    var b = this.vendor || this.getVendorPrefix(),
-      c = {};
-    for (var d in a) this.has(d, a) && (c[d.replace("@", b)] = a[d].replace("@", b));
-    return c;
-  }, b.transitionEnd = function(a, b) {
-    var c, d, e = document.createElement("fakeelement"),
-      f = {
-        transition: "transitionend",
-        OTransition: "oTransitionEnd",
-        MSTransition: "transitionend",
-        MozTransition: "transitionend",
-        WebkitTransition: "webkitTransitionEnd"
-      };
-    for (c in f)
-      if (void 0 !== e.style[c]) {
-        d = f[c];
+!function($) {
+  var self = {};
+  /** @type {boolean} */
+  self.isFirefoxOrIE = typeof InstallTrigger !== "undefined" || (false || !!document.documentMode);
+  /** @type {string} */
+  self.version = "6.0.0";
+  /** @type {number} */
+  self.PI = Math.PI;
+  /** @type {number} */
+  self.A90 = Math.PI / 2;
+  /** @type {boolean} */
+  self.isTouch = false;
+  self.corners = {
+    backward : ["bl", "tl", "l"],
+    forward : ["br", "tr", "r"],
+    all : ["tl", "bl", "tr", "br", "l", "r"]
+  };
+  /** @type {number} */
+  self.DISPLAY_SINGLE = 1;
+  /** @type {number} */
+  self.DISPLAY_DOUBLE = 2;
+  /** @type {number} */
+  self.DIRECTION_LTR = 1;
+  /** @type {number} */
+  self.DIRECTION_RTL = 2;
+  /** @type {number} */
+  self.EVENT_PREVENTED = 1;
+  /** @type {number} */
+  self.EVENT_STOPPED = 2;
+  self.fragStatus = {
+    assigned : 0,
+    requested : 1,
+    waiting : 2,
+    nsplit : 6,
+    fetched : 3,
+    splitted : 4,
+    full : 5
+  };
+  /**
+   * @return {?}
+   */
+  self.getVendorPrefix = function() {
+    /** @type {Array} */
+    var vendorPrefixes = ["Moz", "Webkit", "Khtml", "O", "ms"];
+    /** @type {number} */
+    var len = vendorPrefixes.length;
+    /** @type {string} */
+    var prefix = "";
+    for (;len--;) {
+      if (vendorPrefixes[len] + "Transform" in document.body.style) {
+        /** @type {string} */
+        prefix = "-" + vendorPrefixes[len].toLowerCase() + "-";
+      }
+    }
+    return prefix;
+  };
+  /**
+   * @param {?} opt_attributes
+   * @return {?}
+   */
+  self.addCssWithPrefix = function(opt_attributes) {
+    var value = this.vendor || this.getVendorPrefix();
+    var options = {};
+    var field;
+    for (field in opt_attributes) {
+      if (this.has(field, opt_attributes)) {
+        options[field.replace("@", value)] = opt_attributes[field].replace("@", value);
+      }
+    }
+    return options;
+  };
+  /**
+   * @param {Object} elem
+   * @param {Function} callback
+   * @return {?}
+   */
+  self.transitionEnd = function(elem, callback) {
+    var t;
+    var type;
+    /** @type {Element} */
+    var el = document.createElement("fakeelement");
+    var transitions = {
+      transition : "transitionend",
+      OTransition : "oTransitionEnd",
+      MSTransition : "transitionend",
+      MozTransition : "transitionend",
+      WebkitTransition : "webkitTransitionEnd"
+    };
+    for (t in transitions) {
+      if (void 0 !== el.style[t]) {
+        type = transitions[t];
         break;
       }
-    return a && (d ? a.bind(d, function() {
-      a.unbind(d), b.call(a);
+    }
+    return elem && (type ? elem.bind(type, function() {
+      elem.unbind(type);
+      callback.call(elem);
     }) : window.setTimeout(function() {
-      b.call(a);
-    }, Math.ceil(1e3 * parseFloat(a.css(getVendorPrefix() + "transition-duration"))))), d;
-  }, b.findPos = function(a) {
-    var b = {
-      top: 0,
-      left: 0
-    };
-    do b.left += a.offsetLeft, b.top += a.offsetTop; while (a = a.offsetParent);
-    return b;
-  }, b.offsetWhile = function(a, b) {
-    var c = {
-      top: 0,
-      left: 0
+      callback.call(elem);
+    }, Math.ceil(1E3 * parseFloat(elem.css(getVendorPrefix() + "transition-duration"))))), type;
+  };
+  /**
+   * @param {Element} el
+   * @return {?}
+   */
+  self.findPos = function(el) {
+    var o = {
+      top : 0,
+      left : 0
     };
     do {
-      if (!b(a, c)) break;
-      c.left += a.offsetLeft, c.top += a.offsetTop;
-    } while (a = a.offsetParent);
-    return c;
-  }, b.getSelectedText = function() {
-    return window.getSelection ? window.getSelection().toString() : document.selection.createRange ? document.selection.createRange().text : void 0;
-  }, b.bezier = function(a, b, c) {
-    var d = 1 - b,
-      e = d * d * d,
-      f = b * b * b;
-    return this.peelingPoint(c, Math.round(e * a[0].x + 3 * b * d * d * a[1].x + 3 * b * b * d * a[2].x + f * a[3].x), Math.round(e * a[0].y + 3 * b * d * d * a[1].y + 3 * b * b * d * a[2].y + f * a[3].y));
-  }, b.layerCSS = function(a, b, c, d) {
-    return {
-      css: {
-        position: "absolute",
-        top: a,
-        left: b,
-        overflow: d || "hidden",
-        "z-index": c || "auto"
-      }
+      o.left += el.offsetLeft;
+      o.top += el.offsetTop;
+    } while (el = el.offsetParent);
+    return o;
+  };
+  /**
+   * @param {Element} el
+   * @param {?} fn
+   * @return {?}
+   */
+  self.offsetWhile = function(el, fn) {
+    var o = {
+      top : 0,
+      left : 0
     };
-  }, b.rad = function(a) {
-    return a / 180 * p;
-  }, b.deg = function(a) {
-    return 180 * (a / p);
-  }, b.peelingPoint = function(a, b, c) {
-    return {
-      corner: a,
-      x: b,
-      y: c
-    };
-  }, b.transformUnit = function(a, b) {
-    var c;
-    return "string" == typeof a && (c = /^(\d+)(px|%)$/.exec(a)) ? "px" == c[2] ? parseInt(c[1], 10) : "%" == c[2] ? parseInt(c[1], 10) / 100 * b : void 0 : a;
-  }, b.point2D = function(a, b) {
-    return {
-      x: a,
-      y: b
-    };
-  }, b.translate = function(a, b, c) {
-    return this.has3d && c ? " translate3d(" + a + "px," + b + "px, 0px) " : " translate(" + a + "px, " + b + "px) ";
-  }, b.scale = function(a, b, c) {
-    return this.has3d && c ? " scale3d(" + a + "," + b + ", 1) " : " scale(" + a + ", " + b + ") ";
-  }, b.rotate = function(a) {
-    return " rotate(" + a + "deg) ";
-  }, b.has = function(a, b) {
-    return Object.prototype.hasOwnProperty.call(b, a);
-  }, b.rotationAvailable = function() {
-    var a;
-    if (a = /AppleWebkit\/([0-9\.]+)/i.exec(navigator.userAgent)) {
-      var b = parseFloat(a[1]);
-      return b > 534.3;
-    }
-    return !0;
-  }, b.css3dAvailable = function() {
-    return "WebKitCSSMatrix" in window || "MozPerspective" in document.body.style;
-  }, b.getTransitionEnd = function(a, b) {
-    var c, d, e = document.createElement("fakeelement"),
-      f = {
-        transition: "transitionend",
-        OTransition: "oTransitionEnd",
-        MSTransition: "transitionend",
-        MozTransition: "transitionend",
-        WebkitTransition: "webkitTransitionEnd"
-      };
-    for (c in f)
-      if (void 0 !== e.style[c]) {
-        d = f[c];
+    do {
+      if (!fn(el, o)) {
         break;
       }
-    return a && (d ? a.bind(d, function() {
-      a.unbind(d), b.call(a);
+      o.left += el.offsetLeft;
+      o.top += el.offsetTop;
+    } while (el = el.offsetParent);
+    return o;
+  };
+  /**
+   * @return {?}
+   */
+  self.getSelectedText = function() {
+    return window.getSelection ? window.getSelection().toString() : document.selection.createRange ? document.selection.createRange().text : void 0;
+  };
+  /**
+   * @param {Array} data
+   * @param {number} t
+   * @param {number} message
+   * @return {?}
+   */
+  self.bezier = function(data, t, message) {
+    /** @type {number} */
+    var mum1 = 1 - t;
+    /** @type {number} */
+    var mum13 = mum1 * mum1 * mum1;
+    /** @type {number} */
+    var t3 = t * t * t;
+    return this.peelingPoint(message, Math.round(mum13 * data[0].x + 3 * t * mum1 * mum1 * data[1].x + 3 * t * t * mum1 * data[2].x + t3 * data[3].x), Math.round(mum13 * data[0].y + 3 * t * mum1 * mum1 * data[1].y + 3 * t * t * mum1 * data[2].y + t3 * data[3].y));
+  };
+  /**
+   * @param {number} recurring
+   * @param {number} mayParseLabeledStatementInstead
+   * @param {(number|string)} lab
+   * @param {number} overf
+   * @return {?}
+   */
+  self.layerCSS = function(recurring, mayParseLabeledStatementInstead, lab, overf) {
+    return{
+      css : {
+        position : "absolute",
+        top : recurring,
+        left : mayParseLabeledStatementInstead,
+        overflow : overf || "hidden",
+        "z-index" : lab || "auto"
+      }
+    };
+  };
+  /**
+   * @param {number} degrees
+   * @return {?}
+   */
+  self.rad = function(degrees) {
+    return degrees / 180 * PI;
+  };
+  /**
+   * @param {number} radians
+   * @return {?}
+   */
+  self.deg = function(radians) {
+    return 180 * (radians / PI);
+  };
+  /**
+   * @param {number} childrenVarArgs
+   * @param {?} funcToCall
+   * @param {number} millis
+   * @return {?}
+   */
+  self.peelingPoint = function(childrenVarArgs, funcToCall, millis) {
+    return{
+      corner : childrenVarArgs,
+      x : funcToCall,
+      y : millis
+    };
+  };
+  /**
+   * @param {string} line
+   * @param {number} g
+   * @return {?}
+   */
+  self.transformUnit = function(line, g) {
+    var m;
+    return "string" == typeof line && (m = /^(\d+)(px|%)$/.exec(line)) ? "px" == m[2] ? parseInt(m[1], 10) : "%" == m[2] ? parseInt(m[1], 10) / 100 * g : void 0 : line;
+  };
+  /**
+   * @param {number} recurring
+   * @param {number} mayParseLabeledStatementInstead
+   * @return {?}
+   */
+  self.point2D = function(recurring, mayParseLabeledStatementInstead) {
+    return{
+      x : recurring,
+      y : mayParseLabeledStatementInstead
+    };
+  };
+  /**
+   * @param {number} z
+   * @param {number} mayParseLabeledStatementInstead
+   * @param {string} deepDataAndEvents
+   * @return {?}
+   */
+  self.translate = function(z, mayParseLabeledStatementInstead, deepDataAndEvents) {
+    return this.has3d && deepDataAndEvents ? " translate3d(" + z + "px," + mayParseLabeledStatementInstead + "px, 0px) " : " translate(" + z + "px, " + mayParseLabeledStatementInstead + "px) ";
+  };
+  /**
+   * @param {number} value
+   * @param {number} dataAndEvents
+   * @param {string} deepDataAndEvents
+   * @return {?}
+   */
+  self.scale = function(value, dataAndEvents, deepDataAndEvents) {
+    return this.has3d && deepDataAndEvents ? " scale3d(" + value + "," + dataAndEvents + ", 1) " : " scale(" + value + ", " + dataAndEvents + ") ";
+  };
+  /**
+   * @param {number} x
+   * @return {?}
+   */
+  self.rotate = function(x) {
+    return " rotate(" + x + "deg) ";
+  };
+  /**
+   * @param {string} property
+   * @param {?} target
+   * @return {?}
+   */
+  self.has = function(property, target) {
+    return Object.prototype.hasOwnProperty.call(target, property);
+  };
+  /**
+   * @return {?}
+   */
+  self.rotationAvailable = function() {
+    var components;
+    if (components = /AppleWebkit\/([0-9\.]+)/i.exec(navigator.userAgent)) {
+      /** @type {number} */
+      var version = parseFloat(components[1]);
+      return version > 534.3;
+    }
+    return true;
+  };
+  /**
+   * @return {?}
+   */
+  self.css3dAvailable = function() {
+    return "WebKitCSSMatrix" in window || "MozPerspective" in document.body.style;
+  };
+  /**
+   * @param {Object} $elem
+   * @param {Function} oldValMethod
+   * @return {?}
+   */
+  self.getTransitionEnd = function($elem, oldValMethod) {
+    var t;
+    var type;
+    /** @type {Element} */
+    var el = document.createElement("fakeelement");
+    var transitions = {
+      transition : "transitionend",
+      OTransition : "oTransitionEnd",
+      MSTransition : "transitionend",
+      MozTransition : "transitionend",
+      WebkitTransition : "webkitTransitionEnd"
+    };
+    for (t in transitions) {
+      if (void 0 !== el.style[t]) {
+        type = transitions[t];
+        break;
+      }
+    }
+    return $elem && (type ? $elem.bind(type, function() {
+      $elem.unbind(type);
+      oldValMethod.call($elem);
     }) : setTimeout(function() {
-      b.call(a);
-    }, Math.ceil(1e3 * parseFloat(a.css(getVendorPrefix() + "transition-duration"))))), d;
-  }, b.makeGradient = function(a) {
+      oldValMethod.call($elem);
+    }, Math.ceil(1E3 * parseFloat($elem.css(getVendorPrefix() + "transition-duration"))))), type;
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {?}
+   */
+  self.makeGradient = function(recurring) {
+    var vendor;
+    return "-webkit-" == this.vendor ? recurring ? (vendor = "-webkit-gradient(linear, left top, right top,", vendor += "color-stop(0, rgba(0,0,0,0)),", vendor += "color-stop(0.3, rgba(0,0,0, 0.3)),", vendor += "color-stop(0.5, rgba(0,0,0, 0.8))", vendor += ")") : (vendor = "-webkit-gradient(linear, left top, right top,", vendor += "color-stop(0, rgba(0,0,0,0)),", vendor += "color-stop(0.2, rgba(0,0,0,0.5)),", vendor += "color-stop(0.2, rgba(0,0,0,0.6)),", vendor += "color-stop(0.4, rgba(0,0,0,0.2)),", 
+    vendor += "color-stop(1, rgba(0,0,0,0))", vendor += ")") : (vendor = this.vendor + "linear-gradient(left, ", recurring ? (vendor += "rgba(0,0,0,0) 0%,", vendor += "rgba(0,0,0,0.3) 30%,", vendor += "rgba(0,0,0,0.8) 50%") : (vendor += "rgba(0,0,0,0) 0%,", vendor += "rgba(0,0,0,0.2) 20%,", vendor += "rgba(0,0,0,0.6) 20%,", vendor += "rgba(0,0,0,0.2) 40%,", vendor += "rgba(0,0,0,0) 100%"), vendor += ")"), vendor;
+  };
+  /**
+   * @param {Object} el
+   * @param {?} pos
+   * @param {?} p1
+   * @param {Array} colors
+   * @param {number} a
+   * @return {undefined}
+   */
+  self.gradient = function(el, pos, p1, colors, a) {
     var b;
-    return "-webkit-" == this.vendor ? a ? (b = "-webkit-gradient(linear, left top, right top,", b += "color-stop(0, rgba(0,0,0,0)),", b += "color-stop(0.3, rgba(0,0,0, 0.3)),", b += "color-stop(0.5, rgba(0,0,0, 0.8))", b += ")") : (b = "-webkit-gradient(linear, left top, right top,", b += "color-stop(0, rgba(0,0,0,0)),", b += "color-stop(0.2, rgba(0,0,0,0.5)),", b += "color-stop(0.2, rgba(0,0,0,0.6)),", b += "color-stop(0.4, rgba(0,0,0,0.2)),", b += "color-stop(1, rgba(0,0,0,0))", b += ")") : (b = this.vendor + "linear-gradient(left, ", a ? (b += "rgba(0,0,0,0) 0%,", b += "rgba(0,0,0,0.3) 30%,", b += "rgba(0,0,0,0.8) 50%") : (b += "rgba(0,0,0,0) 0%,", b += "rgba(0,0,0,0.2) 20%,", b += "rgba(0,0,0,0.6) 20%,", b += "rgba(0,0,0,0.2) 40%,", b += "rgba(0,0,0,0) 100%"), b += ")"), b;
-  }, b.gradient = function(a, b, c, d, e) {
-    var f, g = [];
+    /** @type {Array} */
+    var tagNameArr = [];
     if ("-webkit-" == this.vendor) {
-      for (f = 0; e > f; f++) g.push("color-stop(" + d[f][0] + ", " + d[f][1] + ")");
-      a.css({
-        "background-image": "-webkit-gradient(linear, " + b.x + "% " + b.y + "%," + c.x + "% " + c.y + "%, " + g.join(",") + " )"
+      /** @type {number} */
+      b = 0;
+      for (;a > b;b++) {
+        tagNameArr.push("color-stop(" + colors[b][0] + ", " + colors[b][1] + ")");
+      }
+      el.css({
+        "background-image" : "-webkit-gradient(linear, " + pos.x + "% " + pos.y + "%," + p1.x + "% " + p1.y + "%, " + tagNameArr.join(",") + " )"
       });
     }
-  }, b.trigger = function(c, d, e) {
-    var f = a.Event(c);
-    return d.trigger(f, e), f.isDefaultPrevented() ? b.EVENT_PREVENTED : f.isPropagationStopped() ? b.EVENT_STOPPED : "";
-  }, b.error = function(a) {
-    function b(a) {
-      this.name = "TurnError", this.message = a;
+  };
+  /**
+   * @param {string} event
+   * @param {Array} obj
+   * @param {Array} data
+   * @return {?}
+   */
+  self.trigger = function(event, obj, data) {
+    var e = $.Event(event);
+    return obj.trigger(e, data), e.isDefaultPrevented() ? self.EVENT_PREVENTED : e.isPropagationStopped() ? self.EVENT_STOPPED : "";
+  };
+  /**
+   * @param {string} msg
+   * @return {?}
+   */
+  self.error = function(msg) {
+    /**
+     * @param {string} message
+     * @return {undefined}
+     */
+    function AssertionError(message) {
+      /** @type {string} */
+      this.name = "TurnError";
+      /** @type {string} */
+      this.message = message;
     }
-    return TurnJsError.prototype = new Error, TurnJsError.prototype.constructor = b, new b(a);
-  }, b.getListeners = function(b, c, d) {
-    var e = a._data(b[0]).events,
-      f = [];
-    if (e) {
-      var g = e[c];
-      g && (a.each(g, function(a, b) {
-        f.push(b);
-      }), d && b.unbind(c));
-    }
-    return f;
-  }, b.setListeners = function(a, b, c) {
-    if (c)
-      for (var d = 0; d < c.length; d++) a.on(b, c[d].selector, c[d].handler);
-  }, b.cleanSelection = function() {
-    window.getSelection().empty ? window.getSelection().empty() : window.getSelection().removeAllRanges ? window.getSelection().removeAllRanges() : document.selection && document.selection.empty();
-  }, b.hasHardPage = function() {
-    return -1 == navigator.userAgent.indexOf("MSIE 9.0");
-  }, b.UIComponent = function(c) {
-    var d = function(b, c) {
-      this._data = {}, this._hashKey = c, this.$el = a(b);
-    };
-    return d.prototype = {
-      _init: c,
-      _bind: function(a) {
-        return d.prototype[a].apply(this, Array.prototype.slice.call(arguments, 1));
-      },
-      _trigger: function(a) {
-        return b.trigger(a, this.$el, Array.prototype.slice.call(arguments, 1));
-      },
-      _destroy: function() {
-        var a = this.$el.data();
-        delete a[this._hashKey];
+    return TurnJsError.prototype = new Error, TurnJsError.prototype.constructor = AssertionError, new AssertionError(msg);
+  };
+  /**
+   * @param {?} obj
+   * @param {string} type
+   * @param {boolean} dataAndEvents
+   * @return {?}
+   */
+  self.getListeners = function(obj, type, dataAndEvents) {
+    var events = $._data(obj[0]).events;
+    /** @type {Array} */
+    var assigns = [];
+    if (events) {
+      var list = events[type];
+      if (list) {
+        $.each(list, function(dataAndEvents, vvar) {
+          assigns.push(vvar);
+        });
+        if (dataAndEvents) {
+          obj.unbind(type);
+        }
       }
-    }, d;
-  }, b.widgetInterface = function(c, d, e) {
-    var f = a.data(this, d);
-    return f ? f._bind.apply(f, e) : (b.oneTimeInit(), f = new c(this, d), a.data(this, d, f), f._init.apply(f, e));
-  }, b.widgetFactory = function(c, d) {
-    var e = "turn." + c;
-    a.fn[c] = function() {
-      if (1 == this.length) return b.widgetInterface.call(this[0], d, e, arguments);
-      for (var a = 0; a < this.length; a++) b.widgetInterface.call(this[a], d, e, arguments);
+    }
+    return assigns;
+  };
+  /**
+   * @param {Object} cy
+   * @param {string} event
+   * @param {Array} codeSegments
+   * @return {undefined}
+   */
+  self.setListeners = function(cy, event, codeSegments) {
+    if (codeSegments) {
+      /** @type {number} */
+      var i = 0;
+      for (;i < codeSegments.length;i++) {
+        cy.on(event, codeSegments[i].selector, codeSegments[i].handler);
+      }
+    }
+  };
+  /**
+   * @return {undefined}
+   */
+  self.cleanSelection = function() {
+    if (window.getSelection().empty) {
+      window.getSelection().empty();
+    } else {
+      if (window.getSelection().removeAllRanges) {
+        window.getSelection().removeAllRanges();
+      } else {
+        if (document.selection) {
+          document.selection.empty();
+        }
+      }
+    }
+  };
+  /**
+   * @return {?}
+   */
+  self.hasHardPage = function() {
+    return-1 == navigator.userAgent.indexOf("MSIE 9.0");
+  };
+  /**
+   * @param {Function} cssText
+   * @return {?}
+   */
+  self.UIComponent = function(cssText) {
+    /**
+     * @param {?} element
+     * @param {?} opt_renderer
+     * @return {undefined}
+     */
+    var Tabs = function(element, opt_renderer) {
+      this._data = {};
+      this._hashKey = opt_renderer;
+      this.$el = $(element);
+    };
+    return Tabs.prototype = {
+      /** @type {Function} */
+      _init : cssText,
+      /**
+       * @param {?} fn
+       * @return {?}
+       */
+      _bind : function(fn) {
+        return Tabs.prototype[fn].apply(this, Array.prototype.slice.call(arguments, 1));
+      },
+      /**
+       * @param {string} type
+       * @return {?}
+       */
+      _trigger : function(type) {
+        return self.trigger(type, this.$el, Array.prototype.slice.call(arguments, 1));
+      },
+      /**
+       * @return {undefined}
+       */
+      _destroy : function() {
+        var _hashKey = this.$el.data();
+        delete _hashKey[this._hashKey];
+      }
+    }, Tabs;
+  };
+  /**
+   * @param {Function} model
+   * @param {EventTarget} options
+   * @param {?} checkSet
+   * @return {?}
+   */
+  self.widgetInterface = function(model, options, checkSet) {
+    var data = $.data(this, options);
+    return data ? data._bind.apply(data, checkSet) : (self.oneTimeInit(), data = new model(this, options), $.data(this, options, data), data._init.apply(data, checkSet));
+  };
+  /**
+   * @param {string} name
+   * @param {?} obj
+   * @return {undefined}
+   */
+  self.widgetFactory = function(name, obj) {
+    /** @type {string} */
+    var fqn = "turn." + name;
+    /**
+     * @return {?}
+     */
+    $.fn[name] = function() {
+      if (1 == this.length) {
+        return self.widgetInterface.call(this[0], obj, fqn, arguments);
+      }
+      /** @type {number} */
+      var i = 0;
+      for (;i < this.length;i++) {
+        self.widgetInterface.call(this[i], obj, fqn, arguments);
+      }
       return this;
     };
-  }, b.oneTimeInit = function() {
-    this.vendor || (this.has3d = this.css3dAvailable(), this.hasRotation = this.rotationAvailable(), this.vendor = this.getVendorPrefix());
-  }, b.calculateBounds = function(a) {
-    var b = {
-      width: a.width,
-      height: a.height
-    };
-    if (b.width > a.boundWidth || b.height > a.boundHeight) {
-      var c = b.width / b.height;
-      a.boundWidth / c > a.boundHeight && a.boundHeight * c <= a.boundWidth ? (b.width = Math.round(a.boundHeight * c), b.height = a.boundHeight) : (b.width = a.boundWidth, b.height = Math.round(a.boundWidth / c));
+  };
+  /**
+   * @return {undefined}
+   */
+  self.oneTimeInit = function() {
+    if (!this.vendor) {
+      this.has3d = this.css3dAvailable();
+      this.hasRotation = this.rotationAvailable();
+      this.vendor = this.getVendorPrefix();
     }
-    return b;
-  }, b.animate = function(b, c) {
-    if (!c) return b.animation && b.animation.stop(), void 0;
-    if (b.animation) {
-      b.animation._time = (new Date()).getTime();
-      for (var d = 0; d < b.animation._elements; d++) b.animation.from[d] = b.animation.current[d], b.animation.to[d] = c.to[d] - b.animation.from[d];
+  };
+  /**
+   * @param {?} params
+   * @return {?}
+   */
+  self.calculateBounds = function(params) {
+    var img = {
+      width : params.width,
+      height : params.height
+    };
+    if (img.width > params.boundWidth || img.height > params.boundHeight) {
+      /** @type {number} */
+      var delta = img.width / img.height;
+      if (params.boundWidth / delta > params.boundHeight && params.boundHeight * delta <= params.boundWidth) {
+        /** @type {number} */
+        img.width = Math.round(params.boundHeight * delta);
+        img.height = params.boundHeight;
+      } else {
+        img.width = params.boundWidth;
+        /** @type {number} */
+        img.height = Math.round(params.boundWidth / delta);
+      }
+    }
+    return img;
+  };
+  /**
+   * @param {Object} options
+   * @param {Object} animation
+   * @return {?}
+   */
+  self.animate = function(options, animation) {
+    if (!animation) {
+      return options.animation && options.animation.stop(), void 0;
+    }
+    if (options.animation) {
+      /** @type {number} */
+      options.animation._time = (new Date).getTime();
+      /** @type {number} */
+      var j = 0;
+      for (;j < options.animation._elements;j++) {
+        options.animation.from[j] = options.animation.current[j];
+        /** @type {number} */
+        options.animation.to[j] = animation.to[j] - options.animation.from[j];
+      }
     } else {
-      c.to.length || (c.to = [c.to]), c.from.length || (c.from = [c.from]);
-      var e = !0;
-      b.animation = a.extend({
-        current: [],
-        _elements: c.to.length,
-        _time: (new Date()).getTime(),
-        stop: function() {
-          e = !1, b.animation = null;
+      if (!animation.to.length) {
+        /** @type {Array} */
+        animation.to = [animation.to];
+      }
+      if (!animation.from.length) {
+        /** @type {Array} */
+        animation.from = [animation.from];
+      }
+      /** @type {boolean} */
+      var e = true;
+      options.animation = $.extend({
+        current : [],
+        _elements : animation.to.length,
+        _time : (new Date).getTime(),
+        /**
+         * @return {undefined}
+         */
+        stop : function() {
+          /** @type {boolean} */
+          e = false;
+          /** @type {null} */
+          options.animation = null;
         },
-        easing: function(a, b, c, d) {
-          return -c * ((a = a / d - 1) * a * a * a - 1) + b;
+        /**
+         * @param {number} t
+         * @param {number} x
+         * @param {?} easing
+         * @param {number} d
+         * @return {?}
+         */
+        easing : function(t, x, easing, d) {
+          return-easing * ((t = t / d - 1) * t * t * t - 1) + x;
         },
-        _frame: function() {
-          for (var a = Math.min(this.duration, (new Date()).getTime() - this._time), c = 0; c < this._elements; c++) this.current[c] = this.easing(a, this.from[c], this.to[c], this.duration);
-          e = !0, this.frame(this.current), a >= this.duration ? (this.stop(), this.completed && this.completed()) : window.requestAnimationFrame(function() {
-            e && b.animation._frame();
+        /**
+         * @return {undefined}
+         */
+        _frame : function() {
+          /** @type {number} */
+          var t = Math.min(this.duration, (new Date).getTime() - this._time);
+          /** @type {number} */
+          var i = 0;
+          for (;i < this._elements;i++) {
+            this.current[i] = this.easing(t, this.from[i], this.to[i], this.duration);
+          }
+          /** @type {boolean} */
+          e = true;
+          this.frame(this.current);
+          if (t >= this.duration) {
+            this.stop();
+            if (this.completed) {
+              this.completed();
+            }
+          } else {
+            window.requestAnimationFrame(function() {
+              if (e) {
+                options.animation._frame();
+              }
+            });
+          }
+        }
+      }, animation);
+      /** @type {number} */
+      var i = 0;
+      for (;i < options.animation._elements;i++) {
+        options.animation.to[i] -= options.animation.from[i];
+      }
+      options.animation._frame();
+    }
+  };
+  /**
+   * @param {?} o
+   * @param {?} f
+   * @return {undefined}
+   */
+  self.addDelegateList = function(o, f) {
+    if (o) {
+      var i;
+      for (i in o) {
+        if (self.has(i, o)) {
+          f.on(i, o[i]);
+        }
+      }
+    }
+  };
+  /**
+   * @return {?}
+   */
+  self.getDeviceName = function() {
+    /** @type {string} */
+    var userPlatform = "";
+    /** @type {string} */
+    var u = navigator.userAgent;
+    return/ipad/i.test(u) ? userPlatform = "ipad" : /iphone/i.test(u) ? userPlatform = "iphone" : /ipod/i.test(u) ? userPlatform = "ipod" : /kindle/i.test("iPod") && (userPlatform = "kindle"), userPlatform;
+  };
+  if (!window.requestAnimationFrame) {
+    /** @type {function (this:Window, function (number): ?, (Element|null)=): number} */
+    window.requestAnimationFrame = window.webkitRequestAnimationFrame || (window.mozRequestAnimationFrame || (window.oRequestAnimationFrame || (window.msRequestAnimationFrame || function(after) {
+      window.setTimeout(after, 1E3 / 60);
+    })));
+  }
+  /**
+   * @param {string} value
+   * @param {?} dest
+   * @return {?}
+   */
+  $.fn.transform = function(value, dest) {
+    var properties = {};
+    return dest && (properties[self.vendor + "transform-origin"] = dest), properties[self.vendor + "transform"] = value, this.css(properties);
+  };
+  /**
+   * @return {undefined}
+   */
+  self.toggleFullScreen = function() {
+    if (document.fullscreenElement || (document.mozFullScreenElement || document.webkitFullscreenElement)) {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else {
+        if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else {
+          if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+          }
+        }
+      }
+    } else {
+      /** @type {Element} */
+      var element = document.documentElement;
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else {
+        if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else {
+          if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+          }
+        }
+      }
+    }
+  };
+  window.Turn = self;
+  var val = $.isTouch || "ontouchstart" in window;
+  /** @type {string} */
+  self.eventPrefix = "";
+  self.isTouchDevice = val;
+  /**
+   * @param {?} point
+   * @param {Element} container
+   * @return {?}
+   */
+  self.isInside = function(point, container) {
+    if (container) {
+      if (container == document.body || container == window) {
+        return true;
+      }
+      var rect = $(container).offset();
+      return rect && (point.x >= rect.left && (point.y >= rect.top && (point.x <= rect.left + container.offsetWidth && point.y <= rect.top + container.offsetHeight)));
+    }
+  };
+  /**
+   * @param {Event} ev
+   * @return {?}
+   */
+  self.eventPoint = function(ev) {
+    var orig = ev.originalEvent;
+    var hasBody = orig.touches && orig.touches[0];
+    var data = hasBody ? self.point2D(orig.touches[0].pageX, orig.touches[0].pageY) : self.point2D(ev.pageX, ev.pageY);
+    return data.time = ev.timeStamp, data.target = ev.target, data;
+  };
+  /**
+   * @param {string} name
+   * @param {Object} opt_attributes
+   * @return {?}
+   */
+  self.Event = function(name, opt_attributes) {
+    name = this.eventPrefix + name;
+    /** @type {boolean} */
+    var iTime = false;
+    /**
+     * @param {?} el
+     * @param {(Function|string)} selector
+     * @return {undefined}
+     */
+    var init = function(el, selector) {
+      this.el = el;
+      this.$el = $(el);
+      this.eventName = name;
+      /** @type {(Function|string)} */
+      this._selector = selector;
+      this._data = {};
+      this._init();
+    };
+    return opt_attributes._triggerVirtualEvent = function(evt) {
+      if (iTime != evt.timeStamp) {
+        iTime = evt.timeStamp;
+        this.$el.trigger(evt);
+      }
+    }, opt_attributes._trigger = function(eventName) {
+      var touch = self.eventPoint(eventName);
+      var event = this.Event(eventName, {
+        pageX : touch.x,
+        pageY : touch.y
+      });
+      this._triggerVirtualEvent(event);
+    }, opt_attributes.Event = function(event, e) {
+      e = e || {};
+      e.type = this.eventName;
+      e.target = event.target;
+      e.toElement = event.toElement;
+      e.currentTarget = event.currentTarget;
+      e.delegateTarget = event.delegateTarget;
+      e.pageX = e.pageX || event.pageX;
+      e.pageY = e.pageY || event.pageY;
+      var info = $.Event(event, e);
+      return info.type = this.eventName, info;
+    }, init.eventName = name, init.prototype = opt_attributes, init;
+  };
+  /**
+   * @param {Function} Resource
+   * @param {string} evtName
+   * @return {undefined}
+   */
+  self._registerEvent = function(Resource, evtName) {
+    $.event.special[evtName] = {
+      /**
+       * @param {Object} handleObj
+       * @return {undefined}
+       */
+      add : function(handleObj) {
+        var opt = handleObj.selector || "";
+        /** @type {string} */
+        var that = "e." + evtName + opt;
+        var target = $(this);
+        var self = target.data(that) || {
+          listeners : 0
+        };
+        if (!self.instance) {
+          self.instance = new Resource(this, opt);
+        }
+        self.listeners++;
+        target.data(that, self);
+      },
+      /**
+       * @param {(Object|string)} handleObj
+       * @return {undefined}
+       */
+      remove : function(handleObj) {
+        var endpoint = handleObj.selector || "";
+        /** @type {string} */
+        var full = "e." + evtName + endpoint;
+        var d = $(this);
+        var view = d.data(full);
+        if (view) {
+          if (view.listeners > 0) {
+            view.listeners--;
+            if (0 === view.listeners) {
+              view.instance._remove();
+              delete view.instance;
+            }
+          }
+        }
+      }
+    };
+  };
+  /**
+   * @param {Array} codeSegments
+   * @return {undefined}
+   */
+  self._registerEvents = function(codeSegments) {
+    /** @type {number} */
+    var i = 0;
+    for (;i < codeSegments.length;i++) {
+      this._registerEvent(codeSegments[i], codeSegments[i].eventName);
+    }
+  };
+  var tap = self.Event("tap", {
+    /**
+     * @return {undefined}
+     */
+    _init : function() {
+      if (val) {
+        this.$el.on("touchstart", this._selector, $.proxy(this, "_touchstart"));
+        this.$el.on("touchmove", this._selector, $.proxy(this, "_touchmove"));
+        this.$el.on("touchend", this._selector, $.proxy(this, "_touchend"));
+      } else {
+        this.$el.on("click", this._selector, $.proxy(this, "_trigger"));
+      }
+    },
+    /**
+     * @return {undefined}
+     */
+    _remove : function() {
+      if (val) {
+        this.$el.off("touchstart", this._selector, this._touchstart);
+        this.$el.off("touchmove", this._selector, this._touchmove);
+        this.$el.off("touchend", this._selector, this._touchend);
+      } else {
+        this.$el.off("click", this._selector, this._trigger);
+      }
+    },
+    /**
+     * @param {Object} value
+     * @return {undefined}
+     */
+    _touchstart : function(value) {
+      /** @type {Object} */
+      this._data.startEvent = value;
+      this._data.initScrollTop = $(window).scrollTop();
+      this._data.initScrollLeft = $(window).scrollLeft();
+    },
+    /**
+     * @param {Object} value
+     * @return {undefined}
+     */
+    _touchmove : function(value) {
+      /** @type {Object} */
+      this._data.startEvent = value;
+    },
+    /**
+     * @return {undefined}
+     */
+    _touchend : function() {
+      if (this._data.startEvent) {
+        var x = self.eventPoint(this._data.startEvent);
+        var todayMonth = $(window).scrollTop();
+        var todayYear = $(window).scrollLeft();
+        if (self.isInside(x, this._data.startEvent.currentTarget || this.el) && (this._data.initScrollTop == todayMonth && this._data.initScrollLeft == todayYear)) {
+          var $this = this;
+          var type = this._data.startEvent;
+          setTimeout(function() {
+            $this._trigger(type);
+          }, 0);
+        }
+        /** @type {null} */
+        this._data.startEvent = null;
+      }
+    }
+  });
+  var e = self.Event("doubletap", {
+    /**
+     * @return {undefined}
+     */
+    _init : function() {
+      /** @type {Array} */
+      this._data.queue = [0, 0];
+      this.$el.on("tap", this._selector, $.proxy(this, "_tap"));
+    },
+    /**
+     * @return {undefined}
+     */
+    _remove : function() {
+      this.$el.off("tap", this._selector, this._tap);
+    },
+    /**
+     * @param {Event} e
+     * @return {undefined}
+     */
+    _tap : function(e) {
+      var keys = this._data.queue;
+      if (keys.shift(), keys.push(e.timeStamp), keys[1] - keys[0] < 300) {
+        var event = e.originalEvent;
+        var pointer = self.eventPoint(event);
+        this._triggerVirtualEvent(this.Event(event, {
+          pageX : pointer.x,
+          pageY : pointer.y
+        }));
+      }
+    }
+  });
+  var vmouseover = self.Event("vmouseover", {
+    /**
+     * @return {undefined}
+     */
+    _init : function() {
+      if (val) {
+        this.$el.on("touchstart", this._selector, $.proxy(this, "_trigger"));
+      } else {
+        this.$el.on("mouseover", this._selector, $.proxy(this, "_trigger"));
+      }
+    },
+    /**
+     * @return {undefined}
+     */
+    _remove : function() {
+      if (val) {
+        this.$el.off("touchstart", this._selector, this._trigger);
+      } else {
+        this.$el.off("mouseover", this._selector, this._trigger);
+      }
+    }
+  });
+  var vmouseout = self.Event("vmouseout", {
+    /**
+     * @return {undefined}
+     */
+    _init : function() {
+      if (val) {
+        this.$el.on("touchend", this._selector, $.proxy(this, "_trigger"));
+      } else {
+        this.$el.on("mouseout", this._selector, $.proxy(this, "_trigger"));
+      }
+    },
+    /**
+     * @return {undefined}
+     */
+    _remove : function() {
+      if (val) {
+        this.$el.off("touchend", this._selector, this._trigger);
+      } else {
+        this.$el.off("mouseout", this._selector, this._trigger);
+      }
+    }
+  });
+  var vmousedown = self.Event("vmousedown", {
+    /**
+     * @return {undefined}
+     */
+    _init : function() {
+      if (val) {
+        this.$el.on("touchstart", this._selector, $.proxy(this, "_trigger"));
+      } else {
+        this.$el.on("mousedown", this._selector, $.proxy(this, "_trigger"));
+      }
+    },
+    /**
+     * @return {undefined}
+     */
+    _remove : function() {
+      if (val) {
+        this.$el.off("touchstart", this._selector, this._trigger);
+      } else {
+        this.$el.off("mousedown", this._selector, this._trigger);
+      }
+    }
+  });
+  var vmouseup = self.Event("vmouseup", {
+    /**
+     * @return {undefined}
+     */
+    _init : function() {
+      if (val) {
+        this.$el.on("touchend", this._selector, $.proxy(this, "_trigger"));
+      } else {
+        this.$el.on("mouseup", this._selector, $.proxy(this, "_trigger"));
+      }
+    },
+    /**
+     * @return {undefined}
+     */
+    _remove : function() {
+      if (val) {
+        this.$el.off("touchend", this._selector, this._trigger);
+      } else {
+        this.$el.off("mouseup", this._selector, this._trigger);
+      }
+    }
+  });
+  var vmousemove = self.Event("vmousemove", {
+    /**
+     * @return {undefined}
+     */
+    _init : function() {
+      if (val) {
+        this.$el.on("touchmove", this._selector, $.proxy(this, "_trigger"));
+      } else {
+        this.$el.on("mousemove", this._selector, $.proxy(this, "_trigger"));
+      }
+    },
+    /**
+     * @return {undefined}
+     */
+    _remove : function() {
+      if (val) {
+        this.$el.off("touchmove", this._selector, this._trigger);
+      } else {
+        this.$el.off("mousemove", this._selector, this._trigger);
+      }
+    }
+  });
+  var message = self.Event("swipe", {
+    /**
+     * @return {undefined}
+     */
+    _init : function() {
+      this.$el.on("vmousedown", this._selector, $.proxy(this, "_vmousedown"));
+    },
+    /**
+     * @return {undefined}
+     */
+    _remove : function() {
+      this.$el.off("vmousedown", this._selector, this._vmousedown);
+    },
+    /**
+     * @param {Event} end
+     * @return {undefined}
+     */
+    _vmousedown : function(end) {
+      var data = this._data;
+      data.firstEvent = self.eventPoint(end);
+      data.currentEvent = data.firstEvent;
+      data.prevEvent = data.firstEvent;
+      $(document).on("vmousemove", $.proxy(this, "_vmousemove"));
+      $(document).on("vmouseup", $.proxy(this, "_vmouseup"));
+    },
+    /**
+     * @param {Event} part
+     * @return {undefined}
+     */
+    _vmousemove : function(part) {
+      var options = this._data;
+      var len = options.currentEvent;
+      options.currentEvent = self.eventPoint(part);
+      options.prevEvent = len;
+    },
+    /**
+     * @return {undefined}
+     */
+    _vmouseup : function() {
+      var d = this._data;
+      /** @type {number} */
+      var movingSpace = d.prevEvent.x - d.currentEvent.x;
+      /** @type {number} */
+      var deltaTime = d.prevEvent.time - d.currentEvent.time;
+      /** @type {number} */
+      var speed = movingSpace / deltaTime;
+      if (-0.2 > speed || speed > 0.2) {
+        var t = {};
+        t.pageX = d.currentEvent.x;
+        t.pageY = d.currentEvent.y;
+        /** @type {number} */
+        t.speed = speed;
+        this._triggerVirtualEvent(this.Event(d.firstEvent, t));
+      }
+      $(document).off("vmousemove", this._vmousemove);
+      $(document).off("vmouseup", this._vmouseup);
+    }
+  });
+  var error = self.Event("pinch", {
+    /**
+     * @return {undefined}
+     */
+    _init : function() {
+      this.$el.on("touchstart", this._selector, $.proxy(this, "_touchstart"));
+    },
+    /**
+     * @return {undefined}
+     */
+    _remove : function() {
+      this.$el.off("touchstart", this._selector, this._touchstart);
+    },
+    /**
+     * @param {Event} touch
+     * @return {undefined}
+     */
+    _touchstart : function(touch) {
+      var data = this._data;
+      data.firstEvent = self.eventPoint(touch);
+      /** @type {null} */
+      data.pinch = null;
+      $(document).on("touchmove", $.proxy(this, "_touchmove"));
+      $(document).on("touchend", $.proxy(this, "_touchend"));
+    },
+    /**
+     * @param {KeyboardEvent} e
+     * @return {undefined}
+     */
+    _touchmove : function(e) {
+      var touches = e.originalEvent.touches;
+      var data = this._data;
+      if (2 == touches.length) {
+        var evt = {};
+        /** @type {number} */
+        var z0 = touches[1].pageX - touches[0].pageX;
+        /** @type {number} */
+        var z1 = touches[1].pageY - touches[0].pageY;
+        var ev = self.point2D(touches[1].pageX / 2 + touches[0].pageX / 2, touches[1].pageY / 2 + touches[0].pageY / 2);
+        /** @type {number} */
+        var x = Math.sqrt(z0 * z0 + z1 * z1);
+        if (!data.pinch) {
+          data.pinch = {
+            initDistance : x,
+            prevDistance : x,
+            prevMidpoint : ev
+          };
+        }
+        evt.pageX = ev.x;
+        evt.pageY = ev.y;
+        /** @type {number} */
+        evt.dx = ev.x - data.pinch.prevMidpoint.x;
+        /** @type {number} */
+        evt.dy = ev.y - data.pinch.prevMidpoint.y;
+        /** @type {number} */
+        evt.factor = x / data.pinch.initDistance;
+        /** @type {number} */
+        evt.dfactor = x / data.pinch.prevDistance;
+        /** @type {number} */
+        data.pinch.prevDistance = x;
+        data.pinch.prevMidpoint = ev;
+        this._triggerVirtualEvent(this.Event(data.firstEvent, evt));
+      }
+    },
+    /**
+     * @return {undefined}
+     */
+    _touchend : function() {
+      $(document).off("touchmove", this._touchmove);
+      $(document).off("touchend", this._touchend);
+    }
+  });
+  self._registerEvents([tap, e, message, error, vmouseover, vmouseout, vmousedown, vmousemove, vmouseup]);
+  var defaults = {
+    acceleration : true,
+    animatedAutoCenter : false,
+    autoCenter : true,
+    autoScroll : true,
+    autoScaleContent : false,
+    fragments : 0,
+    hoverAreaSize : 50,
+    cornerPosition : "50px 20px",
+    margin : "0px 0px",
+    display : "double",
+    duration : 600,
+    /**
+     * @param {number} t
+     * @param {number} b
+     * @param {number} c
+     * @param {number} d
+     * @return {?}
+     */
+    easing : function(t, b, c, d) {
+      /** @type {number} */
+      var ts = (t /= d) * t;
+      /** @type {number} */
+      var tc = ts * t;
+      return b + c * (-1.95 * tc * ts + 7.8 * ts * ts + -10.7 * tc + 4.8 * ts + 1.05 * t);
+    },
+    elevation : "10%",
+    hover : true,
+    ignoreElements : "[ignore=1]",
+    page : 1,
+    pageMargin : "0px 0px",
+    smartFlip : false,
+    swipe : true,
+    responsive : false,
+    gradients : true,
+    turnCorners : "l,r",
+    events : null,
+    showDoublePage : false,
+    zoomAnimationDuration : 1E4
+  };
+  var that = self.UIComponent(function(options) {
+    var data = this._data;
+    var codeSegments = this.$el.children();
+    /** @type {number} */
+    var entered = 0;
+    options = $.extend({
+      width : options.pageWidth ? 2 * options.pageWidth : this.$el.width(),
+      height : options.pageHeight ? options.pageHeight : this.$el.height(),
+      direction : this.$el.attr("dir") || (this.$el.css("direction") || "ltr"),
+      viewer : this.$el.parent(),
+      cacheSize : options && options.blocks ? 8 : 6
+    }, defaults, options);
+    var octalLiteral = options.cornerPosition.split(" ");
+    if (options.cornerPosition = self.point2D(parseInt(octalLiteral[0], 10), parseInt(octalLiteral[1], 10)), data.options = options, data.dynamicMode = false, data.turningPage = false, data.watchSizeChange = true, data.pageObjs = {}, data.pageBlocks = {}, data.pages = {}, data.pageWrap = {}, data.blocks = {}, data.pageMv = [], data.front = [], data.scroll = {
+      left : 0,
+      top : 0
+    }, data.margin = [0, 0, 0, 0], data.pageMargin = [0, 0, 0, 0], data.zoom = 1, data.totalPages = options.pages || 0, options.when && (options.delegate = options.when), options.delegate) {
+      var eventName;
+      for (eventName in options.delegate) {
+        if (self.has(eventName, options.delegate)) {
+          if ("tap" == eventName || "doubletap" == eventName) {
+            this.$el.on(eventName, ".page", options.delegate[eventName]);
+          } else {
+            this.$el.on(eventName, options.delegate[eventName]);
+          }
+        }
+      }
+    }
+    this.$el.css({
+      position : "relative",
+      width : options.width,
+      height : options.height
+    });
+    if (val) {
+      this.$el.addClass("touch-device");
+    } else {
+      this.$el.addClass("no-touch-device");
+    }
+    this.display(options.display);
+    if ("" !== options.direction) {
+      this.direction(options.direction);
+    }
+    /** @type {number} */
+    var i = 0;
+    for (;i < codeSegments.length;i++) {
+      if (!$(codeSegments[i]).is(options.ignoreElements)) {
+        this.addPage(codeSegments[i], ++entered);
+      }
+    }
+    return options.pages = data.totalPages, data.dynamicMode = 0 === entered, options.swipe && this.$el.on("swipe", $.proxy(this, "_eventSwipe")), this.$el.parent().on("start", $.proxy(this, "_eventStart")), this.$el.on("vmousedown", $.proxy(this, "_eventPress")).on("vmouseover", $.proxy(this, "_eventHover")).on("vmouseout", $.proxy(this, "_eventNoHover")), this._resizeObserver(), "number" != typeof options.page || (isNaN(options.page) || (options.page < 1 || options.page > data.totalPages)) ? this.page(1) : 
+    this.page(options.page), options.animatedAutoCenter && this.$el.css(self.addCssWithPrefix({
+      "@transition" : "margin-left " + options.duration + "ms"
+    })), data.done = true, this.$el;
+  });
+  self.directions;
+  /** @type {number} */
+  var lastAngle = self.A90;
+  /** @type {number} */
+  var PI = self.PI;
+  var results = self.UIComponent(function(self, session) {
+    return self = self || {}, self.disabled = false, self.hover = false, self.turn = session, self.turnData = session._data, self.effect = this.$el.hasClass("hard") || this.$el.hasClass("cover") ? "hard" : "sheet", this.$el.data("f", self), this._addPageWrapper(), self.turnData.disabled && this.disable(), this.$el;
+  });
+  /**
+   * @return {?}
+   */
+  results.prototype._cornerAllowed = function() {
+    var result = this.$el.data("f");
+    var id = result.page;
+    var data = result.turnData;
+    /** @type {number} */
+    var leftBottom = id % 2;
+    switch(result.effect) {
+      case "hard":
+        /** @type {boolean} */
+        var f = data.direction == self.DIRECTION_LTR;
+        return f ? [leftBottom ? "r" : "l"] : [leftBottom ? "l" : "r"];
+      case "sheet":
+        if (data.display == self.DISPLAY_SINGLE) {
+          return 1 == id ? self.corners.forward : id == data.totalPages ? self.corners.backward : "tapping" == result.status ? self.corners.all : self.corners.forward;
+        }
+        if (data.display == self.DISPLAY_DOUBLE) {
+          return data.options.showDoublePage ? self.corners[leftBottom ? "backward" : "forward"] : self.corners[leftBottom ? "forward" : "backward"];
+        }
+      ;
+    }
+  };
+  /**
+   * @param {?} e
+   * @return {?}
+   */
+  results.prototype._cornerActivated = function(e) {
+    var x = this.$el.width();
+    var y = this.$el.height();
+    var me = self.peelingPoint("", e.x, e.y);
+    if (me.x <= 0 || (me.y <= 0 || (me.x >= x || me.y >= y))) {
+      return false;
+    }
+    var result = this.$el.data("f");
+    var msg = result.turnData;
+    if (result.dpoint) {
+      var max = msg.options.cornerPosition;
+      var field = this._startPoint(result.dpoint.corner, $.extend({}, me));
+      if (max = Math.max(max.x, max.y), field.x <= max && field.y <= max) {
+        return me.corner = result.dpoint.corner, me;
+      }
+    }
+    var delta = msg.options.hoverAreaSize;
+    var elems = this._cornerAllowed();
+    switch(result.effect) {
+      case "hard":
+        if (me.x > x - delta) {
+          /** @type {string} */
+          me.corner = "r";
+        } else {
+          if (!(me.x < delta)) {
+            return false;
+          }
+          /** @type {string} */
+          me.corner = "l";
+        }
+        break;
+      case "sheet":
+        if (me.y < delta) {
+          me.corner += "t";
+        } else {
+          if (me.y >= y - delta) {
+            me.corner += "b";
+          }
+        }
+        if (me.x <= delta) {
+          me.corner += "l";
+        } else {
+          if (me.x >= x - delta) {
+            me.corner += "r";
+          }
+        }
+      ;
+    }
+    return me.corner && -1 != $.inArray(me.corner, elems) ? me : false;
+  };
+  /**
+   * @param {Event} ev
+   * @return {?}
+   */
+  results.prototype._isIArea = function(ev) {
+    var mousePos = self.eventPoint(ev);
+    var g = this.$el.data("f");
+    var docPos = (g.clip || g.ipage).parent().offset();
+    return this._cornerActivated(self.point2D(mousePos.x - docPos.left, mousePos.y - docPos.top));
+  };
+  /**
+   * @param {?} corner
+   * @param {?} rp
+   * @return {?}
+   */
+  results.prototype._startPoint = function(corner, rp) {
+    var o;
+    switch(rp = rp || self.point2D(0, 0), corner) {
+      case "tr":
+        /** @type {number} */
+        rp.x = this.$el.width() - rp.x;
+        break;
+      case "bl":
+        /** @type {number} */
+        rp.y = this.$el.height() - rp.y;
+        break;
+      case "br":
+        /** @type {number} */
+        rp.x = this.$el.width() - rp.x;
+        /** @type {number} */
+        rp.y = this.$el.height() - rp.y;
+        break;
+      case "l":
+        o = this.$el.data("f");
+        if (o.startPoint) {
+          rp.y = o.startPoint.y;
+        }
+        break;
+      case "r":
+        /** @type {number} */
+        rp.x = this.$el.width() - rp.x;
+        o = this.$el.data("f");
+        if (o.startPoint) {
+          rp.y = o.startPoint.y;
+        }
+      ;
+    }
+    return rp;
+  };
+  /**
+   * @param {?} dataAndEvents
+   * @param {Object} rp
+   * @return {?}
+   */
+  results.prototype._endPoint = function(dataAndEvents, rp) {
+    var o;
+    switch(rp = rp || self.point2D(0, 0), dataAndEvents) {
+      case "tl":
+        /** @type {number} */
+        rp.x = 2 * this.$el.width() - rp.x;
+        break;
+      case "tr":
+        rp.x = -this.$el.width() + rp.x;
+        break;
+      case "bl":
+        /** @type {number} */
+        rp.x = 2 * this.$el.width() - rp.x;
+        /** @type {number} */
+        rp.y = this.$el.height() - rp.y;
+        break;
+      case "br":
+        rp.x = -this.$el.width() + rp.x;
+        /** @type {number} */
+        rp.y = this.$el.height() - rp.y;
+        break;
+      case "l":
+        /** @type {number} */
+        rp.x = 2 * this.$el.width() - rp.x;
+        o = this.$el.data("f");
+        if (o.startPoint) {
+          rp.y = o.startPoint.y;
+        }
+        break;
+      case "r":
+        /** @type {number} */
+        rp.x = -this.$el.width() - rp.x;
+        o = this.$el.data("f");
+        if (o.startPoint) {
+          rp.y = o.startPoint.y;
+        }
+      ;
+    }
+    return rp;
+  };
+  /**
+   * @param {string} off
+   * @return {?}
+   */
+  results.prototype._foldingPage = function(off) {
+    var s = this.$el.data("f");
+    if (s) {
+      var data = s.turnData;
+      return off = off || "pageObjs", data.display == self.DISPLAY_SINGLE ? data[off][0] : s.over ? data[off][s.over] : data[off][s.next];
+    }
+    return false;
+  };
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @return {?}
+   */
+  results.prototype.resize = function(x, y) {
+    var s = this.$el.data("f");
+    switch(x = x || this.$el.width(), y = y || this.$el.height(), s.effect) {
+      case "hard":
+        s.ipage.css({
+          width : x,
+          height : y
+        });
+        s.igradient.css({
+          width : x,
+          height : y
+        });
+        s.ogradient.css({
+          width : x,
+          height : y
+        });
+        break;
+      case "sheet":
+        /** @type {number} */
+        var side = Math.round(Math.sqrt(x * x + y * y));
+        s.clip.css({
+          width : side,
+          height : side
+        });
+        s.ipage.css({
+          width : x,
+          height : y
+        });
+        s.igradient.css({
+          width : 100,
+          height : 2 * y,
+          top : -y / 2
+        });
+        s.ogradient.css({
+          width : 100,
+          height : 2 * y,
+          top : -y / 2
+        });
+    }
+    return this.$el;
+  };
+  /**
+   * @return {undefined}
+   */
+  results.prototype._addPageWrapper = function() {
+    var options = this.$el.data("f");
+    options.turnData;
+    var css;
+    var content = this.$el.parent();
+    var html = $("<div />", {
+      "class" : "inner-page"
+    });
+    var modal = $("<div />", {
+      "class" : "inner-gradient"
+    });
+    var $el = $("<div />", {
+      "class" : "outer-gradient"
+    });
+    switch(options.effect) {
+      case "hard":
+        css = self.layerCSS(0, 0, 2).css;
+        /** @type {string} */
+        css[self.vendor + "transform-style"] = "preserve-3d";
+        /** @type {string} */
+        css[self.vendor + "backface-visibility"] = "hidden";
+        html.css(css).appendTo(content).prepend(this.$el);
+        modal.css(self.layerCSS(0, 0, 0).css).appendTo(html);
+        $el.css(self.layerCSS(0, 0, 0));
+        options.ipage = html;
+        options.igradient = modal;
+        options.ogradient = $el;
+        break;
+      case "sheet":
+        var container = $("<div />", {
+          "class" : "clip"
+        });
+        css = self.layerCSS(0, 0, 0).css;
+        container.css(css);
+        html.css($.extend({
+          cursor : "default"
+        }, css));
+        /** @type {number} */
+        css.zIndex = 1;
+        modal.css({
+          background : self.makeGradient(true),
+          display : self.isFirefoxOrIE ? "" : "none",
+          visibility : "hidden",
+          position : "absolute",
+          "z-index" : 2
+        });
+        $el.css({
+          background : self.makeGradient(false),
+          visibility : "hidden",
+          position : "absolute",
+          "z-index" : 2
+        });
+        modal.appendTo(html);
+        html.appendTo(container).prepend(this.$el);
+        $el.appendTo(content);
+        container.appendTo(content);
+        options.clip = container;
+        options.ipage = html;
+        options.igradient = modal;
+        options.ogradient = $el;
+    }
+    this.resize();
+  };
+  /**
+   * @param {Object} pos
+   * @return {?}
+   */
+  results.prototype._fold = function(pos) {
+    var e = this.$el.data("f");
+    if (e.dpoint && (e.dpoint.corner == pos.corner && (e.dpoint.x == pos.x && e.dpoint.y == pos.y))) {
+      return false;
+    }
+    switch(e.effect) {
+      case "hard":
+        this._hard(pos);
+        break;
+      case "sheet":
+        this._pageCURL(pos);
+    }
+    return e.dpoint = self.peelingPoint(pos.corner, pos.x, pos.y), true;
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {undefined}
+   */
+  results.prototype._bringClipToFront = function(recurring) {
+    var s = this.$el.data("f");
+    if (s) {
+      var data = s.turnData;
+      /** @type {boolean} */
+      var key = data.display == self.DISPLAY_SINGLE;
+      if (recurring) {
+        var id = key ? 0 : s.next;
+        if (s.over && (s.over != id && this._bringClipToFront(false)), "hard" == s.effect) {
+          s.igradient.show();
+        } else {
+          if ("sheet" == s.effect) {
+            var container = data.pageWrap[id];
+            var result = data.pages[id].data("f");
+            var w = container.width();
+            var dialogHeight = container.height();
+            if (container.css({
+              overflow : "visible",
+              "pointer-events" : "none",
+              zIndex : 3 + data.front.length
+            }), result.ipage.css({
+              overflow : "hidden",
+              position : "absolute",
+              width : w,
+              height : dialogHeight
+            }), result.igradient.show().css({
+              visibility : "visible"
+            }), s.ipage.css({
+              "z-index" : 1
+            }), s.ogradient.show().css({
+              zIndex : 2,
+              visibility : "visible"
+            }), key && result.tPage != s.page) {
+              data.pageObjs[0].find("*").remove();
+              var clone = data.pageObjs[s.page].clone(false).css({
+                opacity : "0.2",
+                overflow : "hidden"
+              }).transform("rotateY(180deg)", "50% 50%");
+              clone.appendTo(data.pageObjs[0]);
+              result.tPage = s.page;
+            }
+          }
+        }
+        s.over = id;
+      } else {
+        if (s.over) {
+          var modal = data.pageWrap[s.over];
+          if (modal) {
+            modal.css({
+              overflow : "hidden",
+              display : self.isFirefoxOrIE ? "" : "none",
+              visibility : self.isFirefoxOrIE ? "hidden" : "",
+              "pointer-events" : "",
+              zIndex : 0
+            });
+          }
+          this._restoreClip(true);
+          delete s.over;
+        }
+      }
+    }
+  };
+  /**
+   * @param {boolean} cell
+   * @param {?} dataAndEvents
+   * @return {undefined}
+   */
+  results.prototype._restoreClip = function(cell, dataAndEvents) {
+    var c;
+    var i = this.$el.data("f");
+    var that = i.turnData;
+    var text = cell ? self.translate(0, 0, that.options.acceleration) : "";
+    if (dataAndEvents) {
+      c = i;
+    } else {
+      if (that.pages[i.over]) {
+        c = that.pages[i.over].data("f");
+      }
+    }
+    if (c) {
+      if (c.clip) {
+        c.clip.transform(text);
+      }
+      c.ipage.transform(text).css({
+        top : 0,
+        left : 0,
+        right : "auto",
+        bottom : "auto"
+      });
+      c.igradient.hide();
+    }
+  };
+  /**
+   * @param {Object} elem
+   * @param {boolean} dataAndEvents
+   * @return {undefined}
+   */
+  results.prototype._setFoldedPagePosition = function(elem, dataAndEvents) {
+    var entry = this.$el.data();
+    var p = entry.f;
+    var o = p.turnData;
+    if (dataAndEvents) {
+      var offsetCoordinate;
+      var rhtml = this;
+      var corner = elem.corner;
+      offsetCoordinate = p.point && p.point.corner == corner ? p.point : this._startPoint(corner, self.point2D(1, 1));
+      this._animate({
+        from : [offsetCoordinate.x, offsetCoordinate.y],
+        to : [elem.x, elem.y],
+        duration : 500,
+        easing : o.options.easing,
+        /**
+         * @param {Array} args
+         * @return {undefined}
+         */
+        frame : function(args) {
+          /** @type {number} */
+          elem.x = Math.round(args[0]);
+          /** @type {number} */
+          elem.y = Math.round(args[1]);
+          elem.corner = corner;
+          rhtml._fold(elem);
+        }
+      });
+    } else {
+      this._fold(elem);
+      if (this.animation) {
+        if (!this.animation.turning) {
+          this._animate(false);
+        }
+      }
+    }
+  };
+  /**
+   * @param {Object} c
+   * @param {boolean} dataAndEvents
+   * @return {?}
+   */
+  results.prototype._showFoldedPage = function(c, dataAndEvents) {
+    var options = this.$el.data("f");
+    var xCreateElement = this._foldingPage();
+    if (options && xCreateElement) {
+      var _visible = options.visible;
+      var corner = c.corner;
+      var async = options.turn;
+      var data = options.turnData;
+      if (!_visible || (!options.point || options.point.corner != c.corner)) {
+        if (data.corner = corner, this._trigger("start", options.page, data.tpage ? null : c.corner) == self.EVENT_PREVENTED) {
+          return false;
+        }
+        if (data.pages[options.next] && options.effect != data.pages[options.next].data("f").effect) {
+          return false;
+        }
+        if ("hard" == options.effect && "turning" == data.status) {
+          /** @type {number} */
+          var i = 0;
+          for (;i < data.front.length;i++) {
+            if (!data.pages[data.front[i]].hasClass("hard")) {
+              that.prototype.stop.call(async);
+              break;
+            }
+          }
+        }
+        if (!_visible) {
+          data.front.push(data.display == self.DISPLAY_SINGLE ? 0 : options.next);
+          data.pageMv.push(options.page);
+        }
+        options.startPoint = options.startPoint || self.point2D(c.x, c.y);
+        /** @type {boolean} */
+        options.visible = true;
+        this._bringClipToFront(true);
+        that.prototype.update.call(async);
+        if (data.options.blocks) {
+          that.prototype._fetchBlocks.call(async, Math.max(data.options.pages + 1, that.prototype.view.call(async, options.next)[0]), "hover");
+        }
+      }
+      return this._setFoldedPagePosition(c, dataAndEvents), true;
+    }
+    return false;
+  };
+  /**
+   * @return {?}
+   */
+  results.prototype.hide = function() {
+    var data = this.$el.data("f");
+    var config = data.turnData;
+    var udataCur = self.translate(0, 0, config.options.acceleration);
+    switch(data.effect) {
+      case "hard":
+        var out = config.pages[data.over];
+        data.ogradient.remove();
+        data.igradient.remove();
+        data.ipage.transform(udataCur);
+        if (out) {
+          out.data("f").ipage.transform(udataCur);
+        }
+        break;
+      case "sheet":
+        var $control = config.pageWrap[data.over];
+        if ($control) {
+          $control.css({
+            overflow : "hidden",
+            "pointer-events" : ""
           });
         }
-      }, c);
-      for (var f = 0; f < b.animation._elements; f++) b.animation.to[f] -= b.animation.from[f];
-      b.animation._frame();
+        data.ipage.css({
+          left : 0,
+          top : 0,
+          right : "auto",
+          bottom : "auto"
+        }).transform(udataCur);
+        data.clip.transform(udataCur);
+        data.ogradient.css({
+          visibility : "hidden"
+        });
     }
-  }, b.addDelegateList = function(a, c) {
-    if (a)
-      for (var d in a) b.has(d, a) && c.on(d, a[d]);
-  }, b.getDeviceName = function() {
-    var a = "",
-      b = navigator.userAgent;
-    return /ipad/i.test(b) ? a = "ipad" : /iphone/i.test(b) ? a = "iphone" : /ipod/i.test(b) ? a = "ipod" : /kindle/i.test("iPod") && (a = "kindle"), a;
-  }, window.requestAnimationFrame || (window.requestAnimationFrame = window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(a) {
-    window.setTimeout(a, 1e3 / 60);
-  }), a.fn.transform = function(a, c) {
-    var d = {};
-    return c && (d[b.vendor + "transform-origin"] = c), d[b.vendor + "transform"] = a, this.css(d);
-  }, b.toggleFullScreen = function() {
-    if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement) {
-      document.cancelFullScreen ? document.cancelFullScreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen && document.webkitCancelFullScreen();
-    } else {
-      var a = document.documentElement;
-      a.requestFullscreen ? a.requestFullscreen() : a.mozRequestFullScreen ? a.mozRequestFullScreen() : a.webkitRequestFullscreen && a.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-    }
-  }, window.Turn = b;
-  var c = a.isTouch || "ontouchstart" in window;
-  b.eventPrefix = "", b.isTouchDevice = c, b.isInside = function(b, c) {
-    if (c) {
-      if (c == document.body || c == window) return !0;
-      var d = a(c).offset();
-      return d && b.x >= d.left && b.y >= d.top && b.x <= d.left + c.offsetWidth && b.y <= d.top + c.offsetHeight;
-    }
-  }, b.eventPoint = function(a) {
-    var c = a.originalEvent,
-      d = c.touches && c.touches[0],
-      e = d ? b.point2D(c.touches[0].pageX, c.touches[0].pageY) : b.point2D(a.pageX, a.pageY);
-    return e.time = a.timeStamp, e.target = a.target, e;
-  }, b.Event = function(c, d) {
-    c = this.eventPrefix + c;
-    var e = !1,
-      f = function(b, d) {
-        this.el = b, this.$el = a(b), this.eventName = c, this._selector = d, this._data = {}, this._init();
+    return data.visible && (0 === config.front.length && that.prototype._removeFromDOM.call(data.turn)), data.status = "", data.visible = false, delete data.point, delete data.dpoint, delete data.startPoint, this.$el;
+  };
+  /**
+   * @param {boolean} dataAndEvents
+   * @return {undefined}
+   */
+  results.prototype.hideFoldedPage = function(dataAndEvents) {
+    var p = this.$el.data("f");
+    if (p.dpoint) {
+      var $scope = this;
+      var code = p.status;
+      var o = p.turnData;
+      var alpha = p.peel && p.peel.corner == p.dpoint.corner;
+      /**
+       * @return {undefined}
+       */
+      var hide = function() {
+        if (dataAndEvents && ("move" == code && alpha)) {
+          /** @type {string} */
+          p.status = "peel";
+        } else {
+          $scope._animationCompleted(p.page, false);
+        }
       };
-    return d._triggerVirtualEvent = function(a) {
-      e != a.timeStamp && (e = a.timeStamp, this.$el.trigger(a));
-    }, d._trigger = function(a) {
-      var c = b.eventPoint(a),
-        d = this.Event(a, {
-          pageX: c.x,
-          pageY: c.y
-        });
-      this._triggerVirtualEvent(d);
-    }, d.Event = function(b, c) {
-      c = c || {}, c.type = this.eventName, c.target = b.target, c.toElement = b.toElement, c.currentTarget = b.currentTarget, c.delegateTarget = b.delegateTarget, c.pageX = c.pageX || b.pageX, c.pageY = c.pageY || b.pageY;
-      var d = a.Event(b, c);
-      return d.type = this.eventName, d;
-    }, f.eventName = c, f.prototype = d, f;
-  }, b._registerEvent = function(b, c) {
-    a.event.special[c] = {
-      add: function(d) {
-        var e = d.selector || "",
-          f = "e." + c + e,
-          g = a(this),
-          h = g.data(f) || {
-            listeners: 0
-          };
-        h.instance || (h.instance = new b(this, e)), h.listeners++, g.data(f, h);
-      },
-      remove: function(b) {
-        var d = b.selector || "",
-          e = "e." + c + d,
-          f = a(this),
-          g = f.data(e);
-        g && g.listeners > 0 && (g.listeners--, 0 === g.listeners && (g.instance._remove(), delete g.instance));
-      }
-    };
-  }, b._registerEvents = function(a) {
-    for (var b = 0; b < a.length; b++) this._registerEvent(a[b], a[b].eventName);
-  }
-  var d = b.Event("tap", {
-      _init: function() {
-        c ? (this.$el.on("touchstart", this._selector, a.proxy(this, "_touchstart")), this.$el.on("touchmove", this._selector, a.proxy(this, "_touchmove")), this.$el.on("touchend", this._selector, a.proxy(this, "_touchend"))) : this.$el.on("click", this._selector, a.proxy(this, "_trigger"));
-      },
-      _remove: function() {
-        c ? (this.$el.off("touchstart", this._selector, this._touchstart), this.$el.off("touchmove", this._selector, this._touchmove), this.$el.off("touchend", this._selector, this._touchend)) : this.$el.off("click", this._selector, this._trigger);
-      },
-      _touchstart: function(b) {
-        this._data.startEvent = b, this._data.initScrollTop = a(window).scrollTop(), this._data.initScrollLeft = a(window).scrollLeft();
-      },
-      _touchmove: function(a) {
-        this._data.startEvent = a;
-      },
-      _touchend: function() {
-        if (this._data.startEvent) {
-          var c = b.eventPoint(this._data.startEvent),
-            d = a(window).scrollTop(),
-            e = a(window).scrollLeft();
-          if (b.isInside(c, this._data.startEvent.currentTarget || this.el) && this._data.initScrollTop == d && this._data.initScrollLeft == e) {
-            var f = this,
-              g = this._data.startEvent;
-            setTimeout(function() {
-              f._trigger(g);
-            }, 0);
-          }
-          this._data.startEvent = null;
-        }
-      }
-    }),
-    e = b.Event("doubletap", {
-      _init: function() {
-        this._data.queue = [0, 0], this.$el.on("tap", this._selector, a.proxy(this, "_tap"));
-      },
-      _remove: function() {
-        this.$el.off("tap", this._selector, this._tap);
-      },
-      _tap: function(a) {
-        var c = this._data.queue;
-        if (c.shift(), c.push(a.timeStamp), c[1] - c[0] < 300) {
-          var d = a.originalEvent,
-            e = b.eventPoint(d);
-          this._triggerVirtualEvent(this.Event(d, {
-            pageX: e.x,
-            pageY: e.y
-          }));
-        }
-      }
-    }),
-    f = b.Event("vmouseover", {
-      _init: function() {
-        c ? this.$el.on("touchstart", this._selector, a.proxy(this, "_trigger")) : this.$el.on("mouseover", this._selector, a.proxy(this, "_trigger"));
-      },
-      _remove: function() {
-        c ? this.$el.off("touchstart", this._selector, this._trigger) : this.$el.off("mouseover", this._selector, this._trigger);
-      }
-    }),
-    g = b.Event("vmouseout", {
-      _init: function() {
-        c ? this.$el.on("touchend", this._selector, a.proxy(this, "_trigger")) : this.$el.on("mouseout", this._selector, a.proxy(this, "_trigger"));
-      },
-      _remove: function() {
-        c ? this.$el.off("touchend", this._selector, this._trigger) : this.$el.off("mouseout", this._selector, this._trigger);
-      }
-    }),
-    h = b.Event("vmousedown", {
-      _init: function() {
-        c ? this.$el.on("touchstart", this._selector, a.proxy(this, "_trigger")) : this.$el.on("mousedown", this._selector, a.proxy(this, "_trigger"));
-      },
-      _remove: function() {
-        c ? this.$el.off("touchstart", this._selector, this._trigger) : this.$el.off("mousedown", this._selector, this._trigger);
-      }
-    }),
-    i = b.Event("vmouseup", {
-      _init: function() {
-        c ? this.$el.on("touchend", this._selector, a.proxy(this, "_trigger")) : this.$el.on("mouseup", this._selector, a.proxy(this, "_trigger"));
-      },
-      _remove: function() {
-        c ? this.$el.off("touchend", this._selector, this._trigger) : this.$el.off("mouseup", this._selector, this._trigger);
-      }
-    }),
-    j = b.Event("vmousemove", {
-      _init: function() {
-        c ? this.$el.on("touchmove", this._selector, a.proxy(this, "_trigger")) : this.$el.on("mousemove", this._selector, a.proxy(this, "_trigger"));
-      },
-      _remove: function() {
-        c ? this.$el.off("touchmove", this._selector, this._trigger) : this.$el.off("mousemove", this._selector, this._trigger);
-      }
-    }),
-    k = b.Event("swipe", {
-      _init: function() {
-        this.$el.on("vmousedown", this._selector, a.proxy(this, "_vmousedown"));
-      },
-      _remove: function() {
-        this.$el.off("vmousedown", this._selector, this._vmousedown);
-      },
-      _vmousedown: function(c) {
-        var d = this._data;
-        d.firstEvent = b.eventPoint(c), d.currentEvent = d.firstEvent, d.prevEvent = d.firstEvent, a(document).on("vmousemove", a.proxy(this, "_vmousemove")), a(document).on("vmouseup", a.proxy(this, "_vmouseup"));
-      },
-      _vmousemove: function(a) {
-        var c = this._data,
-          d = c.currentEvent;
-        c.currentEvent = b.eventPoint(a), c.prevEvent = d;
-      },
-      _vmouseup: function() {
-        var b = this._data,
-          c = b.prevEvent.x - b.currentEvent.x,
-          d = b.prevEvent.time - b.currentEvent.time,
-          e = c / d;
-        if (-0.2 > e || e > 0.2) {
-          var f = {};
-          f.pageX = b.currentEvent.x, f.pageY = b.currentEvent.y, f.speed = e, this._triggerVirtualEvent(this.Event(b.firstEvent, f));
-        }
-        a(document).off("vmousemove", this._vmousemove), a(document).off("vmouseup", this._vmouseup);
-      }
-    }),
-    l = b.Event("pinch", {
-      _init: function() {
-        this.$el.on("touchstart", this._selector, a.proxy(this, "_touchstart"))
-      },
-      _remove: function() {
-        this.$el.off("touchstart", this._selector, this._touchstart)
-      },
-      _touchstart: function(c) {
-        var d = this._data;
-        d.firstEvent = b.eventPoint(c), d.pinch = null, a(document).on("touchmove", a.proxy(this, "_touchmove")), a(document).on("touchend", a.proxy(this, "_touchend"))
-      },
-      _touchmove: function(a) {
-        var c = a.originalEvent.touches,
-          d = this._data;
-        if (2 == c.length) {
-          var e = {},
-            f = c[1].pageX - c[0].pageX,
-            g = c[1].pageY - c[0].pageY,
-            h = b.point2D(c[1].pageX / 2 + c[0].pageX / 2, c[1].pageY / 2 + c[0].pageY / 2),
-            i = Math.sqrt(f * f + g * g);
-          d.pinch || (d.pinch = {
-            initDistance: i,
-            prevDistance: i,
-            prevMidpoint: h
-          }), e.pageX = h.x, e.pageY = h.y, e.dx = h.x - d.pinch.prevMidpoint.x, e.dy = h.y - d.pinch.prevMidpoint.y, e.factor = i / d.pinch.initDistance, e.dfactor = i / d.pinch.prevDistance, d.pinch.prevDistance = i, d.pinch.prevMidpoint = h, this._triggerVirtualEvent(this.Event(d.firstEvent, e))
-        }
-      },
-      _touchend: function() {
-        a(document).off("touchmove", this._touchmove), a(document).off("touchend", this._touchend)
-      }
-    });
-  b._registerEvents([d, e, k, l, f, g, h, j, i]);
-  var m = {
-      acceleration: !0,
-      animatedAutoCenter: !1,
-      autoCenter: !0,
-      autoScroll: !0,
-      autoScaleContent: !1,
-      fragments: 0,
-      hoverAreaSize: 50,
-      cornerPosition: "50px 20px",
-      margin: "0px 0px",
-      display: "double",
-      duration: 600,
-      easing: function(a, b, c, d) {
-        var e = (a /= d) * a,
-          f = e * a;
-        return b + c * (-1.95 * f * e + 7.8 * e * e + -10.7 * f + 4.8 * e + 1.05 * a)
-      },
-      elevation: "10%",
-      hover: !0,
-      ignoreElements: "[ignore=1]",
-      page: 1,
-      pageMargin: "0px 0px",
-      smartFlip: !1,
-      swipe: !0,
-      responsive: !1,
-      gradients: !0,
-      turnCorners: "l,r",
-      events: null,
-      showDoublePage: !1,
-      zoomAnimationDuration: 1e4
-    },
-    n = b.UIComponent(function(d) {
-      var e = this._data,
-        f = this.$el.children(),
-        g = 0;
-      d = a.extend({
-        width: d.pageWidth ? 2 * d.pageWidth : this.$el.width(),
-        height: d.pageHeight ? d.pageHeight : this.$el.height(),
-        direction: this.$el.attr("dir") || this.$el.css("direction") || "ltr",
-        viewer: this.$el.parent(),
-        cacheSize: d && d.blocks ? 8 : 6
-      }, m, d);
-      var h = d.cornerPosition.split(" ");
-      if (d.cornerPosition = b.point2D(parseInt(h[0], 10), parseInt(h[1], 10)), e.options = d, e.dynamicMode = !1, e.turningPage = !1, e.watchSizeChange = !0, e.pageObjs = {}, e.pageBlocks = {}, e.pages = {}, e.pageWrap = {}, e.blocks = {}, e.pageMv = [], e.front = [], e.scroll = {
-          left: 0,
-          top: 0
-        }, e.margin = [0, 0, 0, 0], e.pageMargin = [0, 0, 0, 0], e.zoom = 1, e.totalPages = d.pages || 0, d.when && (d.delegate = d.when), d.delegate)
-        for (var i in d.delegate) b.has(i, d.delegate) && ("tap" == i || "doubletap" == i ? this.$el.on(i, ".page", d.delegate[i]) : this.$el.on(i, d.delegate[i]));
-      this.$el.css({
-        position: "relative",
-        width: d.width,
-        height: d.height
-      }), c ? this.$el.addClass("touch-device") : this.$el.addClass("no-touch-device"), this.display(d.display), "" !== d.direction && this.direction(d.direction);
-      for (var j = 0; j < f.length; j++) a(f[j]).is(d.ignoreElements) || this.addPage(f[j], ++g);
-      return d.pages = e.totalPages, e.dynamicMode = 0 === g, d.swipe && this.$el.on("swipe", a.proxy(this, "_eventSwipe")), this.$el.parent().on("start", a.proxy(this, "_eventStart")), this.$el.on("vmousedown", a.proxy(this, "_eventPress")).on("vmouseover", a.proxy(this, "_eventHover")).on("vmouseout", a.proxy(this, "_eventNoHover")), this._resizeObserver(), "number" != typeof d.page || isNaN(d.page) || d.page < 1 || d.page > e.totalPages ? this.page(1) : this.page(d.page), d.animatedAutoCenter && this.$el.css(b.addCssWithPrefix({
-        "@transition": "margin-left " + d.duration + "ms"
-      })), e.done = !0, this.$el
-    });
-  b.directions;
-  var o = b.A90,
-    p = b.PI,
-    q = b.UIComponent(function(a, b) {
-      return a = a || {}, a.disabled = !1, a.hover = !1, a.turn = b, a.turnData = b._data, a.effect = this.$el.hasClass("hard") || this.$el.hasClass("cover") ? "hard" : "sheet", this.$el.data("f", a), this._addPageWrapper(), a.turnData.disabled && this.disable(), this.$el
-    });
-  q.prototype._cornerAllowed = function() {
-    var a = this.$el.data("f"),
-      c = a.page,
-      d = a.turnData,
-      e = c % 2;
-    switch (a.effect) {
-      case "hard":
-        var f = d.direction == b.DIRECTION_LTR;
-        return f ? [e ? "r" : "l"] : [e ? "l" : "r"];
-      case "sheet":
-        if (d.display == b.DISPLAY_SINGLE) return 1 == c ? b.corners.forward : c == d.totalPages ? b.corners.backward : "tapping" == a.status ? b.corners.all : b.corners.forward;
-        if (d.display == b.DISPLAY_DOUBLE) return d.options.showDoublePage ? b.corners[e ? "backward" : "forward"] : b.corners[e ? "forward" : "backward"]
-    }
-  }, q.prototype._cornerActivated = function(c) {
-    var d = this.$el.width(),
-      e = this.$el.height(),
-      f = b.peelingPoint("", c.x, c.y);
-    if (f.x <= 0 || f.y <= 0 || f.x >= d || f.y >= e) return !1;
-    var g = this.$el.data("f"),
-      h = g.turnData;
-    if (g.dpoint) {
-      var i = h.options.cornerPosition,
-        j = this._startPoint(g.dpoint.corner, a.extend({}, f));
-      if (i = Math.max(i.x, i.y), j.x <= i && j.y <= i) return f.corner = g.dpoint.corner, f
-    }
-    var k = h.options.hoverAreaSize,
-      l = this._cornerAllowed();
-    switch (g.effect) {
-      case "hard":
-        if (f.x > d - k) f.corner = "r";
-        else {
-          if (!(f.x < k)) return !1;
-          f.corner = "l"
-        }
-        break;
-      case "sheet":
-        f.y < k ? f.corner += "t" : f.y >= e - k && (f.corner += "b"), f.x <= k ? f.corner += "l" : f.x >= d - k && (f.corner += "r")
-    }
-    return f.corner && -1 != a.inArray(f.corner, l) ? f : !1
-  }, q.prototype._isIArea = function(a) {
-    var c = b.eventPoint(a),
-      d = this.$el.data("f"),
-      e = (d.clip || d.ipage).parent().offset();
-    return this._cornerActivated(b.point2D(c.x - e.left, c.y - e.top))
-  }, q.prototype._startPoint = function(a, c) {
-    var d;
-    switch (c = c || b.point2D(0, 0), a) {
-      case "tr":
-        c.x = this.$el.width() - c.x;
-        break;
-      case "bl":
-        c.y = this.$el.height() - c.y;
-        break;
-      case "br":
-        c.x = this.$el.width() - c.x, c.y = this.$el.height() - c.y;
-        break;
-      case "l":
-        d = this.$el.data("f"), d.startPoint && (c.y = d.startPoint.y);
-        break;
-      case "r":
-        c.x = this.$el.width() - c.x, d = this.$el.data("f"), d.startPoint && (c.y = d.startPoint.y)
-    }
-    return c
-  }, q.prototype._endPoint = function(a, c) {
-    var d;
-    switch (c = c || b.point2D(0, 0), a) {
-      case "tl":
-        c.x = 2 * this.$el.width() - c.x;
-        break;
-      case "tr":
-        c.x = -this.$el.width() + c.x;
-        break;
-      case "bl":
-        c.x = 2 * this.$el.width() - c.x, c.y = this.$el.height() - c.y;
-        break;
-      case "br":
-        c.x = -this.$el.width() + c.x, c.y = this.$el.height() - c.y;
-        break;
-      case "l":
-        c.x = 2 * this.$el.width() - c.x, d = this.$el.data("f"), d.startPoint && (c.y = d.startPoint.y);
-        break;
-      case "r":
-        c.x = -this.$el.width() - c.x, d = this.$el.data("f"), d.startPoint && (c.y = d.startPoint.y)
-    }
-    return c
-  }, q.prototype._foldingPage = function(a) {
-    var c = this.$el.data("f");
-    if (c) {
-      var d = c.turnData;
-      return a = a || "pageObjs", d.display == b.DISPLAY_SINGLE ? d[a][0] : c.over ? d[a][c.over] : d[a][c.next]
-    }
-    return !1
-  }, q.prototype.resize = function(a, b) {
-    var c = this.$el.data("f");
-    switch (a = a || this.$el.width(), b = b || this.$el.height(), c.effect) {
-      case "hard":
-        c.ipage.css({
-          width: a,
-          height: b
-        }), c.igradient.css({
-          width: a,
-          height: b
-        }), c.ogradient.css({
-          width: a,
-          height: b
-        });
-        break;
-      case "sheet":
-        var d = Math.round(Math.sqrt(a * a + b * b));
-        c.clip.css({
-          width: d,
-          height: d
-        }), c.ipage.css({
-          width: a,
-          height: b
-        }), c.igradient.css({
-          width: 100,
-          height: 2 * b,
-          top: -b / 2
-        }), c.ogradient.css({
-          width: 100,
-          height: 2 * b,
-          top: -b / 2
-        })
-    }
-    return this.$el
-  }, q.prototype._addPageWrapper = function() {
-    var c = this.$el.data("f");
-    c.turnData;
-    var d, e = this.$el.parent(),
-      f = a("<div />", {
-        "class": "inner-page"
-      }),
-      g = a("<div />", {
-        "class": "inner-gradient"
-      }),
-      h = a("<div />", {
-        "class": "outer-gradient"
-      });
-    switch (c.effect) {
-      case "hard":
-        d = b.layerCSS(0, 0, 2).css, d[b.vendor + "transform-style"] = "preserve-3d", d[b.vendor + "backface-visibility"] = "hidden", f.css(d).appendTo(e).prepend(this.$el), g.css(b.layerCSS(0, 0, 0).css).appendTo(f), h.css(b.layerCSS(0, 0, 0)), c.ipage = f, c.igradient = g, c.ogradient = h;
-        break;
-      case "sheet":
-        var i = a("<div />", {
-          "class": "clip"
-        });
-        d = b.layerCSS(0, 0, 0).css, i.css(d), f.css(a.extend({
-          cursor: "default"
-        }, d)), d.zIndex = 1, g.css({
-          background: b.makeGradient(!0),
-          display: (b.isFirefoxOrIE ? '' : "none"),
-          visibility: "hidden",
-          position: "absolute",
-          "z-index": 2
-        }), h.css({
-          background: b.makeGradient(!1),
-          visibility: "hidden",
-          position: "absolute",
-          "z-index": 2
-        }), g.appendTo(f), f.appendTo(i).prepend(this.$el), h.appendTo(e), i.appendTo(e), c.clip = i, c.ipage = f, c.igradient = g, c.ogradient = h
-    }
-    this.resize()
-  }, q.prototype._fold = function(a) {
-    var c = this.$el.data("f");
-    if (c.dpoint && c.dpoint.corner == a.corner && c.dpoint.x == a.x && c.dpoint.y == a.y) return !1;
-    switch (c.effect) {
-      case "hard":
-        this._hard(a);
-        break;
-      case "sheet":
-        this._pageCURL(a)
-    }
-    return c.dpoint = b.peelingPoint(a.corner, a.x, a.y), !0
-  }, q.prototype._bringClipToFront = function(a) {
-    var c = this.$el.data("f");
-    if (c) {
-      var d = c.turnData,
-        e = d.display == b.DISPLAY_SINGLE;
-      if (a) {
-        var f = e ? 0 : c.next;
-        if (c.over && c.over != f && this._bringClipToFront(!1), "hard" == c.effect) c.igradient.show();
-        else if ("sheet" == c.effect) {
-          var g = d.pageWrap[f],
-            h = d.pages[f].data("f"),
-            i = g.width(),
-            j = g.height();
-          if (g.css({
-              overflow: "visible",
-              "pointer-events": "none",
-              zIndex: 3 + d.front.length
-            }), h.ipage.css({
-              overflow: "hidden",
-              position: "absolute",
-              width: i,
-              height: j
-            }), h.igradient.show().css({
-              visibility: "visible"
-            }), c.ipage.css({
-              "z-index": 1
-            }), c.ogradient.show().css({
-              zIndex: 2,
-              visibility: "visible"
-            }), e && h.tPage != c.page) {
-            d.pageObjs[0].find("*").remove();
-            var k = d.pageObjs[c.page].clone(!1).css({
-              opacity: "0.2",
-              overflow: "hidden"
-            }).transform("rotateY(180deg)", "50% 50%");
-            k.appendTo(d.pageObjs[0]), h.tPage = c.page
-          }
-        }
-        c.over = f
-      } else if (c.over) {
-        var l = d.pageWrap[c.over];
-        l && l.css({
-          overflow: "hidden",
-          display: (b.isFirefoxOrIE ? '' : 'none'),
-          visibility: (b.isFirefoxOrIE ? 'hidden' : ''),
-          "pointer-events": "",
-          zIndex: 0
-        }), this._restoreClip(!0), delete c.over
-      }
-    }
-  }, q.prototype._restoreClip = function(a, c) {
-    var d, e = this.$el.data("f"),
-      f = e.turnData,
-      g = a ? b.translate(0, 0, f.options.acceleration) : "";
-    c ? d = e : f.pages[e.over] && (d = f.pages[e.over].data("f")), d && (d.clip && d.clip.transform(g), d.ipage.transform(g).css({
-      top: 0,
-      left: 0,
-      right: "auto",
-      bottom: "auto"
-    }), d.igradient.hide())
-  }, q.prototype._setFoldedPagePosition = function(a, c) {
-    var d = this.$el.data(),
-      e = d.f,
-      f = e.turnData;
-    if (c) {
-      var g, h = this,
-        i = a.corner;
-      g = e.point && e.point.corner == i ? e.point : this._startPoint(i, b.point2D(1, 1)), this._animate({
-        from: [g.x, g.y],
-        to: [a.x, a.y],
-        duration: 500,
-        easing: f.options.easing,
-        frame: function(b) {
-          a.x = Math.round(b[0]), a.y = Math.round(b[1]), a.corner = i, h._fold(a)
-        }
-      })
-    } else this._fold(a), this.animation && !this.animation.turning && this._animate(!1)
-  }, q.prototype._showFoldedPage = function(a, c) {
-    var d = this.$el.data("f"),
-      e = this._foldingPage();
-    if (d && e) {
-      var f = d.visible,
-        g = a.corner,
-        h = d.turn,
-        i = d.turnData;
-      if (!f || !d.point || d.point.corner != a.corner) {
-        if (i.corner = g, this._trigger("start", d.page, i.tpage ? null : a.corner) == b.EVENT_PREVENTED) return !1;
-        if (i.pages[d.next] && d.effect != i.pages[d.next].data("f").effect) return !1;
-        if ("hard" == d.effect && "turning" == i.status)
-          for (var j = 0; j < i.front.length; j++)
-            if (!i.pages[i.front[j]].hasClass("hard")) {
-              n.prototype.stop.call(h);
-              break
-            }
-        f || (i.front.push(i.display == b.DISPLAY_SINGLE ? 0 : d.next), i.pageMv.push(d.page)), d.startPoint = d.startPoint || b.point2D(a.x, a.y), d.visible = !0, this._bringClipToFront(!0), n.prototype.update.call(h), i.options.blocks && n.prototype._fetchBlocks.call(h, Math.max(i.options.pages + 1, n.prototype.view.call(h, d.next)[0]), "hover")
-      }
-      return this._setFoldedPagePosition(a, c), !0
-    }
-    return !1
-  }, q.prototype.hide = function() {
-    var a = this.$el.data("f"),
-      c = a.turnData,
-      d = b.translate(0, 0, c.options.acceleration);
-    switch (a.effect) {
-      case "hard":
-        var e = c.pages[a.over];
-        a.ogradient.remove(), a.igradient.remove(), a.ipage.transform(d), e && e.data("f").ipage.transform(d);
-        break;
-      case "sheet":
-        var f = c.pageWrap[a.over];
-        f && f.css({
-          overflow: "hidden",
-          "pointer-events": ""
-        }), a.ipage.css({
-          left: 0,
-          top: 0,
-          right: "auto",
-          bottom: "auto"
-        }).transform(d), a.clip.transform(d), a.ogradient.css({
-          visibility: "hidden"
-        })
-    }
-    return a.visible && 0 === c.front.length && n.prototype._removeFromDOM.call(a.turn), a.status = "", a.visible = !1, delete a.point, delete a.dpoint, delete a.startPoint, this.$el
-  }, q.prototype.hideFoldedPage = function(a) {
-    var c = this.$el.data("f");
-    if (c.dpoint) {
-      var d = this,
-        e = c.status,
-        f = c.turnData,
-        g = c.peel && c.peel.corner == c.dpoint.corner,
-        h = function() {
-          a && "move" == e && g ? c.status = "peel" : d._animationCompleted(c.page, !1)
-        };
-      if (a) {
-        var i = [c.dpoint, 0, 0, 0];
-        i[3] = g ? this._startPoint(i[0].corner, b.point2D(c.peel.x, c.peel.y)) : this._startPoint(i[0].corner, b.point2D(0, 1));
-        var j = i[0].y - i[3].y;
-        j = "tr" == i[0].corner || "tl" == i[0].corner ? Math.min(0, j) / 2 : Math.max(0, j) / 2, i[1] = b.point2D(i[0].x, i[0].y + j), i[2] = b.point2D(i[3].x, i[3].y - j), this._animate(!1), this._animate({
-          from: 0,
-          to: 1,
-          frame: function(a) {
-            d._fold(b.bezier(i, a, i[0].corner))
+      if (dataAndEvents) {
+        /** @type {Array} */
+        var data = [p.dpoint, 0, 0, 0];
+        data[3] = alpha ? this._startPoint(data[0].corner, self.point2D(p.peel.x, p.peel.y)) : this._startPoint(data[0].corner, self.point2D(0, 1));
+        /** @type {number} */
+        var dy = data[0].y - data[3].y;
+        /** @type {number} */
+        dy = "tr" == data[0].corner || "tl" == data[0].corner ? Math.min(0, dy) / 2 : Math.max(0, dy) / 2;
+        data[1] = self.point2D(data[0].x, data[0].y + dy);
+        data[2] = self.point2D(data[3].x, data[3].y - dy);
+        this._animate(false);
+        this._animate({
+          from : 0,
+          to : 1,
+          /**
+           * @param {number} action
+           * @return {undefined}
+           */
+          frame : function(action) {
+            $scope._fold(self.bezier(data, action, data[0].corner));
           },
-          complete: h,
-          easing: f.options.easing,
-          duration: 800,
-          hiding: !0
-        })
-      } else this._animate(!1), h()
-    }
-  }, q.prototype.turnPage = function(c) {
-    var d, e, f = this.$el,
-      g = f.data("f"),
-      h = g.turnData,
-      i = [0, 0, 0, 0];
-    if (has3d = b.css3dAvailable(), h.display == b.DISPLAY_SINGLE && -1 == a.inArray(c, b.corners.forward)) {
-      var j = h.pages[g.next],
-        k = j.data("f"),
-        l = k.peel,
-        m = parseInt(h.pageWrap[g.page].css("z-index"), 10) || 0;
-      e = k.dpoint ? k.dpoint.corner : c, d = b.peelingPoint(h.direction == b.DIRECTION_LTR ? e.replace("l", "r") : e.replace("r", "l")), f = j, h.pageWrap[g.page - 1].show().css({
-        zIndex: m + 1
-      }), i[0] = k.dpoint ? b.point2D(k.dpoint.x, k.dpoint.y) : this._endPoint(d.corner), i[1] = i[0], i[2] = this._startPoint(d.corner, b.point2D(0, 20)), i[3] = l ? this._startPoint(d.corner, b.point2D(l.x, l.y)) : this._startPoint(d.corner)
-    } else {
-      var o = "r" == c || "l" == c ? 0 : h.options.elevation,
-        p = b.transformUnit(o, this.$el.height());
-      e = g.dpoint ? g.dpoint.corner : c, d = b.peelingPoint(e || this._cornerAllowed()[0]), i[0] = g.dpoint || this._startPoint(d.corner), i[1] = g.dpoint ? i[0] : this._startPoint(d.corner, b.point2D(0, p)), (i[0].x < 0 || i[0].x > this.$el.width()) && (p = 0), i[2] = this._endPoint(d.corner, b.point2D(0, p)), i[3] = this._endPoint(d.corner)
-    }
-    f.flip("_animate", !1), f.flip("_showFoldedPage", i[0]) ? (g.turnData.options.autoCenter && n.prototype.center.call(g.turn, g.next), f.flip("_animate", {
-      from: 0,
-      to: 1,
-      easing: h.options.easing,
-      frame: function(a) {
-        f.flip("_fold", b.bezier(i, a, d.corner))
-      },
-      complete: function() {
-        f.flip("_animationCompleted", g.page, !0)
-      },
-      duration: h.options.duration,
-      turning: !0
-    })) : f.flip("_animationCompleted", g.page, !0), g.corner = null
-  }, q.prototype.isTurning = function() {
-    return this.animation && this.animation.turning
-  }, q.prototype._showWhenHolding = function() {
-    var c, d = this.$el,
-      e = d.data("f"),
-      f = e.turn,
-      g = e.turnData;
-    if (e.holdingPoint) {
-      var h = g.display == b.DISPLAY_SINGLE,
-        i = this._cornerAllowed();
-      if (c = g.direction == b.DIRECTION_LTR ? h ? e.holdingPoint.x > d.width() / 2 ? "r" : "l" : g.options.showDoublePage ? 0 === e.page % 2 ? "r" : "l" : 0 === e.page % 2 ? "l" : "r" : h ? e.holdingPoint.x > d.width() / 2 ? "l" : "r" : g.options.showDoublePage ? 0 === e.page % 2 ? "l" : "r" : 0 === e.page % 2 ? "r" : "l", n.prototype.stop.call(f), this._animate(!1), e.status = "holding", ~a.inArray(c, i)) {
-        g.tmpListeners || (g.tmpListeners = {}, g.tmpListeners.tap = b.getListeners(f.$el, "tap", !0), g.tmpListeners.doubleTap = b.getListeners(f.$el, "doubleTap", !0));
-        var j = b.peelingPoint(c, e.holdingPoint.x, e.holdingPoint.y);
-        h ? this._detectSinglePage(j, j, !0) && (e.corner = b.peelingPoint(c, e.holdingPoint.x, e.holdingPoint.y)) : this._showFoldedPage(j, !0) && (e.corner = b.peelingPoint(c, e.holdingPoint.x, e.holdingPoint.y))
+          /** @type {function (): undefined} */
+          complete : hide,
+          easing : o.options.easing,
+          duration : 800,
+          hiding : true
+        });
+      } else {
+        this._animate(false);
+        hide();
       }
     }
-  }, q.prototype._pagePress = function(c) {
-    var d = this.$el.data("f"),
-      e = d.turn;
-    if (!d.corner && !d.disabled && !this.isTurning()) {
-      var f = d.turnData;
-      f.status = "tapping", d.status = "tapping";
-      var g = this._isIArea(c);
-      if (!(f.options.hover || d.peel && d.peel.corner == g.corner)) return f.status = "", d.status = "", void 0;
-      if (f.display == b.DISPLAY_SINGLE && f.pages[d.next] && d.effect != f.pages[d.next].data("f").effect && f.pageObjs[d.next].hasClass("cover") && ~a.inArray(g.corner, b.corners.forward)) return f.status = "", d.status = "", void 0;
-      if (d.corner = g, d.startPoint = null, has3d = b.css3dAvailable(), d.corner && this._foldingPage()) return n.prototype.update.call(e), !0;
-      d.corner = null;
-      var h = b.eventPoint(c),
-        i = f.pageWrap[d.page].offset();
-      h.x -= i.left, h.y -= i.top, f.options.smartFlip && ~a.inArray(d.page, n.prototype.view.call(e)) && h.x > 0 && h.y > 0 && h.x < this.$el.width() && h.y < this.$el.height() && (d.holdingPoint = h, d.startPoint = h, d.holding = setTimeout(a.proxy(this._showWhenHolding, this), 100))
+  };
+  /**
+   * @param {number} key
+   * @return {undefined}
+   */
+  results.prototype.turnPage = function(key) {
+    var position;
+    var path;
+    var elem = this.$el;
+    var data = elem.data("f");
+    var config = data.turnData;
+    /** @type {Array} */
+    var styles = [0, 0, 0, 0];
+    if (has3d = self.css3dAvailable(), config.display == self.DISPLAY_SINGLE && -1 == $.inArray(key, self.corners.forward)) {
+      var html = config.pages[data.next];
+      var e = html.data("f");
+      var pos = e.peel;
+      /** @type {number} */
+      var _zIndex = parseInt(config.pageWrap[data.page].css("z-index"), 10) || 0;
+      path = e.dpoint ? e.dpoint.corner : key;
+      position = self.peelingPoint(config.direction == self.DIRECTION_LTR ? path.replace("l", "r") : path.replace("r", "l"));
+      elem = html;
+      config.pageWrap[data.page - 1].show().css({
+        zIndex : _zIndex + 1
+      });
+      styles[0] = e.dpoint ? self.point2D(e.dpoint.x, e.dpoint.y) : this._endPoint(position.corner);
+      styles[1] = styles[0];
+      styles[2] = this._startPoint(position.corner, self.point2D(0, 20));
+      styles[3] = pos ? this._startPoint(position.corner, self.point2D(pos.x, pos.y)) : this._startPoint(position.corner);
+    } else {
+      var def = "r" == key || "l" == key ? 0 : config.options.elevation;
+      var errors = self.transformUnit(def, this.$el.height());
+      path = data.dpoint ? data.dpoint.corner : key;
+      position = self.peelingPoint(path || this._cornerAllowed()[0]);
+      styles[0] = data.dpoint || this._startPoint(position.corner);
+      styles[1] = data.dpoint ? styles[0] : this._startPoint(position.corner, self.point2D(0, errors));
+      if (styles[0].x < 0 || styles[0].x > this.$el.width()) {
+        /** @type {number} */
+        errors = 0;
+      }
+      styles[2] = this._endPoint(position.corner, self.point2D(0, errors));
+      styles[3] = this._endPoint(position.corner);
     }
-  }, q.prototype._pageMove = function(a) {
-    var c, d, e, f, g = this.$el.data("f");
-    if (!g.disabled) {
-      if (a.preventDefault(), g.corner) return e = g.turn, f = g.turnData, d = f.pageWrap[g.page].offset(), g.status = "move", c = b.eventPoint(a), c.x -= d.left, c.y -= d.top, c.corner = g.corner.corner, f.display == b.DISPLAY_SINGLE ? this._detectSinglePage(c, g.corner) : this._showFoldedPage(c), g.holdingPoint && b.cleanSelection(), !0;
-      if (!this.animation)
-        if (c = this._isIArea(a)) {
-          if (g.hover) {
-            if ("sheet" == g.effect && 2 != c.corner.length) return !1;
-            if ("peel" != g.status || !g.peel || g.peel.corner != c.corner) {
-              if (f = g.turnData, f.display == b.DISPLAY_SINGLE && f.page == f.totalPages) return !1;
-              var h = f.options.cornerPosition,
-                i = this._startPoint(c.corner, b.point2D(h.x, h.y));
-              g.status = "peel", c.x = i.x, c.y = i.y, this._showFoldedPage(c, !0)
+    elem.flip("_animate", false);
+    if (elem.flip("_showFoldedPage", styles[0])) {
+      if (data.turnData.options.autoCenter) {
+        that.prototype.center.call(data.turn, data.next);
+      }
+      elem.flip("_animate", {
+        from : 0,
+        to : 1,
+        easing : config.options.easing,
+        /**
+         * @param {number} action
+         * @return {undefined}
+         */
+        frame : function(action) {
+          elem.flip("_fold", self.bezier(styles, action, position.corner));
+        },
+        /**
+         * @return {undefined}
+         */
+        complete : function() {
+          elem.flip("_animationCompleted", data.page, true);
+        },
+        duration : config.options.duration,
+        turning : true
+      });
+    } else {
+      elem.flip("_animationCompleted", data.page, true);
+    }
+    /** @type {null} */
+    data.corner = null;
+  };
+  /**
+   * @return {?}
+   */
+  results.prototype.isTurning = function() {
+    return this.animation && this.animation.turning;
+  };
+  /**
+   * @return {undefined}
+   */
+  results.prototype._showWhenHolding = function() {
+    var message;
+    var e = this.$el;
+    var result = e.data("f");
+    var node = result.turn;
+    var data = result.turnData;
+    if (result.holdingPoint) {
+      /** @type {boolean} */
+      var l = data.display == self.DISPLAY_SINGLE;
+      var elems = this._cornerAllowed();
+      if (message = data.direction == self.DIRECTION_LTR ? l ? result.holdingPoint.x > e.width() / 2 ? "r" : "l" : data.options.showDoublePage ? 0 === result.page % 2 ? "r" : "l" : 0 === result.page % 2 ? "l" : "r" : l ? result.holdingPoint.x > e.width() / 2 ? "l" : "r" : data.options.showDoublePage ? 0 === result.page % 2 ? "l" : "r" : 0 === result.page % 2 ? "r" : "l", that.prototype.stop.call(node), this._animate(false), result.status = "holding", ~$.inArray(message, elems)) {
+        if (!data.tmpListeners) {
+          data.tmpListeners = {};
+          data.tmpListeners.tap = self.getListeners(node.$el, "tap", true);
+          data.tmpListeners.doubleTap = self.getListeners(node.$el, "doubleTap", true);
+        }
+        var ast = self.peelingPoint(message, result.holdingPoint.x, result.holdingPoint.y);
+        if (l) {
+          if (this._detectSinglePage(ast, ast, true)) {
+            result.corner = self.peelingPoint(message, result.holdingPoint.x, result.holdingPoint.y);
+          }
+        } else {
+          if (this._showFoldedPage(ast, true)) {
+            result.corner = self.peelingPoint(message, result.holdingPoint.x, result.holdingPoint.y);
+          }
+        }
+      }
+    }
+  };
+  /**
+   * @param {Event} method
+   * @return {?}
+   */
+  results.prototype._pagePress = function(method) {
+    var data = this.$el.data("f");
+    var elem = data.turn;
+    if (!data.corner && (!data.disabled && !this.isTurning())) {
+      var response = data.turnData;
+      /** @type {string} */
+      response.status = "tapping";
+      /** @type {string} */
+      data.status = "tapping";
+      var opts = this._isIArea(method);
+      if (!(response.options.hover || data.peel && data.peel.corner == opts.corner)) {
+        return response.status = "", data.status = "", void 0;
+      }
+      if (response.display == self.DISPLAY_SINGLE && (response.pages[data.next] && (data.effect != response.pages[data.next].data("f").effect && (response.pageObjs[data.next].hasClass("cover") && ~$.inArray(opts.corner, self.corners.forward))))) {
+        return response.status = "", data.status = "", void 0;
+      }
+      if (data.corner = opts, data.startPoint = null, has3d = self.css3dAvailable(), data.corner && this._foldingPage()) {
+        return that.prototype.update.call(elem), true;
+      }
+      /** @type {null} */
+      data.corner = null;
+      var ret = self.eventPoint(method);
+      var boundary = response.pageWrap[data.page].offset();
+      ret.x -= boundary.left;
+      ret.y -= boundary.top;
+      if (response.options.smartFlip) {
+        if (~$.inArray(data.page, that.prototype.view.call(elem))) {
+          if (ret.x > 0) {
+            if (ret.y > 0) {
+              if (ret.x < this.$el.width()) {
+                if (ret.y < this.$el.height()) {
+                  data.holdingPoint = ret;
+                  data.startPoint = ret;
+                  /** @type {number} */
+                  data.holding = setTimeout($.proxy(this._showWhenHolding, this), 100);
+                }
+              }
             }
           }
-        } else "peel" == g.status && (g.peel && g.peel.corner == g.dpoint.corner || (g.status = "", this.hideFoldedPage(!0)));
-      return !1
-    }
-  }, q.prototype._pageUnpress = function() {
-    var c = this.$el.data("f"),
-      d = c.corner,
-      e = c.turn,
-      f = c.turnData;
-    if (!c.disabled && d && "turning" != f.status && "swiped" != f.status) {
-      var g = c.point || d,
-        h = c.page,
-        i = this.$el.width();
-      if (f.display == b.DISPLAY_SINGLE)
-        if (1 == h) "tapping" == c.status || g.x < i / 2 ? n.prototype._turnPage.call(e, c.next, g.corner) : this.hideFoldedPage(!0);
-        else if (~a.inArray(g.corner, b.corners.forward)) "tapping" == c.status || g.x < i / 2 ? n.prototype._turnPage.call(e, c.next, g.corner) : this.hideFoldedPage(!0);
-      else {
-        var j = f.pages[c.page - 1];
-        g = j.data("f").point, "tapping" == c.status || g.x > .1 * i ? (n.prototype._turnPage.call(e, c.page - 1, g ? g.corner : null), f.status = "turning") : j.flip("turnPage", g.corner)
-      } else f.display == b.DISPLAY_DOUBLE && ("tapping" == c.status || g.x < 0 || g.x > i ? n.prototype._turnPage.call(e, c.next, g.corner) : this.hideFoldedPage(!0))
-    }
-    c.holdingPoint && (clearInterval(c.holding), delete c.holdingPoint, delete c.holding), c.status = "", c.corner = null
-  }, q.prototype._detectSinglePage = function(c, d, e) {
-    var f = this.$el.data("f"),
-      g = f.turn,
-      h = f.turnData;
-    if (h.pageWrap[f.page].offset(), -1 == a.inArray(d.corner, b.corners.forward)) {
-      var i, j = h.pages[f.page - 1],
-        k = j.data("f");
-      if (c.corner = h.direction == b.DIRECTION_LTR ? c.corner.replace("l", "r") : c.corner.replace("r", "l"), k.visible) return i = j.flip("_showFoldedPage", c, !1), h.corner = d.corner, i;
-      var l = j.flip("_endPoint", c.corner);
-      return k.point = b.peelingPoint(c.corner, l.x, l.y), n.prototype.stop.call(g), i = j.flip("_showFoldedPage", c, !0), h.corner = d.corner, i
-    }
-    return this._showFoldedPage(c, e)
-  }, q.prototype.disable = function(a) {
-    return this.$el.data("f").disabled = a, this.$el
-  }, q.prototype.hover = function(a) {
-    return this.$el.data("f").hover = a, this.$el
-  }, q.prototype.peel = function(c, d) {
-    var e = this.$el.data("f");
-    if (c.corner) {
-      if (-1 == a.inArray(c.corner, b.corners.all)) throw b.turnError("Corner " + c.corner + " is not permitted");
-      if (~a.inArray(c.corner, this._cornerAllowed())) {
-        var f = e.turnData,
-          g = f.options.cornerPosition;
-        c.x = c.x || g.x, c.y = c.y || g.y;
-        var h = this._startPoint(c.corner, b.point2D(c.x, c.y));
-        e.peel = c, e.status = "peel", this._showFoldedPage(b.peelingPoint(c.corner, h.x, h.y), d)
+        }
       }
-    } else e.status = "", this.hideFoldedPage(d);
-    return this.$el
-  }, q.prototype._animationCompleted = function(a, c) {
-    var d = this.$el.data("f"),
-      e = d.turn,
-      f = d.turnData;
-    if ((c || !d.peel || d.peel.corner != d.dpoint.corner) && (f.front.splice(f.front.indexOf(parseInt(d.next, 10)), 1), f.pageMv.splice(f.pageMv.indexOf(parseInt(d.page, 10)), 1), this.$el.css({
-        visibility: "hidden"
-      }), this.hide(), 0 === f.front.length && (f.corner = null)), c) {
-      var g = f.tpage || f.page;
-      g == d.next || g == d.page ? (delete f.tpage, n.prototype._fitPage.call(e, g || d.next)) : f.pageWrap[d.page].hide()
-    } else f.display == b.DISPLAY_SINGLE && a == f.tpage ? (delete f.tpage, n.prototype._fitPage.call(e, a)) : (n.prototype.update.call(e), n.prototype._updateShadow.call(e));
-    this.$el.css({
-      visibility: ""
-    }), this.$el.trigger("end", [a, c])
-  }, q.prototype._animate = function(b) {
-    if (!b) return this.animation && this.animation.stop(), void 0;
-    if (this._animation) {
-      this.animation._time = (new Date).getTime();
-      for (var c = 0; c < this.animation._elements; c++) this.animation.from[c] = this._animation.current[c], this.animation.to[c] = b.to[c] - this._animation.from[c]
-    } else {
-      b.to.length || (b.to = [b.to]), b.from.length || (b.from = [b.from]);
-      var d = this,
-        e = !0;
-      this.animation = a.extend({
-        current: [],
-        _elements: b.to.length,
-        _time: (new Date).getTime(),
-        stop: function() {
-          e = !1, d.animation = null
-        },
-        _frame: function() {
-          for (var a = Math.min(this.duration, (new Date).getTime() - this._time), b = 0; b < this._elements; b++) this.current[b] = this.easing(a, this.from[b], this.to[b], this.duration);
-          e = !0, this.frame(1 == this._elements ? this.current[0] : this.current), a >= this.duration ? (this.stop(), this.complete && this.complete()) : window.requestAnimationFrame(function() {
-            e && d.animation._frame()
-          })
-        }
-      }, b);
-      for (var f = 0; f < this.animation._elements; f++) this.animation.to[f] -= this.animation.from[f];
-      this.animation._frame()
     }
-  }, q.prototype.destroy = function() {
-    var a = this.$el.data("f");
-    a.clip && (this._animate(!1), a.clip.detach(), delete a.clip, delete a.igradient, delete a.ogradient, delete a.ipage, delete a.turnData, delete a.turn), this._destroy()
-  }, n.prototype.addPage = function(c, d, e) {
-    var f = this._data;
-    if (f.destroying) return null;
-    var g, h = "",
-      i = !1,
-      j = f.totalPages + 1;
-    if (e = e || {}, (g = /\bpage\-([0-9]+|last|next\-to\-last)\b/.exec(a(c).attr("class"))) && (d = "last" == g[1] ? f.totalPages : "next-to-last" == g[1] ? f.totalPages - 1 : parseInt(g[1], 10)), d) {
-      if (d <= j) i = !0;
-      else if (d > j) throw b.error('Page "' + d + '" cannot be inserted')
-    } else d = j, i = !0;
-    return d >= 1 && j >= d && (d in f.pageObjs && this._movePages(d, 1), i && (f.totalPages = j), f.pageObjs[d] = a(c), f.pageObjs[d].hasClass("cover") || (h += "page "), h += "page-" + d + " ", h += f.display == b.DISPLAY_DOUBLE ? d % 2 ? "page-odd" : "page-even" : "page-odd", f.pageObjs[d].css({
-      "float": "left"
-    }).addClass(h), f.pageObjs[d].data({
-      f: e
-    }), !b.hasHardPage() && f.pageObjs[d].hasClass("hard") && f.pageObjs[d].removeClass("hard"), this._addPage(d), f.done && this._removeFromDOM()), this.$el
-  }, n.prototype._addPage = function(b) {
-    var c = this._data,
-      d = c.pageObjs[b];
-    if (d)
-      if (this._pageNeeded(b)) {
-        if (!c.pageWrap[b]) {
-          c.pageWrap[b] = a("<div/>", {
-            "class": "page-wrapper",
-            page: b,
-            css: {
-              position: "absolute",
-              overflow: "hidden"
+  };
+  /**
+   * @param {Event} ev
+   * @return {?}
+   */
+  results.prototype._pageMove = function(ev) {
+    var position;
+    var offset;
+    var image;
+    var data;
+    var options = this.$el.data("f");
+    if (!options.disabled) {
+      if (ev.preventDefault(), options.corner) {
+        return image = options.turn, data = options.turnData, offset = data.pageWrap[options.page].offset(), options.status = "move", position = self.eventPoint(ev), position.x -= offset.left, position.y -= offset.top, position.corner = options.corner.corner, data.display == self.DISPLAY_SINGLE ? this._detectSinglePage(position, options.corner) : this._showFoldedPage(position), options.holdingPoint && self.cleanSelection(), true;
+      }
+      if (!this.animation) {
+        if (position = this._isIArea(ev)) {
+          if (options.hover) {
+            if ("sheet" == options.effect && 2 != position.corner.length) {
+              return false;
             }
-          }), this.$el.append(c.pageWrap[b]), c.pageObjs[b].appendTo(c.pageWrap[b]);
-          var e = this._pageSize(b, !0);
-          d.css({
-            width: e.width,
-            height: e.height
-          }), c.pageWrap[b].css(e)
+            if ("peel" != options.status || (!options.peel || options.peel.corner != position.corner)) {
+              if (data = options.turnData, data.display == self.DISPLAY_SINGLE && data.page == data.totalPages) {
+                return false;
+              }
+              var pos = data.options.cornerPosition;
+              var initialOffset = this._startPoint(position.corner, self.point2D(pos.x, pos.y));
+              /** @type {string} */
+              options.status = "peel";
+              position.x = initialOffset.x;
+              position.y = initialOffset.y;
+              this._showFoldedPage(position, true);
+            }
+          }
+        } else {
+          if ("peel" == options.status) {
+            if (!(options.peel && options.peel.corner == options.dpoint.corner)) {
+              /** @type {string} */
+              options.status = "";
+              this.hideFoldedPage(true);
+            }
+          }
         }
-        this._makeFlip(b)
-      } else c.pageObjs[b].remove()
-  }, n.prototype.hasPage = function(a) {
-    return b.has(a, this._data.pageObjs)
-  }, n.prototype.effect = function(a, c) {
-    var d, e = this._data;
-    if (d = e.pageObjs[a]) {
-      if (void 0 === c) return d.hasClass("hard") ? "hard" : "sheet";
-      var f = e.dynamicMode;
-      switch (e.dynamicMode = !1, c) {
+      }
+      return false;
+    }
+  };
+  /**
+   * @return {undefined}
+   */
+  results.prototype._pageUnpress = function() {
+    var opts = this.$el.data("f");
+    var corner = opts.corner;
+    var turn = opts.turn;
+    var response = opts.turnData;
+    if (!opts.disabled && (corner && ("turning" != response.status && "swiped" != response.status))) {
+      var data = opts.point || corner;
+      var page = opts.page;
+      var width = this.$el.width();
+      if (response.display == self.DISPLAY_SINGLE) {
+        if (1 == page) {
+          if ("tapping" == opts.status || data.x < width / 2) {
+            that.prototype._turnPage.call(turn, opts.next, data.corner);
+          } else {
+            this.hideFoldedPage(true);
+          }
+        } else {
+          if (~$.inArray(data.corner, self.corners.forward)) {
+            if ("tapping" == opts.status || data.x < width / 2) {
+              that.prototype._turnPage.call(turn, opts.next, data.corner);
+            } else {
+              this.hideFoldedPage(true);
+            }
+          } else {
+            var d = response.pages[opts.page - 1];
+            data = d.data("f").point;
+            if ("tapping" == opts.status || data.x > 0.1 * width) {
+              that.prototype._turnPage.call(turn, opts.page - 1, data ? data.corner : null);
+              /** @type {string} */
+              response.status = "turning";
+            } else {
+              d.flip("turnPage", data.corner);
+            }
+          }
+        }
+      } else {
+        if (response.display == self.DISPLAY_DOUBLE) {
+          if ("tapping" == opts.status || (data.x < 0 || data.x > width)) {
+            that.prototype._turnPage.call(turn, opts.next, data.corner);
+          } else {
+            this.hideFoldedPage(true);
+          }
+        }
+      }
+    }
+    if (opts.holdingPoint) {
+      clearInterval(opts.holding);
+      delete opts.holdingPoint;
+      delete opts.holding;
+    }
+    /** @type {string} */
+    opts.status = "";
+    /** @type {null} */
+    opts.corner = null;
+  };
+  /**
+   * @param {Error} c
+   * @param {?} node
+   * @param {boolean} dataAndEvents
+   * @return {?}
+   */
+  results.prototype._detectSinglePage = function(c, node, dataAndEvents) {
+    var event = this.$el.data("f");
+    var eventTarget = event.turn;
+    var data = event.turnData;
+    if (data.pageWrap[event.page].offset(), -1 == $.inArray(node.corner, self.corners.forward)) {
+      var b;
+      var d = data.pages[event.page - 1];
+      var e = d.data("f");
+      if (c.corner = data.direction == self.DIRECTION_LTR ? c.corner.replace("l", "r") : c.corner.replace("r", "l"), e.visible) {
+        return b = d.flip("_showFoldedPage", c, false), data.corner = node.corner, b;
+      }
+      var pos = d.flip("_endPoint", c.corner);
+      return e.point = self.peelingPoint(c.corner, pos.x, pos.y), that.prototype.stop.call(eventTarget), b = d.flip("_showFoldedPage", c, true), data.corner = node.corner, b;
+    }
+    return this._showFoldedPage(c, dataAndEvents);
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {?}
+   */
+  results.prototype.disable = function(recurring) {
+    return this.$el.data("f").disabled = recurring, this.$el;
+  };
+  /**
+   * @param {string} hover
+   * @return {?}
+   */
+  results.prototype.hover = function(hover) {
+    return this.$el.data("f").hover = hover, this.$el;
+  };
+  /**
+   * @param {string} opts
+   * @param {boolean} dataAndEvents
+   * @return {?}
+   */
+  results.prototype.peel = function(opts, dataAndEvents) {
+    var s = this.$el.data("f");
+    if (opts.corner) {
+      if (-1 == $.inArray(opts.corner, self.corners.all)) {
+        throw self.turnError("Corner " + opts.corner + " is not permitted");
+      }
+      if (~$.inArray(opts.corner, this._cornerAllowed())) {
+        var that = s.turnData;
+        var center = that.options.cornerPosition;
+        opts.x = opts.x || center.x;
+        opts.y = opts.y || center.y;
+        var pos = this._startPoint(opts.corner, self.point2D(opts.x, opts.y));
+        /** @type {string} */
+        s.peel = opts;
+        /** @type {string} */
+        s.status = "peel";
+        this._showFoldedPage(self.peelingPoint(opts.corner, pos.x, pos.y), dataAndEvents);
+      }
+    } else {
+      /** @type {string} */
+      s.status = "";
+      this.hideFoldedPage(dataAndEvents);
+    }
+    return this.$el;
+  };
+  /**
+   * @param {number} name
+   * @param {boolean} code
+   * @return {undefined}
+   */
+  results.prototype._animationCompleted = function(name, code) {
+    var options = this.$el.data("f");
+    var async = options.turn;
+    var data = options.turnData;
+    if ((code || (!options.peel || options.peel.corner != options.dpoint.corner)) && (data.front.splice(data.front.indexOf(parseInt(options.next, 10)), 1), data.pageMv.splice(data.pageMv.indexOf(parseInt(options.page, 10)), 1), this.$el.css({
+      visibility : "hidden"
+    }), this.hide(), 0 === data.front.length && (data.corner = null)), code) {
+      var port = data.tpage || data.page;
+      if (port == options.next || port == options.page) {
+        delete data.tpage;
+        that.prototype._fitPage.call(async, port || options.next);
+      } else {
+        data.pageWrap[options.page].hide();
+      }
+    } else {
+      if (data.display == self.DISPLAY_SINGLE && name == data.tpage) {
+        delete data.tpage;
+        that.prototype._fitPage.call(async, name);
+      } else {
+        that.prototype.update.call(async);
+        that.prototype._updateShadow.call(async);
+      }
+    }
+    this.$el.css({
+      visibility : ""
+    });
+    this.$el.trigger("end", [name, code]);
+  };
+  /**
+   * @param {boolean} animation
+   * @return {?}
+   */
+  results.prototype._animate = function(animation) {
+    if (!animation) {
+      return this.animation && this.animation.stop(), void 0;
+    }
+    if (this._animation) {
+      /** @type {number} */
+      this.animation._time = (new Date).getTime();
+      /** @type {number} */
+      var i = 0;
+      for (;i < this.animation._elements;i++) {
+        this.animation.from[i] = this._animation.current[i];
+        /** @type {number} */
+        this.animation.to[i] = animation.to[i] - this._animation.from[i];
+      }
+    } else {
+      if (!animation.to.length) {
+        /** @type {Array} */
+        animation.to = [animation.to];
+      }
+      if (!animation.from.length) {
+        /** @type {Array} */
+        animation.from = [animation.from];
+      }
+      var options = this;
+      /** @type {boolean} */
+      var e = true;
+      this.animation = $.extend({
+        current : [],
+        _elements : animation.to.length,
+        _time : (new Date).getTime(),
+        /**
+         * @return {undefined}
+         */
+        stop : function() {
+          /** @type {boolean} */
+          e = false;
+          /** @type {null} */
+          options.animation = null;
+        },
+        /**
+         * @return {undefined}
+         */
+        _frame : function() {
+          /** @type {number} */
+          var t = Math.min(this.duration, (new Date).getTime() - this._time);
+          /** @type {number} */
+          var i = 0;
+          for (;i < this._elements;i++) {
+            this.current[i] = this.easing(t, this.from[i], this.to[i], this.duration);
+          }
+          /** @type {boolean} */
+          e = true;
+          this.frame(1 == this._elements ? this.current[0] : this.current);
+          if (t >= this.duration) {
+            this.stop();
+            if (this.complete) {
+              this.complete();
+            }
+          } else {
+            window.requestAnimationFrame(function() {
+              if (e) {
+                options.animation._frame();
+              }
+            });
+          }
+        }
+      }, animation);
+      /** @type {number} */
+      var j = 0;
+      for (;j < this.animation._elements;j++) {
+        this.animation.to[j] -= this.animation.from[j];
+      }
+      this.animation._frame();
+    }
+  };
+  /**
+   * @return {undefined}
+   */
+  results.prototype.destroy = function() {
+    var g = this.$el.data("f");
+    if (g.clip) {
+      this._animate(false);
+      g.clip.detach();
+      delete g.clip;
+      delete g.igradient;
+      delete g.ogradient;
+      delete g.ipage;
+      delete g.turnData;
+      delete g.turn;
+    }
+    this._destroy();
+  };
+  /**
+   * @param {?} element
+   * @param {number} page
+   * @param {Object} func
+   * @return {?}
+   */
+  that.prototype.addPage = function(element, page, func) {
+    var data = this._data;
+    if (data.destroying) {
+      return null;
+    }
+    var octalLiteral;
+    /** @type {string} */
+    var activeClassName = "";
+    /** @type {boolean} */
+    var i = false;
+    var lastPage = data.totalPages + 1;
+    if (func = func || {}, (octalLiteral = /\bpage\-([0-9]+|last|next\-to\-last)\b/.exec($(element).attr("class"))) && (page = "last" == octalLiteral[1] ? data.totalPages : "next-to-last" == octalLiteral[1] ? data.totalPages - 1 : parseInt(octalLiteral[1], 10)), page) {
+      if (page <= lastPage) {
+        /** @type {boolean} */
+        i = true;
+      } else {
+        if (page > lastPage) {
+          throw self.error('Page "' + page + '" cannot be inserted');
+        }
+      }
+    } else {
+      page = lastPage;
+      /** @type {boolean} */
+      i = true;
+    }
+    return page >= 1 && (lastPage >= page && (page in data.pageObjs && this._movePages(page, 1), i && (data.totalPages = lastPage), data.pageObjs[page] = $(element), data.pageObjs[page].hasClass("cover") || (activeClassName += "page "), activeClassName += "page-" + page + " ", activeClassName += data.display == self.DISPLAY_DOUBLE ? page % 2 ? "page-odd" : "page-even" : "page-odd", data.pageObjs[page].css({
+      "float" : "left"
+    }).addClass(activeClassName), data.pageObjs[page].data({
+      f : func
+    }), !self.hasHardPage() && (data.pageObjs[page].hasClass("hard") && data.pageObjs[page].removeClass("hard")), this._addPage(page), data.done && this._removeFromDOM())), this.$el;
+  };
+  /**
+   * @param {number} page
+   * @return {undefined}
+   */
+  that.prototype._addPage = function(page) {
+    var data = this._data;
+    var element = data.pageObjs[page];
+    if (element) {
+      if (this._pageNeeded(page)) {
+        if (!data.pageWrap[page]) {
+          data.pageWrap[page] = $("<div/>", {
+            "class" : "page-wrapper",
+            page : page,
+            css : {
+              position : "absolute",
+              overflow : "hidden"
+            }
+          });
+          this.$el.append(data.pageWrap[page]);
+          data.pageObjs[page].appendTo(data.pageWrap[page]);
+          var tmp = this._pageSize(page, true);
+          element.css({
+            width : tmp.width,
+            height : tmp.height
+          });
+          data.pageWrap[page].css(tmp);
+        }
+        this._makeFlip(page);
+      } else {
+        data.pageObjs[page].remove();
+      }
+    }
+  };
+  /**
+   * @param {string} page
+   * @return {?}
+   */
+  that.prototype.hasPage = function(page) {
+    return self.has(page, this._data.pageObjs);
+  };
+  /**
+   * @param {number} page
+   * @param {number} api
+   * @return {?}
+   */
+  that.prototype.effect = function(page, api) {
+    var thingy;
+    var data = this._data;
+    if (thingy = data.pageObjs[page]) {
+      if (void 0 === api) {
+        return thingy.hasClass("hard") ? "hard" : "sheet";
+      }
+      var type = data.dynamicMode;
+      switch(data.dynamicMode = false, api) {
         case "hard":
-          d.removeClass("sheet"), d.addClass("hard"), this._removePageFromDOM(a);
+          thingy.removeClass("sheet");
+          thingy.addClass("hard");
+          this._removePageFromDOM(page);
           break;
         case "sheet":
-          d.removeClass("hard"), d.addClass("sheet"), this._removePageFromDOM(a)
+          thingy.removeClass("hard");
+          thingy.addClass("sheet");
+          this._removePageFromDOM(page);
       }
-      return e.dynamicMode = f, this._pageNeeded(a) && this._addPage(a), this.$el
+      return data.dynamicMode = type, this._pageNeeded(page) && this._addPage(page), this.$el;
     }
-    throw b.turnError('Page "' + a + '" is not loaded yet')
-  }, n.prototype._pageSize = function(a) {
-    var c = this._data,
-      d = {},
-      e = this.$el.width(),
-      f = this.$el.height(),
-      g = c.pageObjs[a];
-    if (c.display == b.DISPLAY_SINGLE) d.width = e, d.height = f, d.top = 0, d.left = 0, d.right = "auto", g.hasClass("page") ? (d.top = c.pageMargin[0], d.width -= c.pageMargin[1], d.height -= c.pageMargin[0] + c.pageMargin[2]) : 2 == a && g.hasClass("cover") && (d.left = -e);
-    else if (c.display == b.DISPLAY_DOUBLE) {
-      var h = Math.floor(e / 2),
-        i = f,
-        j = a % 2;
-      d.top = 0, g.hasClass("own-size") ? (d.width = c.pageObjs[a].width(), d.height = c.pageObjs[a].height()) : (d.width = h, d.height = i), g.hasClass("page") && (d.top = c.pageMargin[0], d.width -= j ? c.pageMargin[1] : c.pageMargin[3], d.height -= c.pageMargin[0] + c.pageMargin[2]), c.direction != b.DIRECTION_LTR || c.options.showDoublePage ? (d[j ? "left" : "right"] = h - d.width, d[j ? "right" : "left"] = "auto") : (d[j ? "right" : "left"] = h - d.width, d[j ? "left" : "right"] = "auto")
-    }
-    return d
-  }, n.prototype._makeFlip = function(a) {
-    var c = this._data;
-    if (!c.pages[a]) {
-      var d, e = c.display == b.DISPLAY_SINGLE,
-        f = a % 2;
-      d = e ? a + 1 : c.options.showDoublePage && !e ? f ? a - 1 : a + 1 : f ? a + 1 : a - 1, c.options.blocks > 0 && (c.pageBlocks[a] || (c.pageBlocks[a] = {
-        first: 0,
-        last: 0,
-        status: fragStatus.assigned
-      }));
-      var g = this._pageSize(a);
-      c.pages[a] = c.pageObjs[a].css({
-        width: g.width,
-        height: g.height
-      }).flip({
-        page: a,
-        next: d
-      }, this), c.z && c.pageWrap[a].css({
-        display: (b.isFirefoxOrIE ? '' : (c.z.pageV[a] ? "none" : "")),
-        visibility: (b.isFirefoxOrIE ? (c.z.pageV[a] ? "hidden" : "") : ''),
-        zIndex: c.z.pageZ[a] || 0
-      })
-    }
-    return c.pages[a]
-  }, n.prototype._makeRange = function() {
-    var a, b = this._data;
-    if (b.totalPages > 0)
-      for (b.range = this.range(), a = b.range[0]; a <= b.range[1]; a++) b.pageObjs[a] && !b.pageWrap[a] && this._addPage(a)
-  }, n.prototype.range = function(a) {
-    var c, d, e, f, g = this._data,
-      h = g.totalPages;
-    if (g.options.blocks > 0) {
-      var i = this.getBlockPage(g.options.blocks);
-      g.display == b.DISPLAY_DOUBLE && g.options.showDoublePage && (i += 1), i > h && (h = i, g.totalPages = h)
-    }
-    return a = a || g.tpage || g.page || 1, f = this._view(a), f[1] = f[1] || f[0], f[0] >= 1 && f[1] <= h ? (c = Math.floor((g.options.cacheSize - 2) / 2), h - f[1] > f[0] ? (d = Math.min(f[0] - 1, c), e = 2 * c - d) : (e = Math.min(h - f[1], c), d = 2 * c - e)) : (d = g.options.cacheSize - 1, e = g.options.cacheSize - 1), [Math.max(1, f[0] - d), Math.min(h, f[1] + e)]
-  }, n.prototype._pageNeeded = function(a) {
-    if (0 === a) return !0;
-    var b = this._data,
-      c = b.range || this.range();
-    return b.pageObjs[a].hasClass("cover") || ~b.pageMv.indexOf(a) || ~b.front.indexOf(a) || a >= c[0] && a <= c[1]
-  }, n.prototype._removeFromDOM = function() {
-    if (!this.isAnimating()) {
-      var a = this._data;
-      for (var c in a.pageWrap) b.has(c, a.pageWrap) && (c = parseInt(c, 10), this._pageNeeded(c) || this._removePageFromDOM(c))
-    }
-  }, n.prototype.pageData = function(a, b) {
-    var c = this._data;
-    return void 0 === b ? c.pageObjs[a].data("f") : (c.pageObjs[a].data("f", b), void 0)
-  }, n.prototype._removePageFromDOM = function(a, c) {
-    var d = this._data;
-    this.view(a);
-    var e, f = d.pageObjs,
-      g = d.pages;
-    if (a && this._trigger("removePage", a, f[a]) == b.EVENT_PREVENTED) return !1;
-    if (d.pages[a] && (d.pages[a].flip("_bringClipToFront", !1), d.pages[a].flip("destroy"), d.pages[a].detach(), delete d.pages[a]), f[a] && f[a].detach(), d.pageWrap[a] && (d.pageWrap[a].detach(), delete d.pageWrap[a]), d.dynamicMode || c) {
-      if (e = d.pageBlocks[a]) {
-        for (var h = e.last || e.first, i = e.first; h >= i; i++) d.blocks[i] && (d.blocks[i].start ? g[d.blocks[i].start] || g[d.blocks[i].end] || delete d.blocks[i] : delete d.blocks[i]);
-        delete d.pageBlocks[a]
+    throw self.turnError('Page "' + page + '" is not loaded yet');
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  that.prototype._pageSize = function(page) {
+    var data = this._data;
+    var s = {};
+    var w = this.$el.width();
+    var size = this.$el.height();
+    var element = data.pageObjs[page];
+    if (data.display == self.DISPLAY_SINGLE) {
+      s.width = w;
+      s.height = size;
+      /** @type {number} */
+      s.top = 0;
+      /** @type {number} */
+      s.left = 0;
+      /** @type {string} */
+      s.right = "auto";
+      if (element.hasClass("page")) {
+        s.top = data.pageMargin[0];
+        s.width -= data.pageMargin[1];
+        s.height -= data.pageMargin[0] + data.pageMargin[2];
+      } else {
+        if (2 == page) {
+          if (element.hasClass("cover")) {
+            /** @type {number} */
+            s.left = -w;
+          }
+        }
       }
-      f[a] && (f[a].removeData(), delete f[a])
-    }
-    return !0
-  }, n.prototype.removePage = function(a) {
-    var c = this._data;
-    if ("*" == a) {
-      for (var d = this.range(), e = d[0]; e <= d[1]; e++) this._removePageFromDOM(e, !0);
-      c.options.blocks = 0, c.totalPages = 0
     } else {
-      if (1 > a || a > c.totalPages) throw b.turnError("The page " + a + " doesn't exist");
-      if (c.pageObjs[a] && (this.stop(), !this._removePageFromDOM(a, !0))) return !1;
-      this._movePages(a, -1), c.totalPages = c.totalPages - 1, c.page > c.totalPages ? (c.page = null, this._fitPage(c.totalPages)) : (this._makeRange(), this.update())
-    }
-    return this
-  }, n.prototype._movePages = function(a, c) {
-    var d, e = this,
-      f = this._data,
-      g = f.display == b.DISPLAY_SINGLE,
-      h = function(a) {
-        var b = a + c,
-          d = b % 2,
-          h = d ? " page-odd " : " page-even ";
-        f.pageObjs[a] && (f.pageObjs[b] = f.pageObjs[a].removeClass("page-" + a + " page-odd page-even").addClass("page-" + b + h)), f.pageWrap[a] && (f.pageWrap[b] = f.pageObjs[b].hasClass("fixed") ? f.pageWrap[a].attr("page", b) : f.pageWrap[a].css(e._pageSize(b, !0)).attr("page", b), f.pages[a] && (f.pages[b] = f.pages[a], f.pages[b].data("f").page = b, f.pages[b].data("f").next = g ? b + 1 : f.options.showDoublePage ? d ? b - 1 : b + 1 : d ? b + 1 : b - 1), c && (delete f.pages[a], delete f.pageObjs[a], delete f.pageWrap[a]))
-      };
-    if (c > 0)
-      for (d = f.totalPages; d >= a; d--) h(d);
-    else
-      for (d = a; d <= f.totalPages; d++) h(d)
-  }, n.prototype._view = function(a) {
-    var c = this._data;
-    return a = a || c.page, c.display == b.DISPLAY_DOUBLE ? c.options.showDoublePage ? a % 2 ? [a, a + 1] : [a - 1, a] : a % 2 ? [a - 1, a] : [a, a + 1] : 0 === a % 2 && c.pages[a] && c.pages[a].hasClass("cover") ? [a, a + 1] : [a]
-  }, n.prototype.view = function(a, b) {
-    var c = this._data,
-      d = this._view(a),
-      e = [];
-    return b ? (d[0] > 0 && e.push(d[0]), d[1] <= c.totalPages && e.push(d[1])) : (d[0] > 0 ? e.push(d[0]) : e.push(0), d[1] && (d[1] <= c.totalPages ? e.push(d[1]) : e.push(0))), e
-  }, n.prototype.pages = function(a) {
-    var b = this._data;
-    if (a) {
-      if (a < b.totalPages)
-        for (var c = b.totalPages; c > a; c--) this.removePage(c);
-      return b.totalPages = a, this._fitPage(b.page), this.$el
-    }
-    return b.totalPages
-  }, n.prototype._missing = function(a) {
-    var b = this._data;
-    if (b.totalPages < 1) return b.options.blocks > 0 && this.$el.trigger("missing", [1]), void 0;
-    for (var c = b.range || this.range(a), d = [], e = c[0]; e <= c[1]; e++) b.pageObjs[e] || d.push(e);
-    d.length > 0 && this.$el.trigger("missing", [d])
-  }, n.prototype.pageElement = function(a) {
-    return this._data.pageObjs[a]
-  }, n.prototype.next = function() {
-    return this.page(this._view(this._data.page).pop() + 1)
-  }, n.prototype.previous = function() {
-    return this.page(this._view(this._data.page).shift() - 1)
-  }, n.prototype._backPage = function(b) {
-    var c = this._data;
-    if (b) {
-      if (!c.pageObjs[0]) {
-        var d = a("<div />");
-        c.pageObjs[0] = a(d).css({
-          "float": "left"
-        }).addClass("page page-0"), this._addPage(0)
-      }
-    } else c.pageObjs[0] && this._removePageFromDOM(0, !0)
-  }, n.prototype._isCoverPageVisible = function(a) {
-    var b = this._data,
-      c = b.tpage || b.page;
-    return b.pageObjs[a].hasClass("cover") && (c >= a && 0 === a % 2 || a >= c && 1 === a % 2)
-  }, n.prototype.getBlockPage = function(a) {
-    var c = this._data;
-    if (1 > a || a > c.options.blocks) return 0;
-    if (1 == a) return c.options.pages + 1;
-    var d = c.options.pages,
-      e = 0 === d % 2 ? d : Math.min(0, d - 1);
-    return c.display == b.DISPLAY_DOUBLE ? c.options.showDoublePage ? 2 * a - 1 + e : 2 * a - 2 + e : a + c.options.pages
-  }, n.prototype.getPageBlock = function(a, c) {
-    var d = this._data;
-    if (d.options.blocks) {
-      if (c && a && d.pageBlocks[a] && d.pageBlocks[a].first) return d.pageBlocks[a].first;
-      if (a == d.options.pages + 1) return 1;
-      if (a > d.options.pages) {
-        if (c) {
-          for (var e, f = this.range(), g = this.view(d.page, !0), h = 0, i = 0, j = 0, k = 0, l = 0, m = f[0]; m <= f[1]; m++) d.pageBlocks[m] && (h || (h = d.pageBlocks[m].first, j = m), d.pageBlocks[m].last && (i = d.pageBlocks[m].last, k = m), d.pageBlocks[m].first && (l = m));
-          0 === i && l && (i = d.pageBlocks[l].first, k = l), d.display == b.DISPLAY_DOUBLE ? d.options.showDoublePage ? 1 === a % 2 && (a > g[g.length - 1] ? (0 === k % 2 && (k -= 1), e = i + (a - k) / 2) : a < g[0] ? (0 === j % 2 && (j -= 1), e = h - (j - a) / 2) : e = (a + 1) / 2) : 0 === a % 2 && (a > f[1] ? (1 == k % 2 && (k -= 1), e = i + (a - k + 2) / 2) : a < f[0] ? (1 == j % 2 && (j -= 1), e = h - (j - a + 2) / 2) : e = (a + 2) / 2) : e = a > f[1] ? d.pageBlocks[f[1]].last + (a - f[1]) : a < f[0] ? d.pageBlocks[f[0]].first - (f[0] - a) : a - d.options.pages
-        } else d.display == b.DISPLAY_DOUBLE ? d.options.showDoublePage ? 1 == a % 2 && (e = Math.ceil((a - d.options.pages + 1) / 2)) : 0 === a % 2 && (e = Math.ceil((a - d.options.pages + 2) / 2)) : e = a - d.options.pages;
-        return e ? Math.max(2, e) : 0
-      }
-    }
-    return 0
-  }, n.prototype.getEndingBlockPage = function(a) {
-    var b = this._data;
-    return a && b.pageObjs[a] ? b.pageObjs[a].data("f").endingBlock || -1 : -1
-  }, n.prototype.getBlockData = function(a) {
-    return a = this._data.blocks[a], a ? a.html : null
-  }, n.prototype.block = function(a) {
-    var c = this._data;
-    if (void 0 === a) {
-      var d = this.view(null, !0),
-        e = d[0] > c.options.pages ? d[0] : 0,
-        f = d[d.length - 1] > c.options.pages ? d[d.length - 1] : 0;
-      if (e = e || f) {
-        var g = c.pageBlocks[e].first,
-          h = c.pageBlocks[f].last || g;
-        return [g, h]
-      }
-      return null
-    }
-    if (!(a >= 1 && a <= c.options.blocks)) throw turnError('Block "' + a + '" cannot be loaded');
-    var i = this.getBlockPage(a),
-      j = this.range();
-    return this._cleanPages(j[0], j[1]), c.pageBlocks[i] = {
-      first: a,
-      last: 0,
-      status: b.fragStatus.assigned
-    }, this._fitPage(i), this.$el
-  }, n.prototype._fetchBlocks = function(a) {
-    var c = this._data;
-    if (c.options.blocks && c.pageBlocks[a]) {
-      var d = c.pageBlocks[a];
-      c.pageObjs[a];
-      var e = this.view(c.page, !0);
-      if (d.status == b.fragStatus.assigned) d.first || (d.first = this.getPageBlock(a, !0)), d.status = b.fragStatus.requested, this._pushBlocks(d.first, a, c.page);
-      else if (d.status == b.fragStatus.waiting) a > e[0] && this._cleanPages(a + 1, this.range()[1]), this._pushBlocks(d.last, a, c.page);
-      else if (d.status == b.fragStatus.nsplit) {
-        if (a > e[0] && (this._cleanPages(a + 1, this.range()[1]), d.nextPageTmp)) {
-          var f = c.pageObjs[a + 1],
-            g = c.pageBlocks[a + 1],
-            h = f.data("f");
-          g.status = b.fragStatus.waiting, g.first = d.last, g.last = d.last, g.bp = d.lbp, h.flowTo ? f.find(h.flowTo).html(d.nextPageTmp.html()) : f.html(d.nextPageTmp.html()), delete d.nextPageTmp, d.status = b.fragStatus.full
+      if (data.display == self.DISPLAY_DOUBLE) {
+        /** @type {number} */
+        var width = Math.floor(w / 2);
+        var y = size;
+        /** @type {number} */
+        var l = page % 2;
+        /** @type {number} */
+        s.top = 0;
+        if (element.hasClass("own-size")) {
+          s.width = data.pageObjs[page].width();
+          s.height = data.pageObjs[page].height();
+        } else {
+          /** @type {number} */
+          s.width = width;
+          s.height = y;
         }
-        delete c.blocks[d.last].cp
-      } else d.status == b.fragStatus.full && e[0] == a && e[1] && this._fetchBlocks(e[1])
-    }
-  }, n.prototype._pushBlocks = function(a, b, c) {
-    var d, e, f = this._data;
-    if (a > 0 && a <= f.options.blocks)
-      if ((e = f.pageBlocks[b]) && (e.waiting = a), d = f.blocks[a]) {
-        if (b && -1 == d.queue.indexOf(b) && d.queue.push(b), c && (d.cp = c), d.html) {
-          for (var g = 0; g < d.queue.length; g++) this._flowContent(d.queue[g], a);
-          d.queue = []
+        if (element.hasClass("page")) {
+          s.top = data.pageMargin[0];
+          s.width -= l ? data.pageMargin[1] : data.pageMargin[3];
+          s.height -= data.pageMargin[0] + data.pageMargin[2];
         }
-      } else f.blocks[a] = {
-        page: b,
-        queue: [b],
-        cp: c
-      }, this._reportLoading(b), this.$el.trigger("missingBlock", [a])
-  }, n.prototype.addBlock = function(a, b) {
-    var c = this._data;
-    a > 0 && a <= c.options.blocks && (b = b.replace(/\s+/g, " "), c.blocks[a] ? (c.blocks[a].html = b, this._pushBlocks(a)) : c.blocks[a] = {
-      html: b,
-      queue: []
-    })
-  }, n.prototype._flowContent = function(c, d) {
-    var e = this._data,
-      f = e.blocks[d],
-      g = e.pageObjs[c];
-    if (f && g) {
-      var h = e.pageBlocks[c],
-        i = g.data("f"),
-        j = i.flowTo ? g.find(i.flowTo) : g,
-        k = c < f.cp ? f.cp || e.page : e.page,
-        l = this.view(k, !0),
-        m = this.view(c, !0),
-        n = this.range();
-      if (d < h.first || d > h.last) {
-        if (!g.is(":visible")) return h.status = b.fragStatus.assigned, void 0;
-        var o = a("<div />", {
-          "class": "block block-" + d,
-          css: {
-            position: "relative"
+        if (data.direction != self.DIRECTION_LTR || data.options.showDoublePage) {
+          /** @type {number} */
+          s[l ? "left" : "right"] = width - s.width;
+          /** @type {string} */
+          s[l ? "right" : "left"] = "auto";
+        } else {
+          /** @type {number} */
+          s[l ? "right" : "left"] = width - s.width;
+          /** @type {string} */
+          s[l ? "left" : "right"] = "auto";
+        }
+      }
+    }
+    return s;
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  that.prototype._makeFlip = function(page) {
+    var data = this._data;
+    if (!data.pages[page]) {
+      var state;
+      /** @type {boolean} */
+      var frameMasked = data.display == self.DISPLAY_SINGLE;
+      /** @type {number} */
+      var even = page % 2;
+      state = frameMasked ? page + 1 : data.options.showDoublePage && !frameMasked ? even ? page - 1 : page + 1 : even ? page + 1 : page - 1;
+      if (data.options.blocks > 0) {
+        if (!data.pageBlocks[page]) {
+          data.pageBlocks[page] = {
+            first : 0,
+            last : 0,
+            status : fragStatus.assigned
+          };
+        }
+      }
+      var tmp = this._pageSize(page);
+      data.pages[page] = data.pageObjs[page].css({
+        width : tmp.width,
+        height : tmp.height
+      }).flip({
+        page : page,
+        next : state
+      }, this);
+      if (data.z) {
+        data.pageWrap[page].css({
+          display : self.isFirefoxOrIE ? "" : data.z.pageV[page] ? "none" : "",
+          visibility : self.isFirefoxOrIE ? data.z.pageV[page] ? "hidden" : "" : "",
+          zIndex : data.z.pageZ[page] || 0
+        });
+      }
+    }
+    return data.pages[page];
+  };
+  /**
+   * @return {undefined}
+   */
+  that.prototype._makeRange = function() {
+    var page;
+    var data = this._data;
+    if (data.totalPages > 0) {
+      data.range = this.range();
+      page = data.range[0];
+      for (;page <= data.range[1];page++) {
+        if (data.pageObjs[page]) {
+          if (!data.pageWrap[page]) {
+            this._addPage(page);
           }
-        }).html(f.html);
-        if (f.start = c, d < h.first) {
-          h.first = d;
-          var p = j.children();
-          p.length > 0 ? (h.bp = null, o.insertBefore(p[0]), this._cleanPages(n[0], c - 1)) : o.appendTo(j)
-        } else o.appendTo(j);
-        d > h.last && (h.last = d), h.waiting == d && (h.waiting = 0)
-      } else if (!g.is(":visible")) return h.status = b.fragStatus.waiting, void 0;
-      var q, r, s = c + 1,
-        t = e.pageBlocks[s],
-        u = e.pageObjs[s];
-      u && (q = u.data("f"), r = q.flowTo ? u.find(q.flowTo) : u, t.first == h.last && s < l[0] && (restore(j[0], r[0]), q.first = 0, q.last = 0, q.status = b.fragStatus.assigned));
-      var v = getBreakingPoint(j[0]);
-      if (v)
-        if (h.loading && (h.loading = !1, this.$el.trigger("endPageLoading", c)), s < l[0] || c >= l[0])
-          if (h.status = b.fragStatus.full, u) {
-            s > l[l.length - 1] && this._cleanPages(s, n[1]), breakPage(v, j[0], r[0]);
-            for (var w = h.first; w < h.last; w++) e.blocks[w] && (e.blocks[w].end = c);
-            h.last = v.path[0] + h.first, t.first = h.last, t.last = t.first + r.children("div").length - 1;
-            for (var w = t.first; w <= t.last; w++) e.blocks[w] && (w == t.first && w == h.last ? e.blocks[w].end = s : (e.blocks[w].start = s, e.blocks[w].end = s));
-            t.bp = v, this._flowContent(s, t.last)
-          } else breakPage(v, j[0], null);
-      else h.status = b.fragStatus.nsplit, h.nextPageTmp = a("<div />"), h.lbp = v, breakPage(v, j[0], h.nextPageTmp[0]);
-      else if (f.end = c, h.status = b.fragStatus.waiting, c < l[0]) {
-        var x = e.pageBlocks[m[0]];
-        if (!x.bp && (x.first > 2 || m[0] == e.options.pages + 1)) this._pushBlocks(x.first - 1, m[0], k);
-        else {
-          var y = m[m.length - 1];
-          e.pageBlocks[y].last ? this._pushBlocks(e.pageBlocks[y].last + 1, y, k) : this._pushBlocks(e.pageBlocks[m[0]].last + 1, m[0], k)
         }
-      } else u && -1 == m.indexOf(s) && (t.first = h.last + 1), this._pushBlocks(h.last + 1, c, k);
-      c < l[0] && m[0] == c && 2 == d && this.replaceView(c, e.options.pages + 2)
-    }
-  }, n.prototype._reportLoading = function(a) {
-    for (var b = this._data, c = this.view(a, !0), d = 0; d < c.length; d++) c[d] >= a && !b.pageBlocks[c[d]].loading && (b.pageBlocks[c[d]].loading = !0, this.$el.trigger("startPageLoading", [c[d]]))
-  }, n.prototype._cleanPages = function(a, b) {
-    for (var c, d, e, f = this._data, g = a; b >= g; g++)
-      if ((d = f.pageBlocks[g]) && d.first) {
-        e = d.last || d.first;
-        for (var h = d.first; e >= h; h++) f.blocks[h] && (h == d.first && f.pageBlocks[g - 1] && h == f.pageBlocks[g - 1].last || (f.blocks[h].page = 0, f.blocks[h].start && (f.blocks[h].start = 0, f.blocks[h].end = 0)));
-        d.first = 0, d.status = fragStatus.assigned, d.last = 0, d.bp = null, c = f.pageObjs[g].data("f"), c.flowTo ? f.pageObjs[g].find(c.flowTo).html("") : f.pageObjs[g].html("")
       }
-  }, n.prototype.replaceView = function(a, c) {
-    var d = this._data,
-      e = this.range();
-    if (a != c && a >= e[0] && a <= e[1]) {
-      var f, g, h;
-      d.display == b.DISPLAY_SINGLE;
-      var i = c,
-        j = d.front.slice(),
-        k = d.pageMv.slice(),
-        l = c - a,
-        m = {},
-        n = {},
-        o = {},
-        p = {},
-        q = {},
-        r = {},
-        s = {};
-      for (var t in d.pageObjs)
-        if (b.has(t, d.pageObjs))
-          if (t = parseInt(t, 10), a > t) this._removePageFromDOM(t);
-          else {
-            if (i = t + l, g = d.pageObjs[t].data("f"), h = i % 2, d.pageObjs[t].removeClass("even odd p" + t).addClass((h ? "odd" : "even") + " p" + i), d.pageWrap[t].attr("page", i), g = d.pageObjs[t].data("f"), g.page = i, ~(f = j.indexOf(t)) && (d.front[f] = i), ~(f = k.indexOf(t)) && (d.pageMv[f] = i), d.z.pageV[t] && (m[i] = !0), d.z.pageZ[t] && (n[i] = d.z.pageZ[t]), g.next += l, g.over && (g.over += l), d.pageBlocks[t]) {
-              for (var u = d.pageBlocks[t].first; u <= d.pageBlocks[t].last; u++)
-                if (d.blocks[u] && !s[u]) {
-                  d.blocks[u].start += l, d.blocks[u].end += l;
-                  for (var v = 0; v < d.blocks[u].queue.length; v++) d.blocks[u].queue[v] += l;
-                  s[u] = !0
+    }
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  that.prototype.range = function(page) {
+    var numStyles;
+    var index;
+    var length;
+    var parts;
+    var data = this._data;
+    var max = data.totalPages;
+    if (data.options.blocks > 0) {
+      var ms = this.getBlockPage(data.options.blocks);
+      if (data.display == self.DISPLAY_DOUBLE) {
+        if (data.options.showDoublePage) {
+          ms += 1;
+        }
+      }
+      if (ms > max) {
+        max = ms;
+        data.totalPages = max;
+      }
+    }
+    return page = page || (data.tpage || (data.page || 1)), parts = this._view(page), parts[1] = parts[1] || parts[0], parts[0] >= 1 && parts[1] <= max ? (numStyles = Math.floor((data.options.cacheSize - 2) / 2), max - parts[1] > parts[0] ? (index = Math.min(parts[0] - 1, numStyles), length = 2 * numStyles - index) : (length = Math.min(max - parts[1], numStyles), index = 2 * numStyles - length)) : (index = data.options.cacheSize - 1, length = data.options.cacheSize - 1), [Math.max(1, parts[0] - index), 
+    Math.min(max, parts[1] + length)];
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  that.prototype._pageNeeded = function(page) {
+    if (0 === page) {
+      return true;
+    }
+    var data = this._data;
+    var range = data.range || this.range();
+    return data.pageObjs[page].hasClass("cover") || (~data.pageMv.indexOf(page) || (~data.front.indexOf(page) || page >= range[0] && page <= range[1]));
+  };
+  /**
+   * @return {undefined}
+   */
+  that.prototype._removeFromDOM = function() {
+    if (!this.isAnimating()) {
+      var data = this._data;
+      var page;
+      for (page in data.pageWrap) {
+        if (self.has(page, data.pageWrap)) {
+          /** @type {number} */
+          page = parseInt(page, 10);
+          if (!this._pageNeeded(page)) {
+            this._removePageFromDOM(page);
+          }
+        }
+      }
+    }
+  };
+  /**
+   * @param {?} page
+   * @param {number} dataName
+   * @return {?}
+   */
+  that.prototype.pageData = function(page, dataName) {
+    var data = this._data;
+    return void 0 === dataName ? data.pageObjs[page].data("f") : (data.pageObjs[page].data("f", dataName), void 0);
+  };
+  /**
+   * @param {number} page
+   * @param {boolean} dataAndEvents
+   * @return {?}
+   */
+  that.prototype._removePageFromDOM = function(page, dataAndEvents) {
+    var data = this._data;
+    this.view(page);
+    var options;
+    var aliases = data.pageObjs;
+    var pages = data.pages;
+    if (page && this._trigger("removePage", page, aliases[page]) == self.EVENT_PREVENTED) {
+      return false;
+    }
+    if (data.pages[page] && (data.pages[page].flip("_bringClipToFront", false), data.pages[page].flip("destroy"), data.pages[page].detach(), delete data.pages[page]), aliases[page] && aliases[page].detach(), data.pageWrap[page] && (data.pageWrap[page].detach(), delete data.pageWrap[page]), data.dynamicMode || dataAndEvents) {
+      if (options = data.pageBlocks[page]) {
+        var h = options.last || options.first;
+        var i = options.first;
+        for (;h >= i;i++) {
+          if (data.blocks[i]) {
+            if (data.blocks[i].start) {
+              if (!pages[data.blocks[i].start]) {
+                if (!pages[data.blocks[i].end]) {
+                  delete data.blocks[i];
                 }
-              if ((u = d.pageBlocks[t].waiting) && d.blocks[u]) {
-                for (var v = 0; v < d.blocks[u].queue.length; v++) d.blocks[u].queue[v] += l;
-                s[u] = !0
               }
-              r[i] = d.pageBlocks[t]
+            } else {
+              delete data.blocks[i];
             }
-            o[i] = d.pageObjs[t], p[i] = d.pages[t], q[i] = d.pageWrap[t], q[i].css(this._pageSize(i, !0))
           }
-      d.pageObjs = o, d.pages = p, d.pageWrap = q, d.pageBlocks = r, d.pageWrap = q, d.z.pageV = m, d.z.pageZ = n, d.range = this.range(c), d.page = d.page - a + c, d.tpage && (d.tpage = d.tpage - a + c, d.page = d.tpage), this._missing(c), this.update(), d.options.autoCenter && this.center(), console.log("replaced ", a, " now:", d.page, d.tpage)
-    }
-    return this.$el
-  }, n.prototype.flow = function() {
-    var b = this._data;
-    if (b.options.blocks && this.$el.is(":visible")) {
-      var c, d = this.view(b.page, !0);
-      if (d[0] > b.options.pages) c = d[0];
-      else {
-        if (!(d[1] > b.options.pages)) return;
-        c = d[1]
-      }
-      var e = this.range(),
-        f = b.pageObjs[c],
-        g = b.pageBlocks[c],
-        h = f.data("f"),
-        i = h.flowTo ? f.find(h.flowTo) : f,
-        j = g.last || g.first,
-        k = b.blocks[j];
-      if (k) {
-        if (i.children("div:last-child").html(b.blocks[j].html), j == g.first && g.bp) {
-          var l = a.extend({}, g.bp);
-          l.path[0] = 0, breakPage(l, i[0], i[0])
         }
-        b.pageBlocks[c].status = fragStatus.waiting;
-        var m = k.start;
-        this._cleanPages(e[0], c - 1), this._cleanPages(c + 1, e[1]), k.start = m, this._flowContent(c, b.pageBlocks[c].last)
+        delete data.pageBlocks[page];
       }
-      return this.$el
+      if (aliases[page]) {
+        aliases[page].removeData();
+        delete aliases[page];
+      }
     }
-  }, n.prototype._fitPage = function(c) {
-    var d = this._data,
-      e = this.view(c);
-    d.display == b.DISPLAY_SINGLE && d.pages[c] && d.pages[c].hasClass("cover") && -1 != a.inArray(c + 1, e) && (c += 1), d.range = this.range(c), this._missing(), d.pageObjs[c] && (-1 != a.inArray(1, e) ? this.$el.addClass("first-page") : this.$el.removeClass("first-page"), ~a.inArray(d.totalPages, e) ? this.$el.addClass("last-page") : this.$el.removeClass("last-page"), d.status = "", d.peel = null, d.page = c, d.display != b.DISPLAY_SINGLE && this.stop(), this._removeFromDOM(), this._makeRange(), this._updateShadow(), this._cloneView(!1), this.$el.trigger("turned", [c, e]), this.update(), e[0] > d.options.pages ? this._fetchBlocks(e[0], "fixed") : e[1] > d.options.pages && this._fetchBlocks(e[1], "fixed"), d.options.autoCenter && this.center())
-  }, n.prototype._turnPage = function(c, d) {
-    var e, f, g, h = this._data,
-      i = this.view(),
-      j = this.view(c),
-      k = h.display == b.DISPLAY_SINGLE;
-    if (k) e = i[0], g = j[0];
-    else if (i[1] && c > i[1]) e = i[1], g = j[0];
-    else {
-      if (!(i[0] && c < i[0])) return !1;
-      e = i[0], g = j[1]
+    return true;
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  that.prototype.removePage = function(page) {
+    var data = this._data;
+    if ("*" == page) {
+      var param = this.range();
+      var value = param[0];
+      for (;value <= param[1];value++) {
+        this._removePageFromDOM(value, true);
+      }
+      /** @type {number} */
+      data.options.blocks = 0;
+      /** @type {number} */
+      data.totalPages = 0;
+    } else {
+      if (1 > page || page > data.totalPages) {
+        throw self.turnError("The page " + page + " doesn't exist");
+      }
+      if (data.pageObjs[page] && (this.stop(), !this._removePageFromDOM(page, true))) {
+        return false;
+      }
+      this._movePages(page, -1);
+      /** @type {number} */
+      data.totalPages = data.totalPages - 1;
+      if (data.page > data.totalPages) {
+        /** @type {null} */
+        data.page = null;
+        this._fitPage(data.totalPages);
+      } else {
+        this._makeRange();
+        this.update();
+      }
     }
-    var l = h.options.turnCorners.split(","),
-      m = h.pages[e].data("f"),
-      n = m.dpoint;
-    if (m.next, d || (d = "hard" == m.effect ? h.direction == b.DIRECTION_LTR ? c > e ? "r" : "l" : c > e ? "l" : "r" : h.direction == b.DIRECTION_LTR ? a.trim(l[c > e ? 1 : 0]) : a.trim(l[c > e ? 0 : 1])), k ? g > e && -1 == h.pageMv.indexOf(e) ? this.stop() : e > g && -1 == h.pageMv.indexOf(g) && this.stop() : h.display == b.DISPLAY_DOUBLE && Math.abs((h.tpage || h.page) - c) > 2 && this.stop(), h.page != c) {
-      if (f = h.page, this._trigger("turning", c, j, d) == b.EVENT_PREVENTED) return ~a.inArray(e, h.pageMv) && h.pages[e].flip("hideFoldedPage", !0), !1;
-      ~a.inArray(1, j) ? (this.$el.addClass("first-page"), this.$el.trigger("first")) : this.$el.removeClass("first-page"), ~a.inArray(h.totalPages, j) ? (this.$el.addClass("last-page"), this.$el.trigger("last")) : this.$el.removeClass("last-page")
+    return this;
+  };
+  /**
+   * @param {number} newPage
+   * @param {number} recurring
+   * @return {undefined}
+   */
+  that.prototype._movePages = function(newPage, recurring) {
+    var page;
+    var that = this;
+    var data = this._data;
+    /** @type {boolean} */
+    var d = data.display == self.DISPLAY_SINGLE;
+    /**
+     * @param {number} page
+     * @return {undefined}
+     */
+    var move = function(page) {
+      var i = page + recurring;
+      /** @type {number} */
+      var prev = i % 2;
+      /** @type {string} */
+      var idx = prev ? " page-odd " : " page-even ";
+      if (data.pageObjs[page]) {
+        data.pageObjs[i] = data.pageObjs[page].removeClass("page-" + page + " page-odd page-even").addClass("page-" + i + idx);
+      }
+      if (data.pageWrap[page]) {
+        data.pageWrap[i] = data.pageObjs[i].hasClass("fixed") ? data.pageWrap[page].attr("page", i) : data.pageWrap[page].css(that._pageSize(i, true)).attr("page", i);
+        if (data.pages[page]) {
+          data.pages[i] = data.pages[page];
+          data.pages[i].data("f").page = i;
+          data.pages[i].data("f").next = d ? i + 1 : data.options.showDoublePage ? prev ? i - 1 : i + 1 : prev ? i + 1 : i - 1;
+        }
+        if (recurring) {
+          delete data.pages[page];
+          delete data.pageObjs[page];
+          delete data.pageWrap[page];
+        }
+      }
+    };
+    if (recurring > 0) {
+      page = data.totalPages;
+      for (;page >= newPage;page--) {
+        move(page);
+      }
+    } else {
+      /** @type {number} */
+      page = newPage;
+      for (;page <= data.totalPages;page++) {
+        move(page);
+      }
     }
-    return h.status = "turning", h.range = this.range(c), this._missing(c), h.pageObjs[c] && (this._cloneView(!1), h.tpage = g, this._makeRange(), m.dpoint = m.next != g ? null : n, m.next = g, f = h.page, -1 == h.pageMv.indexOf(g) ? h.pages[e].flip("turnPage", d) : (h.options.autoCenter && this.center(g), h.status = "", h.pages[g].flip("hideFoldedPage", !0)), f == h.page && (h.page = c), this.update()), !0
-  }, n.prototype.page = function(c) {
-    var d = this._data;
-    if (void 0 === c) return d.page;
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  that.prototype._view = function(page) {
+    var data = this._data;
+    return page = page || data.page, data.display == self.DISPLAY_DOUBLE ? data.options.showDoublePage ? page % 2 ? [page, page + 1] : [page - 1, page] : page % 2 ? [page - 1, page] : [page, page + 1] : 0 === page % 2 && (data.pages[page] && data.pages[page].hasClass("cover")) ? [page, page + 1] : [page];
+  };
+  /**
+   * @param {number} page
+   * @param {boolean} dataAndEvents
+   * @return {?}
+   */
+  that.prototype.view = function(page, dataAndEvents) {
+    var data = this._data;
+    var els = this._view(page);
+    /** @type {Array} */
+    var arr = [];
+    return dataAndEvents ? (els[0] > 0 && arr.push(els[0]), els[1] <= data.totalPages && arr.push(els[1])) : (els[0] > 0 ? arr.push(els[0]) : arr.push(0), els[1] && (els[1] <= data.totalPages ? arr.push(els[1]) : arr.push(0))), arr;
+  };
+  /**
+   * @param {number} pages
+   * @return {?}
+   */
+  that.prototype.pages = function(pages) {
+    var data = this._data;
+    if (pages) {
+      if (pages < data.totalPages) {
+        var page = data.totalPages;
+        for (;page > pages;page--) {
+          this.removePage(page);
+        }
+      }
+      return data.totalPages = pages, this._fitPage(data.page), this.$el;
+    }
+    return data.totalPages;
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  that.prototype._missing = function(page) {
+    var data = this._data;
+    if (data.totalPages < 1) {
+      return data.options.blocks > 0 && this.$el.trigger("missing", [1]), void 0;
+    }
+    var args = data.range || this.range(page);
+    /** @type {Array} */
+    var ret = [];
+    var next = args[0];
+    for (;next <= args[1];next++) {
+      if (!data.pageObjs[next]) {
+        ret.push(next);
+      }
+    }
+    if (ret.length > 0) {
+      this.$el.trigger("missing", [ret]);
+    }
+  };
+  /**
+   * @param {?} i
+   * @return {?}
+   */
+  that.prototype.pageElement = function(i) {
+    return this._data.pageObjs[i];
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.next = function() {
+    return this.page(this._view(this._data.page).pop() + 1);
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.previous = function() {
+    return this.page(this._view(this._data.page).shift() - 1);
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {undefined}
+   */
+  that.prototype._backPage = function(recurring) {
+    var data = this._data;
+    if (recurring) {
+      if (!data.pageObjs[0]) {
+        var curr = $("<div />");
+        data.pageObjs[0] = $(curr).css({
+          "float" : "left"
+        }).addClass("page page-0");
+        this._addPage(0);
+      }
+    } else {
+      if (data.pageObjs[0]) {
+        this._removePageFromDOM(0, true);
+      }
+    }
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  that.prototype._isCoverPageVisible = function(page) {
+    var data = this._data;
+    var totalPages = data.tpage || data.page;
+    return data.pageObjs[page].hasClass("cover") && (totalPages >= page && 0 === page % 2 || page >= totalPages && 1 === page % 2);
+  };
+  /**
+   * @param {number} keepData
+   * @return {?}
+   */
+  that.prototype.getBlockPage = function(keepData) {
+    var data = this._data;
+    if (1 > keepData || keepData > data.options.blocks) {
+      return 0;
+    }
+    if (1 == keepData) {
+      return data.options.pages + 1;
+    }
+    var pages = data.options.pages;
+    var endPage = 0 === pages % 2 ? pages : Math.min(0, pages - 1);
+    return data.display == self.DISPLAY_DOUBLE ? data.options.showDoublePage ? 2 * keepData - 1 + endPage : 2 * keepData - 2 + endPage : keepData + data.options.pages;
+  };
+  /**
+   * @param {number} i
+   * @param {Object} dataAndEvents
+   * @return {?}
+   */
+  that.prototype.getPageBlock = function(i, dataAndEvents) {
+    var data = this._data;
+    if (data.options.blocks) {
+      if (dataAndEvents && (i && (data.pageBlocks[i] && data.pageBlocks[i].first))) {
+        return data.pageBlocks[i].first;
+      }
+      if (i == data.options.pages + 1) {
+        return 1;
+      }
+      if (i > data.options.pages) {
+        if (dataAndEvents) {
+          var diff;
+          var range = this.range();
+          var breaks = this.view(data.page, true);
+          /** @type {number} */
+          var curr = 0;
+          /** @type {number} */
+          var label_ = 0;
+          /** @type {number} */
+          var fun = 0;
+          /** @type {number} */
+          var last = 0;
+          /** @type {number} */
+          var next = 0;
+          var t = range[0];
+          for (;t <= range[1];t++) {
+            if (data.pageBlocks[t]) {
+              if (!curr) {
+                curr = data.pageBlocks[t].first;
+                fun = t;
+              }
+              if (data.pageBlocks[t].last) {
+                label_ = data.pageBlocks[t].last;
+                last = t;
+              }
+              if (data.pageBlocks[t].first) {
+                next = t;
+              }
+            }
+          }
+          if (0 === label_) {
+            if (next) {
+              label_ = data.pageBlocks[next].first;
+              last = next;
+            }
+          }
+          if (data.display == self.DISPLAY_DOUBLE) {
+            if (data.options.showDoublePage) {
+              if (1 === i % 2) {
+                if (i > breaks[breaks.length - 1]) {
+                  if (0 === last % 2) {
+                    last -= 1;
+                  }
+                  diff = label_ + (i - last) / 2;
+                } else {
+                  if (i < breaks[0]) {
+                    if (0 === fun % 2) {
+                      fun -= 1;
+                    }
+                    /** @type {number} */
+                    diff = curr - (fun - i) / 2;
+                  } else {
+                    /** @type {number} */
+                    diff = (i + 1) / 2;
+                  }
+                }
+              }
+            } else {
+              if (0 === i % 2) {
+                if (i > range[1]) {
+                  if (1 == last % 2) {
+                    last -= 1;
+                  }
+                  diff = label_ + (i - last + 2) / 2;
+                } else {
+                  if (i < range[0]) {
+                    if (1 == fun % 2) {
+                      fun -= 1;
+                    }
+                    /** @type {number} */
+                    diff = curr - (fun - i + 2) / 2;
+                  } else {
+                    /** @type {number} */
+                    diff = (i + 2) / 2;
+                  }
+                }
+              }
+            }
+          } else {
+            diff = i > range[1] ? data.pageBlocks[range[1]].last + (i - range[1]) : i < range[0] ? data.pageBlocks[range[0]].first - (range[0] - i) : i - data.options.pages;
+          }
+        } else {
+          if (data.display == self.DISPLAY_DOUBLE) {
+            if (data.options.showDoublePage) {
+              if (1 == i % 2) {
+                /** @type {number} */
+                diff = Math.ceil((i - data.options.pages + 1) / 2);
+              }
+            } else {
+              if (0 === i % 2) {
+                /** @type {number} */
+                diff = Math.ceil((i - data.options.pages + 2) / 2);
+              }
+            }
+          } else {
+            /** @type {number} */
+            diff = i - data.options.pages;
+          }
+        }
+        return diff ? Math.max(2, diff) : 0;
+      }
+    }
+    return 0;
+  };
+  /**
+   * @param {?} id
+   * @return {?}
+   */
+  that.prototype.getEndingBlockPage = function(id) {
+    var data = this._data;
+    return id && data.pageObjs[id] ? data.pageObjs[id].data("f").endingBlock || -1 : -1;
+  };
+  /**
+   * @param {Object} spec
+   * @return {?}
+   */
+  that.prototype.getBlockData = function(spec) {
+    return spec = this._data.blocks[spec], spec ? spec.html : null;
+  };
+  /**
+   * @param {number} type
+   * @return {?}
+   */
+  that.prototype.block = function(type) {
+    var data = this._data;
+    if (void 0 === type) {
+      var codeSegments = this.view(null, true);
+      var dataType = codeSegments[0] > data.options.pages ? codeSegments[0] : 0;
+      var success = codeSegments[codeSegments.length - 1] > data.options.pages ? codeSegments[codeSegments.length - 1] : 0;
+      if (dataType = dataType || success) {
+        var common = data.pageBlocks[dataType].first;
+        var ret = data.pageBlocks[success].last || common;
+        return[common, ret];
+      }
+      return null;
+    }
+    if (!(type >= 1 && type <= data.options.blocks)) {
+      throw turnError('Block "' + type + '" cannot be loaded');
+    }
+    var id = this.getBlockPage(type);
+    var _cleanPages = this.range();
+    return this._cleanPages(_cleanPages[0], _cleanPages[1]), data.pageBlocks[id] = {
+      first : type,
+      last : 0,
+      status : self.fragStatus.assigned
+    }, this._fitPage(id), this.$el;
+  };
+  /**
+   * @param {number} p
+   * @return {undefined}
+   */
+  that.prototype._fetchBlocks = function(p) {
+    var data = this._data;
+    if (data.options.blocks && data.pageBlocks[p]) {
+      var opts = data.pageBlocks[p];
+      data.pageObjs[p];
+      var view = this.view(data.page, true);
+      if (opts.status == self.fragStatus.assigned) {
+        if (!opts.first) {
+          opts.first = this.getPageBlock(p, true);
+        }
+        /** @type {number} */
+        opts.status = self.fragStatus.requested;
+        this._pushBlocks(opts.first, p, data.page);
+      } else {
+        if (opts.status == self.fragStatus.waiting) {
+          if (p > view[0]) {
+            this._cleanPages(p + 1, this.range()[1]);
+          }
+          this._pushBlocks(opts.last, p, data.page);
+        } else {
+          if (opts.status == self.fragStatus.nsplit) {
+            if (p > view[0] && (this._cleanPages(p + 1, this.range()[1]), opts.nextPageTmp)) {
+              var child = data.pageObjs[p + 1];
+              var options = data.pageBlocks[p + 1];
+              var e = child.data("f");
+              /** @type {number} */
+              options.status = self.fragStatus.waiting;
+              options.first = opts.last;
+              options.last = opts.last;
+              options.bp = opts.lbp;
+              if (e.flowTo) {
+                child.find(e.flowTo).html(opts.nextPageTmp.html());
+              } else {
+                child.html(opts.nextPageTmp.html());
+              }
+              delete opts.nextPageTmp;
+              /** @type {number} */
+              opts.status = self.fragStatus.full;
+            }
+            delete data.blocks[opts.last].cp;
+          } else {
+            if (opts.status == self.fragStatus.full) {
+              if (view[0] == p) {
+                if (view[1]) {
+                  this._fetchBlocks(view[1]);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  /**
+   * @param {number} type
+   * @param {number} x
+   * @param {Object} key
+   * @return {undefined}
+   */
+  that.prototype._pushBlocks = function(type, x, key) {
+    var data;
+    var token;
+    var self = this._data;
+    if (type > 0 && type <= self.options.blocks) {
+      if ((token = self.pageBlocks[x]) && (token.waiting = type), data = self.blocks[type]) {
+        if (x && (-1 == data.queue.indexOf(x) && data.queue.push(x)), key && (data.cp = key), data.html) {
+          /** @type {number} */
+          var i = 0;
+          for (;i < data.queue.length;i++) {
+            this._flowContent(data.queue[i], type);
+          }
+          /** @type {Array} */
+          data.queue = [];
+        }
+      } else {
+        self.blocks[type] = {
+          page : x,
+          queue : [x],
+          cp : key
+        };
+        this._reportLoading(x);
+        this.$el.trigger("missingBlock", [type]);
+      }
+    }
+  };
+  /**
+   * @param {number} index
+   * @param {string} name
+   * @return {undefined}
+   */
+  that.prototype.addBlock = function(index, name) {
+    var self = this._data;
+    if (index > 0) {
+      if (index <= self.options.blocks) {
+        name = name.replace(/\s+/g, " ");
+        if (self.blocks[index]) {
+          /** @type {string} */
+          self.blocks[index].html = name;
+          this._pushBlocks(index);
+        } else {
+          self.blocks[index] = {
+            html : name,
+            queue : []
+          };
+        }
+      }
+    }
+  };
+  /**
+   * @param {number} page
+   * @param {number} type
+   * @return {?}
+   */
+  that.prototype._flowContent = function(page, type) {
+    var data = this._data;
+    var obj = data.blocks[type];
+    var element = data.pageObjs[page];
+    if (obj && element) {
+      var $scope = data.pageBlocks[page];
+      var env = element.data("f");
+      var el = env.flowTo ? element.find(env.flowTo) : element;
+      var camelKey = page < obj.cp ? obj.cp || data.page : data.page;
+      var view = this.view(camelKey, true);
+      var pages = this.view(page, true);
+      var _cleanPages = this.range();
+      if (type < $scope.first || type > $scope.last) {
+        if (!element.is(":visible")) {
+          return $scope.status = self.fragStatus.assigned, void 0;
+        }
+        var t = $("<div />", {
+          "class" : "block block-" + type,
+          css : {
+            position : "relative"
+          }
+        }).html(obj.html);
+        if (obj.start = page, type < $scope.first) {
+          /** @type {number} */
+          $scope.first = type;
+          var ber = el.children();
+          if (ber.length > 0) {
+            /** @type {null} */
+            $scope.bp = null;
+            t.insertBefore(ber[0]);
+            this._cleanPages(_cleanPages[0], page - 1);
+          } else {
+            t.appendTo(el);
+          }
+        } else {
+          t.appendTo(el);
+        }
+        if (type > $scope.last) {
+          /** @type {number} */
+          $scope.last = type;
+        }
+        if ($scope.waiting == type) {
+          /** @type {number} */
+          $scope.waiting = 0;
+        }
+      } else {
+        if (!element.is(":visible")) {
+          return $scope.status = self.fragStatus.waiting, void 0;
+        }
+      }
+      var result;
+      var field;
+      var next = page + 1;
+      var options = data.pageBlocks[next];
+      var grid = data.pageObjs[next];
+      if (grid) {
+        result = grid.data("f");
+        field = result.flowTo ? grid.find(result.flowTo) : grid;
+        if (options.first == $scope.last) {
+          if (next < view[0]) {
+            restore(el[0], field[0]);
+            /** @type {number} */
+            result.first = 0;
+            /** @type {number} */
+            result.last = 0;
+            /** @type {number} */
+            result.status = self.fragStatus.assigned;
+          }
+        }
+      }
+      var location = getBreakingPoint(el[0]);
+      if (location) {
+        if ($scope.loading && ($scope.loading = false, this.$el.trigger("endPageLoading", page)), next < view[0] || page >= view[0]) {
+          if ($scope.status = self.fragStatus.full, grid) {
+            if (next > view[view.length - 1]) {
+              this._cleanPages(next, _cleanPages[1]);
+            }
+            breakPage(location, el[0], field[0]);
+            var i = $scope.first;
+            for (;i < $scope.last;i++) {
+              if (data.blocks[i]) {
+                /** @type {number} */
+                data.blocks[i].end = page;
+              }
+            }
+            $scope.last = location.path[0] + $scope.first;
+            options.first = $scope.last;
+            /** @type {number} */
+            options.last = options.first + field.children("div").length - 1;
+            i = options.first;
+            for (;i <= options.last;i++) {
+              if (data.blocks[i]) {
+                if (i == options.first && i == $scope.last) {
+                  data.blocks[i].end = next;
+                } else {
+                  data.blocks[i].start = next;
+                  data.blocks[i].end = next;
+                }
+              }
+            }
+            options.bp = location;
+            this._flowContent(next, options.last);
+          } else {
+            breakPage(location, el[0], null);
+          }
+        } else {
+          /** @type {number} */
+          $scope.status = self.fragStatus.nsplit;
+          $scope.nextPageTmp = $("<div />");
+          $scope.lbp = location;
+          breakPage(location, el[0], $scope.nextPageTmp[0]);
+        }
+      } else {
+        if (obj.end = page, $scope.status = self.fragStatus.waiting, page < view[0]) {
+          var val = data.pageBlocks[pages[0]];
+          if (!val.bp && (val.first > 2 || pages[0] == data.options.pages + 1)) {
+            this._pushBlocks(val.first - 1, pages[0], camelKey);
+          } else {
+            var p = pages[pages.length - 1];
+            if (data.pageBlocks[p].last) {
+              this._pushBlocks(data.pageBlocks[p].last + 1, p, camelKey);
+            } else {
+              this._pushBlocks(data.pageBlocks[pages[0]].last + 1, pages[0], camelKey);
+            }
+          }
+        } else {
+          if (grid) {
+            if (-1 == pages.indexOf(next)) {
+              options.first = $scope.last + 1;
+            }
+          }
+          this._pushBlocks($scope.last + 1, page, camelKey);
+        }
+      }
+      if (page < view[0]) {
+        if (pages[0] == page) {
+          if (2 == type) {
+            this.replaceView(page, data.options.pages + 2);
+          }
+        }
+      }
+    }
+  };
+  /**
+   * @param {number} value
+   * @return {undefined}
+   */
+  that.prototype._reportLoading = function(value) {
+    var data = this._data;
+    var codeSegments = this.view(value, true);
+    /** @type {number} */
+    var i = 0;
+    for (;i < codeSegments.length;i++) {
+      if (codeSegments[i] >= value) {
+        if (!data.pageBlocks[codeSegments[i]].loading) {
+          /** @type {boolean} */
+          data.pageBlocks[codeSegments[i]].loading = true;
+          this.$el.trigger("startPageLoading", [codeSegments[i]]);
+        }
+      }
+    }
+  };
+  /**
+   * @param {(boolean|number)} from
+   * @param {number} dataAndEvents
+   * @return {undefined}
+   */
+  that.prototype._cleanPages = function(from, dataAndEvents) {
+    var c;
+    var options;
+    var nextPointIdx;
+    var data = this._data;
+    /** @type {(boolean|number)} */
+    var i = from;
+    for (;dataAndEvents >= i;i++) {
+      if ((options = data.pageBlocks[i]) && options.first) {
+        nextPointIdx = options.last || options.first;
+        var idx = options.first;
+        for (;nextPointIdx >= idx;idx++) {
+          if (data.blocks[idx]) {
+            if (!(idx == options.first && (data.pageBlocks[i - 1] && idx == data.pageBlocks[i - 1].last))) {
+              /** @type {number} */
+              data.blocks[idx].page = 0;
+              if (data.blocks[idx].start) {
+                /** @type {number} */
+                data.blocks[idx].start = 0;
+                /** @type {number} */
+                data.blocks[idx].end = 0;
+              }
+            }
+          }
+        }
+        /** @type {number} */
+        options.first = 0;
+        options.status = fragStatus.assigned;
+        /** @type {number} */
+        options.last = 0;
+        /** @type {null} */
+        options.bp = null;
+        c = data.pageObjs[i].data("f");
+        if (c.flowTo) {
+          data.pageObjs[i].find(c.flowTo).html("");
+        } else {
+          data.pageObjs[i].html("");
+        }
+      }
+    }
+  };
+  /**
+   * @param {number} length
+   * @param {number} i
+   * @return {?}
+   */
+  that.prototype.replaceView = function(length, i) {
+    var data = this._data;
+    var param = this.range();
+    if (length != i && (length >= param[0] && length <= param[1])) {
+      var charCode;
+      var $scope;
+      var even;
+      data.display == self.DISPLAY_SINGLE;
+      /** @type {number} */
+      var id = i;
+      var classes = data.front.slice();
+      var body = data.pageMv.slice();
+      /** @type {number} */
+      var start = i - length;
+      var CommandProxyMap = {};
+      var done = {};
+      var replace = {};
+      var pages = {};
+      var files = {};
+      var checked = {};
+      var viewItems = {};
+      var page;
+      for (page in data.pageObjs) {
+        if (self.has(page, data.pageObjs)) {
+          if (page = parseInt(page, 10), length > page) {
+            this._removePageFromDOM(page);
+          } else {
+            if (id = page + start, $scope = data.pageObjs[page].data("f"), even = id % 2, data.pageObjs[page].removeClass("even odd p" + page).addClass((even ? "odd" : "even") + " p" + id), data.pageWrap[page].attr("page", id), $scope = data.pageObjs[page].data("f"), $scope.page = id, ~(charCode = classes.indexOf(page)) && (data.front[charCode] = id), ~(charCode = body.indexOf(page)) && (data.pageMv[charCode] = id), data.z.pageV[page] && (CommandProxyMap[id] = true), data.z.pageZ[page] && (done[id] = 
+            data.z.pageZ[page]), $scope.next += start, $scope.over && ($scope.over += start), data.pageBlocks[page]) {
+              var index = data.pageBlocks[page].first;
+              for (;index <= data.pageBlocks[page].last;index++) {
+                if (data.blocks[index] && !viewItems[index]) {
+                  data.blocks[index].start += start;
+                  data.blocks[index].end += start;
+                  /** @type {number} */
+                  var j = 0;
+                  for (;j < data.blocks[index].queue.length;j++) {
+                    data.blocks[index].queue[j] += start;
+                  }
+                  /** @type {boolean} */
+                  viewItems[index] = true;
+                }
+              }
+              if ((index = data.pageBlocks[page].waiting) && data.blocks[index]) {
+                /** @type {number} */
+                j = 0;
+                for (;j < data.blocks[index].queue.length;j++) {
+                  data.blocks[index].queue[j] += start;
+                }
+                /** @type {boolean} */
+                viewItems[index] = true;
+              }
+              checked[id] = data.pageBlocks[page];
+            }
+            replace[id] = data.pageObjs[page];
+            pages[id] = data.pages[page];
+            files[id] = data.pageWrap[page];
+            files[id].css(this._pageSize(id, true));
+          }
+        }
+      }
+      data.pageObjs = replace;
+      data.pages = pages;
+      data.pageWrap = files;
+      data.pageBlocks = checked;
+      data.pageWrap = files;
+      data.z.pageV = CommandProxyMap;
+      data.z.pageZ = done;
+      data.range = this.range(i);
+      data.page = data.page - length + i;
+      if (data.tpage) {
+        data.tpage = data.tpage - length + i;
+        data.page = data.tpage;
+      }
+      this._missing(i);
+      this.update();
+      if (data.options.autoCenter) {
+        this.center();
+      }
+      console.log("replaced ", length, " now:", data.page, data.tpage);
+    }
+    return this.$el;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.flow = function() {
+    var data = this._data;
+    if (data.options.blocks && this.$el.is(":visible")) {
+      var index;
+      var _arg = this.view(data.page, true);
+      if (_arg[0] > data.options.pages) {
+        index = _arg[0];
+      } else {
+        if (!(_arg[1] > data.options.pages)) {
+          return;
+        }
+        index = _arg[1];
+      }
+      var _cleanPages = this.range();
+      var path = data.pageObjs[index];
+      var o = data.pageBlocks[index];
+      var env = path.data("f");
+      var obj = env.flowTo ? path.find(env.flowTo) : path;
+      var i = o.last || o.first;
+      var fx = data.blocks[i];
+      if (fx) {
+        if (obj.children("div:last-child").html(data.blocks[i].html), i == o.first && o.bp) {
+          var $location = $.extend({}, o.bp);
+          /** @type {number} */
+          $location.path[0] = 0;
+          breakPage($location, obj[0], obj[0]);
+        }
+        data.pageBlocks[index].status = fragStatus.waiting;
+        var start = fx.start;
+        this._cleanPages(_cleanPages[0], index - 1);
+        this._cleanPages(index + 1, _cleanPages[1]);
+        fx.start = start;
+        this._flowContent(index, data.pageBlocks[index].last);
+      }
+      return this.$el;
+    }
+  };
+  /**
+   * @param {number} page
+   * @return {undefined}
+   */
+  that.prototype._fitPage = function(page) {
+    var data = this._data;
+    var elems = this.view(page);
+    if (data.display == self.DISPLAY_SINGLE) {
+      if (data.pages[page]) {
+        if (data.pages[page].hasClass("cover")) {
+          if (-1 != $.inArray(page + 1, elems)) {
+            page += 1;
+          }
+        }
+      }
+    }
+    data.range = this.range(page);
+    this._missing();
+    if (data.pageObjs[page]) {
+      if (-1 != $.inArray(1, elems)) {
+        this.$el.addClass("first-page");
+      } else {
+        this.$el.removeClass("first-page");
+      }
+      if (~$.inArray(data.totalPages, elems)) {
+        this.$el.addClass("last-page");
+      } else {
+        this.$el.removeClass("last-page");
+      }
+      /** @type {string} */
+      data.status = "";
+      /** @type {null} */
+      data.peel = null;
+      /** @type {number} */
+      data.page = page;
+      if (data.display != self.DISPLAY_SINGLE) {
+        this.stop();
+      }
+      this._removeFromDOM();
+      this._makeRange();
+      this._updateShadow();
+      this._cloneView(false);
+      this.$el.trigger("turned", [page, elems]);
+      this.update();
+      if (elems[0] > data.options.pages) {
+        this._fetchBlocks(elems[0], "fixed");
+      } else {
+        if (elems[1] > data.options.pages) {
+          this._fetchBlocks(elems[1], "fixed");
+        }
+      }
+      if (data.options.autoCenter) {
+        this.center();
+      }
+    }
+  };
+  /**
+   * @param {number} page
+   * @param {(number|string)} dir
+   * @return {?}
+   */
+  that.prototype._turnPage = function(page, dir) {
+    var current;
+    var prevMsgId;
+    var next;
+    var data = this._data;
+    var view = this.view();
+    var values = this.view(page);
+    /** @type {boolean} */
+    var k = data.display == self.DISPLAY_SINGLE;
+    if (k) {
+      current = view[0];
+      next = values[0];
+    } else {
+      if (view[1] && page > view[1]) {
+        current = view[1];
+        next = values[0];
+      } else {
+        if (!(view[0] && page < view[0])) {
+          return false;
+        }
+        current = view[0];
+        next = values[1];
+      }
+    }
+    var coords = data.options.turnCorners.split(",");
+    var e = data.pages[current].data("f");
+    var change = e.dpoint;
+    if (e.next, dir || (dir = "hard" == e.effect ? data.direction == self.DIRECTION_LTR ? page > current ? "r" : "l" : page > current ? "l" : "r" : data.direction == self.DIRECTION_LTR ? $.trim(coords[page > current ? 1 : 0]) : $.trim(coords[page > current ? 0 : 1])), k ? next > current && -1 == data.pageMv.indexOf(current) ? this.stop() : current > next && (-1 == data.pageMv.indexOf(next) && this.stop()) : data.display == self.DISPLAY_DOUBLE && (Math.abs((data.tpage || data.page) - page) > 2 && 
+    this.stop()), data.page != page) {
+      if (prevMsgId = data.page, this._trigger("turning", page, values, dir) == self.EVENT_PREVENTED) {
+        return~$.inArray(current, data.pageMv) && data.pages[current].flip("hideFoldedPage", true), false;
+      }
+      if (~$.inArray(1, values)) {
+        this.$el.addClass("first-page");
+        this.$el.trigger("first");
+      } else {
+        this.$el.removeClass("first-page");
+      }
+      if (~$.inArray(data.totalPages, values)) {
+        this.$el.addClass("last-page");
+        this.$el.trigger("last");
+      } else {
+        this.$el.removeClass("last-page");
+      }
+    }
+    return data.status = "turning", data.range = this.range(page), this._missing(page), data.pageObjs[page] && (this._cloneView(false), data.tpage = next, this._makeRange(), e.dpoint = e.next != next ? null : change, e.next = next, prevMsgId = data.page, -1 == data.pageMv.indexOf(next) ? data.pages[current].flip("turnPage", dir) : (data.options.autoCenter && this.center(next), data.status = "", data.pages[next].flip("hideFoldedPage", true)), prevMsgId == data.page && (data.page = page), this.update()), 
+    true;
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  that.prototype.page = function(page) {
+    var data = this._data;
+    if (void 0 === page) {
+      return data.page;
+    }
     if (1 != this.zoom() && this.zoomOut({
-        animate: !1
-      }), b.hasRotation && !d.disabled && !d.destroying) {
-      if (c = parseInt(c, 10), !(d.options.blocks > 0 && c == d.totalPages + 1)) {
-        if (c > 0 && c <= d.totalPages) {
-          if (c != d.page)
-            if (!d.done || ~a.inArray(c, this.view())) this._fitPage(c);
-            else if (!this._turnPage(c)) return !1;
-          return this.$el
+      animate : false
+    }), self.hasRotation && (!data.disabled && !data.destroying)) {
+      if (page = parseInt(page, 10), !(data.options.blocks > 0 && page == data.totalPages + 1)) {
+        if (page > 0 && page <= data.totalPages) {
+          if (page != data.page) {
+            if (!data.done || ~$.inArray(page, this.view())) {
+              this._fitPage(page);
+            } else {
+              if (!this._turnPage(page)) {
+                return false;
+              }
+            }
+          }
+          return this.$el;
         }
-        return !1
+        return false;
       }
-      this._fitPage(c)
+      this._fitPage(page);
     }
-  }, n.prototype.center = function(a) {
-    var c = this._data,
-      d = this.size(),
-      e = 0;
-    if (!c.noCenter) {
-      if (c.display == b.DISPLAY_DOUBLE) {
-        var f = this.view(a || c.tpage || c.page);
-        c.direction == b.DIRECTION_LTR ? f[0] ? f[1] || (e += d.width / 4) : e -= d.width / 4 : f[0] ? f[1] || (e -= d.width / 4) : e += d.width / 4
+  };
+  /**
+   * @param {number} out
+   * @return {?}
+   */
+  that.prototype.center = function(out) {
+    var data = this._data;
+    var size = this.size();
+    /** @type {number} */
+    var ml = 0;
+    if (!data.noCenter) {
+      if (data.display == self.DISPLAY_DOUBLE) {
+        var view = this.view(out || (data.tpage || data.page));
+        if (data.direction == self.DIRECTION_LTR) {
+          if (view[0]) {
+            if (!view[1]) {
+              ml += size.width / 4;
+            }
+          } else {
+            ml -= size.width / 4;
+          }
+        } else {
+          if (view[0]) {
+            if (!view[1]) {
+              ml -= size.width / 4;
+            }
+          } else {
+            ml += size.width / 4;
+          }
+        }
       }
       this.$el.css({
-        marginLeft: e
-      })
+        marginLeft : ml
+      });
     }
-    return this.$el
-  }, n.prototype.destroy = function() {
-    var c = this._data;
-    return this._trigger("destroy") != b.EVENT_PREVENTED && (c.watchSizeChange = !1, c.destroying = !0, this.$el.undelegate(), this.$el.parent().off("start", this._eventPress), c.options.viewer.off("vmousemove", this._eventMove), a(document).off("vmouseup", this._eventRelease), this.removePage("*"), c.zoomer && c.zoomer.remove(), c.shadow && c.shadow.remove(), this._destroy()), this.$el
-  }, n.prototype.is = function() {
-    return !0
-  }, n.prototype._getDisplayStr = function(a) {
-    return a == b.DISPLAY_SINGLE ? "single" : a == b.DISPLAY_DOUBLE ? "double" : void 0
-  }, n.prototype._getDisplayConst = function(a) {
-    return a == b.DISPLAY_SINGLE ? a : a == b.DISPLAY_DOUBLE ? a : "single" == a ? b.DISPLAY_SINGLE : "double" == a ? b.DISPLAY_DOUBLE : void 0
-  }, n.prototype.display = function(a, c) {
-    var d = this._data,
-      e = this._getDisplayStr(d.display);
-    if (void 0 === a) return e;
-    if (1 == d.zoom) {
-      var f = this._getDisplayConst(a);
-      if (!f) throw b.turnError('"' + a + '" is not a value for display');
-      if (f != d.display) {
-        var g = this._trigger("changeDisplay", a, e);
-        if (!d.done || g != b.EVENT_PREVENTED) {
-          switch (f) {
-            case b.DISPLAY_SINGLE:
-              this._backPage(!0), this.$el.removeClass("display-double").addClass("display-single");
+    return this.$el;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.destroy = function() {
+    var that = this._data;
+    return this._trigger("destroy") != self.EVENT_PREVENTED && (that.watchSizeChange = false, that.destroying = true, this.$el.undelegate(), this.$el.parent().off("start", this._eventPress), that.options.viewer.off("vmousemove", this._eventMove), $(document).off("vmouseup", this._eventRelease), this.removePage("*"), that.zoomer && that.zoomer.remove(), that.shadow && that.shadow.remove(), this._destroy()), this.$el;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.is = function() {
+    return true;
+  };
+  /**
+   * @param {number} i
+   * @return {?}
+   */
+  that.prototype._getDisplayStr = function(i) {
+    return i == self.DISPLAY_SINGLE ? "single" : i == self.DISPLAY_DOUBLE ? "double" : void 0;
+  };
+  /**
+   * @param {number} idx
+   * @return {?}
+   */
+  that.prototype._getDisplayConst = function(idx) {
+    return idx == self.DISPLAY_SINGLE ? idx : idx == self.DISPLAY_DOUBLE ? idx : "single" == idx ? self.DISPLAY_SINGLE : "double" == idx ? self.DISPLAY_DOUBLE : void 0;
+  };
+  /**
+   * @param {string} options
+   * @param {boolean} display
+   * @return {?}
+   */
+  that.prototype.display = function(options, display) {
+    var data = this._data;
+    var el = this._getDisplayStr(data.display);
+    if (void 0 === options) {
+      return el;
+    }
+    if (1 == data.zoom) {
+      var type = this._getDisplayConst(options);
+      if (!type) {
+        throw self.turnError('"' + options + '" is not a value for display');
+      }
+      if (type != data.display) {
+        var e = this._trigger("changeDisplay", options, el);
+        if (!data.done || e != self.EVENT_PREVENTED) {
+          switch(type) {
+            case self.DISPLAY_SINGLE:
+              this._backPage(true);
+              this.$el.removeClass("display-double").addClass("display-single");
               break;
-            case b.DISPLAY_DOUBLE:
-              this._backPage(!1), this.$el.removeClass("display-single").addClass("display-double")
+            case self.DISPLAY_DOUBLE:
+              this._backPage(false);
+              this.$el.removeClass("display-single").addClass("display-double");
           }
-          if (d.display = f, e) {
-            if (void 0 === c || c) {
-              var h = this.size();
-              this.size(h.width, h.height), this.update()
+          if (data.display = type, el) {
+            if (void 0 === display || display) {
+              var size = this.size();
+              this.size(size.width, size.height);
+              this.update();
             }
-            this._movePages(1, 0), this.$el.removeClass(e)
+            this._movePages(1, 0);
+            this.$el.removeClass(el);
           }
         }
-        this.$el.addClass(this._getDisplayStr()), this._cloneView(!1), this._makeRange()
+        this.$el.addClass(this._getDisplayStr());
+        this._cloneView(false);
+        this._makeRange();
       }
     }
-    return this.$el
-  }, n.prototype.isAnimating = function() {
-    var a = this._data;
-    return a.pageMv.length > 0 || "turning" == a.status
-  }, n.prototype.isFlipping = function() {
-    var a = this._data;
-    return "turning" == a.status
-  }, n.prototype.corner = function() {
-    return this._data.corner || null
-  }, n.prototype.data = function() {
-    return this._data
-  }, n.prototype.disable = function(c) {
-    var d, e = this._data,
-      f = this.view();
-    e.disabled = void 0 === c || c === !0;
-    for (d in e.pages) b.has(d, e.pages) && e.pages[d].flip("disable", e.disabled ? !0 : -1 == a.inArray(parseInt(d, 10), f));
-    return this.$el
-  }, n.prototype._size = function(a, b) {
-    var c = this._defaultSize();
-    return c.width = c.width * a, c.height = c.height * a, b && this._halfWidth() && (c.width = Math.floor(c.width / 2)), c
-  }, n.prototype.peel = function(c, d, e, f) {
-    var g = this._data;
-    if (c) {
-      if (1 == this.zoom())
-        if (f = void 0 !== f ? f : !0, g.display == b.DISPLAY_SINGLE) g.peel = b.peelingPoint(c, d, e), g.pages[g.page].flip("peel", b.peelingPoint(c, d, e), f);
-        else {
-          var h = this.view(),
-            i = ~a.inArray(c, corners.backward) ? h[0] : h[1];
-          g.pages[i] && (g.peel = b.peelingPoint(c, d, e), g.pages[i].flip("peel", g.peel, f))
-        }
-    } else g.peel = null, this.stop(!0);
-    return this.$el
-  }, n.prototype._resizeObserver = function() {
-    var b = this._data;
-    if (b && b.watchSizeChange) {
-      var c = b.options.viewer,
-        d = 10;
-      (b.viewerWidth != c.width() || b.viewerHeight != c.height()) && (b.viewerWidth = c.width(), b.viewerHeight = c.height(), this._resize()), b.monitorTimer = setTimeout(a.proxy(this._resizeObserver, this), d)
-    }
-  }, n.prototype.watchForSizeChanges = function(a) {
-    var b = this._data;
-    b.watchSizeChange != a && (b.watchSizeChange = a, clearInterval(b.monitorTimer), this._resizeObserver())
-  }, n.prototype._defaultSize = function(a) {
-    var c = this._data,
-      d = c.viewerWidth - c.margin[1] - c.margin[3],
-      e = c.viewerHeight - c.margin[0] - c.margin[2],
-      f = "string" == typeof c.options.width && ~c.options.width.indexOf("%"),
-      g = b.transformUnit(c.options.width, d),
-      h = b.transformUnit(c.options.height, e),
-      i = b.calculateBounds({
-        width: g,
-        height: h,
-        boundWidth: Math.min(c.options.width, d),
-        boundHeight: Math.min(c.options.height, e)
-      });
-    if (c.options.responsive)
-      if (f) {
-        if (e > d) return {
-          width: b.transformUnit(c.options.width, d),
-          height: h,
-          display: b.DISPLAY_SINGLE
-        }
-      } else {
-        var j = b.calculateBounds({
-            width: g / 2,
-            height: h,
-            boundWidth: Math.min(c.options.width / 2, d),
-            boundHeight: Math.min(c.options.height, e)
-          }),
-          k = c.viewerWidth * c.viewerHeight,
-          l = k - i.width * i.height,
-          m = k - j.width * j.height;
-        if (l > m && !a || a == b.DISPLAY_SINGLE) return {
-          width: j.width,
-          height: j.height,
-          display: b.DISPLAY_SINGLE
-        };
-        0 !== i.width % 2 && (i.width -= 1)
+    return this.$el;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.isAnimating = function() {
+    var data = this._data;
+    return data.pageMv.length > 0 || "turning" == data.status;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.isFlipping = function() {
+    var data = this._data;
+    return "turning" == data.status;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.corner = function() {
+    return this._data.corner || null;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.data = function() {
+    return this._data;
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {?}
+   */
+  that.prototype.disable = function(recurring) {
+    var i;
+    var data = this._data;
+    var elems = this.view();
+    /** @type {boolean} */
+    data.disabled = void 0 === recurring || recurring === true;
+    for (i in data.pages) {
+      if (self.has(i, data.pages)) {
+        data.pages[i].flip("disable", data.disabled ? true : -1 == $.inArray(parseInt(i, 10), elems));
       }
-    return {
-      width: i.width,
-      height: i.height,
-      display: b.DISPLAY_DOUBLE
     }
-  }, n.prototype._calculateMargin = function() {
-    var a, c, d = this._data,
-      e = /^(\d+(?:px|%))(?:\s+(\d+(?:px|%))(?:\s+(\d+(?:px|%))\s+(\d+(?:px|%)))?)$/;
-    (a = d.options.margin) ? (c = e.exec(a)) && (d.margin[0] = b.transformUnit(c[1], d.viewerHeight), d.margin[1] = c[2] ? b.transformUnit(c[2], d.viewerWidth) : d.margin[0], d.margin[2] = c[3] ? b.transformUnit(c[3], d.viewerHeight) : d.margin[0], d.margin[3] = c[4] ? b.transformUnit(c[4], d.viewerWidth) : d.margin[1]) : d.margin = [0, 0, 0, 0], (a = d.options.pageMargin) ? (c = e.exec(a)) && (d.pageMargin[0] = b.transformUnit(c[1], d.viewerHeight), d.pageMargin[1] = c[2] ? b.transformUnit(c[2], d.viewerWidth) : d.pageMargin[0], d.pageMargin[2] = c[3] ? b.transformUnit(c[3], d.viewerHeight) : d.pageMargin[0], d.pageMargin[3] = c[4] ? b.transformUnit(c[4], d.viewerWidth) : d.pageMargin[1]) : d.pageMargin = [0, 0, 0, 0]
-  }, n.prototype._resize = function() {
-    var b, c, d, e = this._data;
-    if (e.options.responsive) {
-      var f = this.view();
-      if (1 == e.zoom) {
-        e.options.viewer, e.viewerWidth, e.viewerHeight;
-        var g = e.slider;
-        if (this._calculateMargin(), e.slider = null, d = this._defaultSize(), this.display(d.display, !1), e.slider = g, d.display != e.display && (d = this._defaultSize(e.display)), this.size(d.width * e.zoom, d.height * e.zoom), this.update(), e.zoomer)
-          for (d = this._defaultSize(e.display), e.zoomer.css({
-              width: d.width,
-              height: d.height
-            }), c = e.zoomer.children(), b = 0; b < c.length; b++) a(c[b]).css({
-            width: d.width / f.length,
-            height: d.height
-          })
-      } else if (this.scroll(e.scroll.left, e.scroll.top), e.zoomer)
-        for (d = this._defaultSize(e.display), e.zoomer.css({
-            width: d.width,
-            height: d.height
-          }), c = e.zoomer.children(), b = 0; b < c.length; b++) a(c[b]).css({
-          width: d.width / f.length,
-          height: d.height
-        });
-      e.miniatures && miniMethods._resize.call(a(e.miniatures))
-    }
-  }, n.prototype.calcVisiblePages = function() {
-    var a = this,
-      c = this._data;
-    c.tpage || c.page;
-    var d, e, f, g = {
-      pageZ: {},
-      pageV: {}
-    };
-    if (this.isAnimating() && 0 !== c.pageMv[0]) {
-      var h = c.pageMv.length,
-        i = c.front.length,
-        j = c.display;
-      if (j == b.DISPLAY_SINGLE)
-        for (d = 0; h > d; d++) nextPage = c.pages[c.pageMv[d]].data("f").next, g.pageV[c.pageMv[d]] = !0, g.pageZ[c.pageMv[d]] = 3 + h - d, g.pageV[nextPage] = !0, c.pageObjs[c.pageMv[d]].hasClass("cover") ? g.pageV[nextPage + 1] = !0 : (g.pageV[0] = !0, g.pageZ[0] = 3 + h + 1);
-      else if (c.display == b.DISPLAY_DOUBLE) {
-        for (d = 0; h > d; d++) {
-          for (f = a.view(c.pageMv[d]), e = 0; e < f.length; e++) g.pageV[f[e]] = !0;
-          g.pageZ[c.pageMv[d]] = 3 + h - d
-        }
-        for (d = 0; i > d; d++)
-          for (f = a.view(c.front[d]), g.pageZ[c.front[d]] = 5 + h + d, e = 0; e < f.length; e++) g.pageV[f[e]] = !0
-      }
-    } else {
-      for (f = this.view(!1, !0), d = 0; d < f.length; d++) g.pageV[f[d]] = !0, g.pageZ[f[d]] = 2;
-      c.display == b.DISPLAY_SINGLE ? f[0] < c.totalPages && (c.pages[f[0]].hasClass("cover") ? c.pages[f[0] + 1] && !c.pages[f[0] + 1].hasClass("cover") && (g.pageV[f[0] + 1] = !0, g.pageZ[f[0] + 1] = 2) : (g.pageV[f[0] + 1] = !0, g.pageZ[f[0] + 1] = 1)) : c.display == b.DISPLAY_DOUBLE && (f[0] > 2 && (g.pageV[f[0] - 2] = !0, g.pageZ[f[0] - 2] = 1), f[1] < c.totalPages - 1 && (g.pageV[f[1] + 2] = !0, g.pageZ[f[1] + 2] = 1))
-    }
-    for (var k in c.pageWrap) b.has(k, c.pageWrap) && void 0 === g.pageV[k] && this._isCoverPageVisible(k) && (g.pageV[k] = !0, g.pageZ[k] = -1);
-    return g
-  }, n.prototype.update = function() {
-    var c, d, e = this._data,
-      f = this.calcVisiblePages();
-    if (this.isAnimating() && 0 !== e.pageMv[0]) {
-      var g = this.view(),
-        h = this.view(e.tpage);
-      d = "" === e.status ? e.options.hover : !1;
-      for (c in e.pageWrap) b.has(c, e.pageWrap) && (e.pageWrap[c].css({
-        display: (b.isFirefoxOrIE ? '' : (f.pageV[c] ? "" : "none")),
-        visibility: (b.isFirefoxOrIE ? (f.pageV[c] ? "" : "hidden") : ''),
-        zIndex: f.pageZ[c] || 0
-      }), e.tpage ? e.pages[c].flip("hover", !1).flip("disable", -1 == a.inArray(parseInt(c, 10), e.pageMv) && c != h[0] && c != h[1]) : e.pages[c].flip("hover", d).flip("disable", c != g[0] && c != g[1]))
-    } else {
-      d = e.options.hover;
-      for (c in e.pageWrap) b.has(c, e.pageWrap) && (e.pageWrap[c].css({
-        display: (b.isFirefoxOrIE ? '' : (f.pageV[c] ? "" : "none")),
-        visibility: (b.isFirefoxOrIE ? (f.pageV[c] ? "" : "hidden") : ''),
-        zIndex: f.pageZ[c] || 0
-      }), e.pages[c] && (e.pages[c].flip("disable", e.disabled || 2 != f.pageZ[c]).flip("hover", d), f.pageV[c] || (e.pages[c].data("f").visible = !1)))
-    }
-    return e.z = f, this.$el
-  }, n.prototype._updateShadow = function() {}, n.prototype.options = function(c) {
-    if (void 0 === c) return this._data.options;
-    var d = this._data,
-      e = d.options.swipe;
-    if (a.extend(d.options, c), c.pages && this.pages(c.pages), c.page && this.page(c.page), (c.margin || c.pageMargin) && (this._calculateMargin(), this._resize()), c.display && this.display(c.display), c.direction && this.direction(c.direction), c.width && c.height && this.size(c.width, c.height), c.swipe === !0 && e ? this.$el.on("swipe", a.proxy(this, "_eventSwipe")) : c.swipe === !1 && this.$el.off("swipe", this._eventSwipe), c.cornerPosition) {
-      var f = c.cornerPosition.split(" ");
-      d.options.cornerPosition = b.point2D(parseInt(f[0], 10), parseInt(f[1], 10))
-    }
-    if (c.margin && this._resize.call(this), c.animatedAutoCenter === !0 ? this.$el.css(b.addCssWithPrefix({
-        "@transition": "margin-left " + c.duration + "ms"
-      })) : c.animatedAutoCenter === !1 && this.$el.css(b.addCssWithPrefix({
-        "@transition": ""
-      })), c.delegate)
-      for (var g in c.delegate) b.has(g, c.delegate) && ("tap" == g || "doubletap" == g ? (this.$el.off(g, ".page"), this.$el.on(g, ".page", c.delegate[g])) : this.$el.off(g).on(g, c.delegate[g]));
-    return this.$el
-  }, n.prototype.version = function() {
-    return version
-  }, n.prototype._getDirectionStr = function(a) {
-    return a == b.DIRECTION_LTR ? "ltr" : a == b.DIRECTION_RTL ? "rtl" : void 0
-  }, n.prototype._getDirectionConst = function(a) {
-    return "ltr" == a ? b.DIRECTION_LTR : "rtl" == a ? b.DIRECTION_RTL : void 0
-  }, n.prototype.direction = function(a) {
-    var c = this._data,
-      d = this._getDirectionStr(c.direction);
-    if (void 0 === a) return d;
-    a = a.toLowerCase();
-    var e = this._getDirectionConst(a);
-    if (!e) throw b.turnError('"' + a + '" is not a value for direction');
-    return "rtl" == a && this.$el.attr("dir", "ltr").css({
-      direction: "ltr"
-    }), c.direction = e, c.done && this.size(this.$el.width(), this.$el.height()), this.$el
-  }, n.prototype.disabled = function(a) {
-    return void 0 === a ? this._data.disabled === !0 : this.disable(a)
-  }, n.prototype.viewSize = function() {
-    var a = this.size();
-    if (this.display() == b.DISPLAY_DOUBLE) {
-      var c = this.view();
-      c[0] && c[1] || (a.width = Math.floor(a.width / 2))
-    }
-    return a
-  }, n.prototype.size = function(c, d, e) {
-    if (void 0 === c || void 0 === d) return {
-      width: this.$el.width(),
-      height: this.$el.height()
-    };
-    var f, g, h, i = this._data,
-      j = this.view();
-    if (i.display == b.DISPLAY_DOUBLE ? (c = Math.floor(c), d = Math.floor(d), 1 == c % 2 && (c -= 1), h = Math.floor(c / 2)) : h = c, this.stop(), this.$el.css({
-        width: c,
-        height: d
-      }), i.zoom > 1) {
-      for (var k = {}, l = 0; l < j.length; l++) j[l] && (k[j[l]] = 1);
-      for (f in i.pageWrap) b.has(f, i.pageWrap) && this._isCoverPageVisible(f) && (k[f] = 1);
-      for (f in k) b.has(f, k) && (g = this._pageSize(f, !0), e || i.pageObjs[f].css({
-        width: g.width,
-        height: g.height
-      }), i.pageWrap[f].css(g), i.pages[f] && (i.pages[f].flip("_restoreClip", !1, !0), i.pages[f].flip("resize", g.width, g.height)))
-    } else
-      for (f in i.pageWrap) b.has(f, i.pageWrap) && (g = this._pageSize(f, !0), e && -1 != a.inArray(parseInt(f, 10), j) || i.pageObjs[f].css({
-        width: g.width,
-        height: g.height
-      }), i.pageWrap[f].css(g), i.pages[f] && (i.pages[f].flip("_restoreClip"), i.pages[f].flip("resize", g.width, g.height)));
-    i.pages[0] && (i.pageWrap[0].css({
-      left: -this.$el.width()
-    }), i.pages[0].flip("resize")), this._updateShadow();
-    var m = this,
-      n = i.options;
-    return n.autoCenter && (n.animatedAutoCenter && i.done ? (this.$el.css(b.addCssWithPrefix({
-      "@transition": ""
-    })), m.center(), setTimeout(function() {
-      m.$el.css(b.addCssWithPrefix({
-        "@transition": "margin-left " + n.duration + "ms"
-      }))
-    }, 0)) : this.center()), this.$el.css(this._position()), i.pages[0] && (f = i.pages[0].data("f").tPage, f && i.pageObjs[0].children().eq(0).css({
-      width: i.pageObjs[i.page].width(),
-      height: i.pageObjs[i.page].height()
-    })), i.peel && this.peel(i.peel.corner, i.peel.x, i.peel.y, !1), this.flow(), this.$el
-  }, n.prototype.stop = function() {
-    var a, c, d = this._data;
-    if (this.isAnimating()) {
-      var e = d.display == b.DISPLAY_SINGLE;
-      for (d.tpage && (d.page = d.tpage, delete d.tpage); d.pageMv.length > 0;)
-        if (c = d.pages[d.pageMv[0]], a = c.data("f")) {
-          var f = a.peel;
-          a.peel = null, c.flip("hideFoldedPage"), a.peel = f, a.next = e ? a.page + 1 : d.options.showDoublePage ? 0 === a.page % 2 ? a.page + 1 : a.page - 1 : 0 === a.page % 2 ? a.page - 1 : a.page + 1, c.flip("_bringClipToFront", !1)
-        }
-      d.status = "", this.update()
-    } else
-      for (c in d.pages) b.has(c, d.pages) && d.pages[c].flip("_bringClipToFront", !1);
-    return this.$el
-  }, n.prototype._eventStart = function(c, d, e) {
-    var f = this._data,
-      g = a(c.target).data("f");
-    return f.display == b.DISPLAY_SINGLE && e && (g.next = "l" == e.charAt(1) && f.direction == b.DIRECTION_LTR || "r" == e.charAt(1) && f.direction == b.DIRECTION_RTL ? g.next < g.page ? g.next : g.page - 1 : g.next > g.page ? g.next : g.page + 1), c.isDefaultPrevented() ? (this._updateShadow(), void 0) : (this._updateShadow(), void 0)
-  }, n.prototype._eventPress = function(a) {
-    var c = this._data;
-    c.finger = b.eventPoint(a), c.hasSelection = "" === b.getSelectedText(), c.fingerZoom = c.zoom;
-    for (var d in c.pages)
-      if (b.has(d, c.pages) && c.pages[d].flip("_pagePress", a)) return c.tmpListeners || (c.tmpListeners = {}, c.tmpListeners.tap = b.getListeners(this.$el, "tap", !0), c.tmpListeners.doubleTap = b.getListeners(this.$el, "doubleTap", !0)), a.preventDefault(), c.statusHolding = !0, void 0;
-    c.options.smartFlip && a.preventDefault()
-  }, n.prototype._eventMove = function(d) {
-    var e = this._data;
-    for (var f in e.pages) b.has(f, e.pages) && e.pages[f].flip("_pageMove", d);
-    if (e.finger) {
-      var g = a.extend({}, e.finger);
-      e.tmpListeners || (e.tmpListeners = {}, e.tmpListeners.tap = b.getListeners(this.$el, "tap", !0), e.tmpListeners.doubleTap = b.getListeners(this.$el, "doubleTap", !0)), e.finger = b.eventPoint(d), e.finger.prev = g, e.zoom > 1 && (!c || c && 1 == d.originalEvent.originalEvent.touches.length) && this.scroll(e.scroll.left + e.finger.x - g.x, e.scroll.top + e.finger.y - g.y)
-    } else if (!c && e.zoom > 1 && e.options.autoScroll) {
-      e.initScroll || (e.initScroll = this.scroll(), e.initCursor = b.eventPoint(d), e.viewerOffset = e.options.viewer.offset());
-      var h = b.eventPoint(d),
-        i = b.point2D(e.initScroll.x, e.initScroll.y),
-        j = this.scrollSize();
-      h.x < e.initCursor.x ? i.x = e.initScroll.left * Math.max(0, (h.x - e.viewerOffset.left - 20) / e.initCursor.x) : h.x > e.initCursor.x && (i.x = e.initScroll.left + (j.width - e.initScroll.left) * Math.min(1, (h.x - e.initCursor.x + 20) / (e.viewerWidth - e.initCursor.x))), h.y < e.initCursor.y ? i.y = e.initScroll.top * Math.max(0, (h.y - e.viewerOffset.top - 20) / e.initCursor.y) : h.y > e.initCursor.y && (i.y = e.initScroll.top + (j.height - e.initScroll.top) * Math.min(1, (h.y - e.initCursor.y + 20) / (e.viewerHeight - e.initCursor.y))), this.scroll(i.x, i.y)
-    }
-  }, n.prototype._eventRelease = function(a) {
-    var c = this,
-      d = this._data;
-    if (setTimeout(function() {
-        d.tmpListeners && (b.setListeners(c.$el, "tap", d.tmpListeners.tap), b.setListeners(c.$el, "doubleTap", d.tmpListeners.doubleTap), delete d.tmpListeners)
-      }, 1), d.finger) {
-      for (var e in d.pages) b.has(e, d.pages) && d.pages[e].flip("_pageUnpress", a);
-      delete d.finger, delete d.fingerZoom, d.statusHolding && (d.statusHolding = !1, d.statusHover || this._hasMotionListener(!1)), d.zoomed && (this.zoom(d.zoomed[0], d.zoomed[1]), delete d.zoomed)
-    }
-  }, n.prototype._eventSwipe = function(c) {
-    var d = this._data,
-      e = "" === b.getSelectedText();
-    if ("turning" != d.status && 1 == d.zoom && d.hasSelection == e)
-      if (d.display == b.DISPLAY_SINGLE) {
-        var f = d.page;
-        if (c.speed < 0) {
-          if (~a.inArray(d.corner, b.corners.forward)) this.next();
-          else if (d.status = "swiped", d.pages[f].flip("hideFoldedPage", !0), f > 1) {
-            var g = d.pages[f - 1].data("f").point;
-            d.pages[f - 1].flip("turnPage", g ? g.corner : "")
-          }
-        } else c.speed > 0 && (~a.inArray(d.corner, b.corners.backward) ? this.previous() : (d.status = "swiped", d.pages[f].flip("hideFoldedPage", !0)))
-      } else d.display == b.DISPLAY_DOUBLE && (c.speed < 0 ? this.isAnimating() ? ~a.inArray(d.corner, b.corners.forward) && this.next() : this.next() : c.speed > 0 && (this.isAnimating() ? ~a.inArray(d.corner, b.corners.backward) && this.previous() : this.previous()))
-  }, n.prototype._eventHover = function() {
-    var a = this._data;
-    clearInterval(a.noHoverTimer), a.statusHover = !0, this._hasMotionListener(!0)
-  }, n.prototype._eventNoHover = function(a) {
-    var b = this,
-      c = this._data;
-    c.noHoverTimer = setTimeout(function() {
-      c.statusHolding || (b._eventMove(a), b._hasMotionListener(!1)), delete c.noHoverTimer, c.statusHover = !1
-    }, 10)
-  }, n.prototype._hasMotionListener = function(b) {
-    var c = this._data;
-    b ? c.hasMoveListener || (a(document).on("vmousemove", a.proxy(this, "_eventMove")).on("vmouseup", a.proxy(this, "_eventRelease")), c.hasMoveListener = !0) : c.hasMoveListener && (a(document).off("vmousemove", this._eventMove).off("vmouseup", this._eventRelease), c.hasMoveListener = !1)
-  }, n.prototype.focusPoint = function() {
-    var a = this._data;
-    if (a.focusPoint) return a.focusPoint;
-    var c = this.view();
-    return c[0] ? c[1] ? b.point2D(this.width() / 2, this.height() / 2) : b.point2D(3 * this.width() / 4, this.height() / 2) : b.point2D(this.width() / 4, this.height() / 2)
-  }, n.prototype.maxZoom = function() {
-    var a = this._data;
-    if (a.options.responsive) {
-      if ("string" == typeof a.options.width && ~a.options.width.indexOf("%")) return 1;
-      var c = a.viewerWidth - a.margin[1] - a.margin[3],
-        d = a.viewerHeight - a.margin[0] - a.margin[2];
-      return a.options.width / b.calculateBounds({
-        width: a.options.width,
-        height: a.options.height,
-        boundWidth: Math.min(a.options.width, c),
-        boundHeight: Math.min(a.options.height, d)
-      }).width
-    }
-    return a.options.zoom
-  }, n.prototype.zoomIn = function(a) {
-    return this._data, this.zoom(this.maxZoom(), a)
-  }, n.prototype.zoomOut = function(a) {
-    return this.zoom(1, a)
-  }, n.prototype._halfWidth = function() {
-    var a = this._data,
-      c = this.view();
-    return a.display == b.DISPLAY_DOUBLE && a.options.autoCenter && (!c[0] || !c[1])
-  }, n.prototype.scrollSize = function() {
-    var a = this._data,
-      b = this.size(),
-      c = this._halfWidth() ? b.width / 2 : b.width;
-    return {
-      width: Math.max(0, c - a.viewerWidth),
-      height: Math.max(0, b.height - a.viewerHeight)
-    }
-  }, n.prototype.scroll = function(a, c) {
-    var d = this._data;
-    if (void 0 === c && void 0 === a) return d.scroll;
-    if (d.zoom > 1 && !d.silentZoom) {
-      var e = this.size();
-      this.view();
-      var f = this.scrollSize(),
-        g = b.point2D(d.viewerWidth / 2 - e.width / 2, d.viewerHeight / 2 - e.height / 2);
-      c = Math.min(f.height, Math.max(0, c)), a = Math.min(f.width, Math.max(0, a)), this._trigger("scrolling", a, c) != b.EVENT_PREVENTED && (g.x = g.x + f.width / 2 - a, g.y = g.y + f.height / 2 - c, this.$el.css({
-        left: g.x,
-        top: g.y
-      }), d.scroll = {
-        top: c,
-        left: a
-      })
-    }
-    return this.$el
-  }, n.prototype._mouseRel = function(a) {
-    var c = this.$el.offset(),
-      d = this._data,
-      e = this.size(),
-      f = b.point2D(a.pageX - c.left, a.pageY - c.top);
-    if (d.display == b.DISPLAY_DOUBLE) {
-      var g = this.view();
-      if (g[0]) {
-        if (g[1]) {
-          if (f.x < 0 || f.x > e.width) return null
-        } else if (f.x = f.x, f.x < 0 || f.x > e.width / 2) return null
-      } else if (f.x = f.x - e.width / 2, f.x < 0 || f.x > e.width / 2) return null
-    } else if (d.display == b.DISPLAY_SINGLE && (f.x < 0 || f.x > e.width)) return null;
-    return f
-  }, n.prototype.zoom = function(c, d) {
-    var e = this._data;
-    if (void 0 === c) return e.zoom;
-    d = d || {};
-    var f = this.size(),
-      g = this._halfWidth();
-    if ("pageX" in d && "pageY" in d) {
-      var h = this._mouseRel(d);
-      if (null === h) return this.$el;
-      d = a.extend(d, h), "factor" in d && (c = d.factor * e.fingerZoom, d.animate = !1)
-    } else "x" in d && "y" in d || (d.x = g ? f.width / 4 : f.width / 2, d.y = f.height / 2);
-    if (e.silentZoom || this._trigger("willZoom", c, e.zoom) != b.EVENT_PREVENTED) {
-      var i, j = this,
-        k = e.zoom;
-      e.options.viewer;
-      var l = this.view(),
-        m = parseFloat(Math.min(this.maxZoom(), Math.max(.1, c)), 10),
-        n = this._position(m);
-      b.vendor + "transition";
-      var o = void 0 === d.animate ? !0 : d.animate,
-        p = this.$el.offset(),
-        q = e.options.viewer.offset(),
-        r = this._size(m, !0),
-        s = 1 / e.zoom * m,
-        t = e.display == b.DISPLAY_DOUBLE && e.options.autoCenter,
-        u = b.point2D(Math.max(0, r.width - e.viewerWidth), Math.max(0, r.height - e.viewerHeight)),
-        v = b.point2D(d.x * s - p.left - d.x, d.y * s - p.top - d.y);
-      t && !l[0] && (v.x = v.x - f.width / 2), v = b.point2D(Math.min(u.x, Math.max(0, v.x)), Math.min(u.y, Math.max(0, v.y))), g && (n.left += r.width / 2);
-      var w = b.point2D(q.left - p.left + Math.max(0, n.left), q.top - p.top + Math.max(0, n.top));
-      t && !l[0] && (w.x -= r.width);
-      var x = b.translate(w.x - v.x, w.y - v.y, !0) + b.scale(m, m, !0);
-      if (this.stop(), this.disable(!0), this._cloneView(!0), o) {
-        if (k > m)
-          for (i in e.pageWrap) e.pageWrap[i].css({
-            visibility: "hidden"
-          });
-        e.silentZoom = !0;
-        var y = f.width / e.zoomer.width();
-        e.zoomer.css(b.addCssWithPrefix({
-          "@transform-origin": "0% 0%",
-          "@transform": b.scale(y, y, !0)
-        })), setTimeout(function() {
-          e.zoomer.css(b.addCssWithPrefix({
-            "@transition": "@transform 500ms ease-in-out",
-            "@transform": x
-          }))
-        }, 10), b.getTransitionEnd(e.zoomer, function() {
-          e.finger || j.zoom(c, {
-            animate: !1,
-            x: d.x,
-            y: d.y
-          })
-        })
-      } else {
-        var z = e.peel;
-        if (e.zoomer.css(b.addCssWithPrefix({
-            "@transition": "",
-            "@transform-origin": "0% 0%",
-            "@transform": x
-          })), "factor" in d) {
-          if (k > m)
-            for (i in e.pageWrap) e.pageWrap[i].css({
-              visibility: "hidden"
-            });
-          e.zoomed = [c, {
-            pageX: d.pageX,
-            pageY: d.pageY,
-            animate: !1
-          }]
+    return this.$el;
+  };
+  /**
+   * @param {?} ratio
+   * @param {boolean} dataAndEvents
+   * @return {?}
+   */
+  that.prototype._size = function(ratio, dataAndEvents) {
+    var canvas = this._defaultSize();
+    return canvas.width = canvas.width * ratio, canvas.height = canvas.height * ratio, dataAndEvents && (this._halfWidth() && (canvas.width = Math.floor(canvas.width / 2))), canvas;
+  };
+  /**
+   * @param {number} message
+   * @param {?} funcToCall
+   * @param {number} millis
+   * @param {boolean} recurring
+   * @return {?}
+   */
+  that.prototype.peel = function(message, funcToCall, millis, recurring) {
+    var data = this._data;
+    if (message) {
+      if (1 == this.zoom()) {
+        if (recurring = void 0 !== recurring ? recurring : true, data.display == self.DISPLAY_SINGLE) {
+          data.peel = self.peelingPoint(message, funcToCall, millis);
+          data.pages[data.page].flip("peel", self.peelingPoint(message, funcToCall, millis), recurring);
         } else {
-          for (i in e.pageWrap) e.pageWrap[i].css({
-            visibility: ""
-          });
-          e.zoom = c, r = this._defaultSize(), r.width = r.width * m, r.height = r.height * m, e.zoom = m, e.silentZoom = !1, delete e.initScroll, delete e.initCursor, e.peel = null, this.display(r.display), this.size(r.width, r.height, e.options.autoScaleContent), this.scroll(v.x, v.y), 1 == m ? (this.disable(!1), z && this.peel(z.corner, z.x, z.y, !0)) : e.peel = z, e.options.autoScaleContent && this.scaleContent(m), e.zoomer.css(b.addCssWithPrefix({
-            "@transform": b.translate(-1e4, 0, !0)
-          })), this.$el.trigger("zoomed", [m, k])
+          var view = this.view();
+          var page = ~$.inArray(message, corners.backward) ? view[0] : view[1];
+          if (data.pages[page]) {
+            data.peel = self.peelingPoint(message, funcToCall, millis);
+            data.pages[page].flip("peel", data.peel, recurring);
+          }
+        }
+      }
+    } else {
+      /** @type {null} */
+      data.peel = null;
+      this.stop(true);
+    }
+    return this.$el;
+  };
+  /**
+   * @return {undefined}
+   */
+  that.prototype._resizeObserver = function() {
+    var data = this._data;
+    if (data && data.watchSizeChange) {
+      var $cont = data.options.viewer;
+      /** @type {number} */
+      var d = 10;
+      if (data.viewerWidth != $cont.width() || data.viewerHeight != $cont.height()) {
+        data.viewerWidth = $cont.width();
+        data.viewerHeight = $cont.height();
+        this._resize();
+      }
+      /** @type {number} */
+      data.monitorTimer = setTimeout($.proxy(this._resizeObserver, this), d);
+    }
+  };
+  /**
+   * @param {Object} userid
+   * @return {undefined}
+   */
+  that.prototype.watchForSizeChanges = function(userid) {
+    var data = this._data;
+    if (data.watchSizeChange != userid) {
+      /** @type {Object} */
+      data.watchSizeChange = userid;
+      clearInterval(data.monitorTimer);
+      this._resizeObserver();
+    }
+  };
+  /**
+   * @param {number} idx
+   * @return {?}
+   */
+  that.prototype._defaultSize = function(idx) {
+    var data = this._data;
+    /** @type {number} */
+    var width = data.viewerWidth - data.margin[1] - data.margin[3];
+    /** @type {number} */
+    var g = data.viewerHeight - data.margin[0] - data.margin[2];
+    /** @type {(boolean|number)} */
+    var f = "string" == typeof data.options.width && ~data.options.width.indexOf("%");
+    var w = self.transformUnit(data.options.width, width);
+    var r2 = self.transformUnit(data.options.height, g);
+    var rect = self.calculateBounds({
+      width : w,
+      height : r2,
+      boundWidth : Math.min(data.options.width, width),
+      boundHeight : Math.min(data.options.height, g)
+    });
+    if (data.options.responsive) {
+      if (f) {
+        if (g > width) {
+          return{
+            width : self.transformUnit(data.options.width, width),
+            height : r2,
+            display : self.DISPLAY_SINGLE
+          };
+        }
+      } else {
+        var img = self.calculateBounds({
+          width : w / 2,
+          height : r2,
+          boundWidth : Math.min(data.options.width / 2, width),
+          boundHeight : Math.min(data.options.height, g)
+        });
+        /** @type {number} */
+        var length = data.viewerWidth * data.viewerHeight;
+        /** @type {number} */
+        var l = length - rect.width * rect.height;
+        /** @type {number} */
+        var i = length - img.width * img.height;
+        if (l > i && !idx || idx == self.DISPLAY_SINGLE) {
+          return{
+            width : img.width,
+            height : img.height,
+            display : self.DISPLAY_SINGLE
+          };
+        }
+        if (0 !== rect.width % 2) {
+          rect.width -= 1;
         }
       }
     }
-    return this.$el
-  }, n.prototype.scaleContent = function(a) {
-    for (var b = this._data, c = this.view(), d = 0; d < c.length; d++) c[d] && b.pageObjs[c[d]].transform("scale(" + a + ")", "0% 0%")
-  }, n.prototype._position = function(a) {
-    var b = this._data,
-      c = a || b.zoom,
-      d = a ? this._size(a) : this.size(),
-      e = {
-        top: 0,
-        left: 0
-      };
-    if (b.options.responsive && (e.top = b.viewerHeight / 2 - d.height / 2, e.left = b.viewerWidth / 2 - d.width / 2, 1 == c)) {
-      var f = b.margin;
-      (e.top < f[0] || e.top + d.height > b.viewerHeight - f[2]) && (e.top = f[0]), (e.left < f[1] || e.left + d.width > b.viewerWidth - f[3]) && (e.left = f[3])
+    return{
+      width : rect.width,
+      height : rect.height,
+      display : self.DISPLAY_DOUBLE
+    };
+  };
+  /**
+   * @return {undefined}
+   */
+  that.prototype._calculateMargin = function() {
+    var selector;
+    var matched;
+    var data = this._data;
+    /** @type {RegExp} */
+    var rquickExpr = /^(\d+(?:px|%))(?:\s+(\d+(?:px|%))(?:\s+(\d+(?:px|%))\s+(\d+(?:px|%)))?)$/;
+    if (selector = data.options.margin) {
+      if (matched = rquickExpr.exec(selector)) {
+        data.margin[0] = self.transformUnit(matched[1], data.viewerHeight);
+        data.margin[1] = matched[2] ? self.transformUnit(matched[2], data.viewerWidth) : data.margin[0];
+        data.margin[2] = matched[3] ? self.transformUnit(matched[3], data.viewerHeight) : data.margin[0];
+        data.margin[3] = matched[4] ? self.transformUnit(matched[4], data.viewerWidth) : data.margin[1];
+      }
+    } else {
+      /** @type {Array} */
+      data.margin = [0, 0, 0, 0];
     }
-    return e
-  }, n.prototype.toggleZoom = function(a) {
-    var b = this._data;
-    1 == b.zoom ? this.zoomIn(a) : this.zoomOut(a)
-  }, n.prototype._cloneView = function(c) {
-    var d = this._data;
-    if (d.zoomer) c ? d.zoomer.show() : (d.zoomer.remove(), delete d.zoomer);
-    else if (c) {
-      var e, f, g, h = this.view(),
-        i = {},
-        j = a("<div />");
-      j.css(b.addCssWithPrefix({
-        "@transform-origin": "0% 0%"
-      })), j.css({
-        position: "absolute",
-        top: 0,
-        left: 0,
-        "z-index": 10,
-        width: this.$el.width(),
-        height: this.$el.height()
+    if (selector = data.options.pageMargin) {
+      if (matched = rquickExpr.exec(selector)) {
+        data.pageMargin[0] = self.transformUnit(matched[1], data.viewerHeight);
+        data.pageMargin[1] = matched[2] ? self.transformUnit(matched[2], data.viewerWidth) : data.pageMargin[0];
+        data.pageMargin[2] = matched[3] ? self.transformUnit(matched[3], data.viewerHeight) : data.pageMargin[0];
+        data.pageMargin[3] = matched[4] ? self.transformUnit(matched[4], data.viewerWidth) : data.pageMargin[1];
+      }
+    } else {
+      /** @type {Array} */
+      data.pageMargin = [0, 0, 0, 0];
+    }
+  };
+  /**
+   * @return {undefined}
+   */
+  that.prototype._resize = function() {
+    var i;
+    var codeSegments;
+    var options;
+    var data = this._data;
+    if (data.options.responsive) {
+      var bbox = this.view();
+      if (1 == data.zoom) {
+        data.options.viewer;
+        data.viewerWidth;
+        data.viewerHeight;
+        var location = data.slider;
+        if (this._calculateMargin(), data.slider = null, options = this._defaultSize(), this.display(options.display, false), data.slider = location, options.display != data.display && (options = this._defaultSize(data.display)), this.size(options.width * data.zoom, options.height * data.zoom), this.update(), data.zoomer) {
+          options = this._defaultSize(data.display);
+          data.zoomer.css({
+            width : options.width,
+            height : options.height
+          });
+          codeSegments = data.zoomer.children();
+          /** @type {number} */
+          i = 0;
+          for (;i < codeSegments.length;i++) {
+            $(codeSegments[i]).css({
+              width : options.width / bbox.length,
+              height : options.height
+            });
+          }
+        }
+      } else {
+        if (this.scroll(data.scroll.left, data.scroll.top), data.zoomer) {
+          options = this._defaultSize(data.display);
+          data.zoomer.css({
+            width : options.width,
+            height : options.height
+          });
+          codeSegments = data.zoomer.children();
+          /** @type {number} */
+          i = 0;
+          for (;i < codeSegments.length;i++) {
+            $(codeSegments[i]).css({
+              width : options.width / bbox.length,
+              height : options.height
+            });
+          }
+        }
+      }
+      if (data.miniatures) {
+        miniMethods._resize.call($(data.miniatures));
+      }
+    }
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.calcVisiblePages = function() {
+    var value = this;
+    var data = this._data;
+    if (!data.tpage) {
+      data.page;
+    }
+    var i;
+    var pageIndex;
+    var pages;
+    var r = {
+      pageZ : {},
+      pageV : {}
+    };
+    if (this.isAnimating() && 0 !== data.pageMv[0]) {
+      var len = data.pageMv.length;
+      var l = data.front.length;
+      var end = data.display;
+      if (end == self.DISPLAY_SINGLE) {
+        /** @type {number} */
+        i = 0;
+        for (;len > i;i++) {
+          nextPage = data.pages[data.pageMv[i]].data("f").next;
+          /** @type {boolean} */
+          r.pageV[data.pageMv[i]] = true;
+          /** @type {number} */
+          r.pageZ[data.pageMv[i]] = 3 + len - i;
+          /** @type {boolean} */
+          r.pageV[nextPage] = true;
+          if (data.pageObjs[data.pageMv[i]].hasClass("cover")) {
+            /** @type {boolean} */
+            r.pageV[nextPage + 1] = true;
+          } else {
+            /** @type {boolean} */
+            r.pageV[0] = true;
+            r.pageZ[0] = 3 + len + 1;
+          }
+        }
+      } else {
+        if (data.display == self.DISPLAY_DOUBLE) {
+          /** @type {number} */
+          i = 0;
+          for (;len > i;i++) {
+            pages = value.view(data.pageMv[i]);
+            /** @type {number} */
+            pageIndex = 0;
+            for (;pageIndex < pages.length;pageIndex++) {
+              /** @type {boolean} */
+              r.pageV[pages[pageIndex]] = true;
+            }
+            /** @type {number} */
+            r.pageZ[data.pageMv[i]] = 3 + len - i;
+          }
+          /** @type {number} */
+          i = 0;
+          for (;l > i;i++) {
+            pages = value.view(data.front[i]);
+            r.pageZ[data.front[i]] = 5 + len + i;
+            /** @type {number} */
+            pageIndex = 0;
+            for (;pageIndex < pages.length;pageIndex++) {
+              /** @type {boolean} */
+              r.pageV[pages[pageIndex]] = true;
+            }
+          }
+        }
+      }
+    } else {
+      pages = this.view(false, true);
+      /** @type {number} */
+      i = 0;
+      for (;i < pages.length;i++) {
+        /** @type {boolean} */
+        r.pageV[pages[i]] = true;
+        /** @type {number} */
+        r.pageZ[pages[i]] = 2;
+      }
+      if (data.display == self.DISPLAY_SINGLE) {
+        if (pages[0] < data.totalPages) {
+          if (data.pages[pages[0]].hasClass("cover")) {
+            if (data.pages[pages[0] + 1]) {
+              if (!data.pages[pages[0] + 1].hasClass("cover")) {
+                /** @type {boolean} */
+                r.pageV[pages[0] + 1] = true;
+                /** @type {number} */
+                r.pageZ[pages[0] + 1] = 2;
+              }
+            }
+          } else {
+            /** @type {boolean} */
+            r.pageV[pages[0] + 1] = true;
+            /** @type {number} */
+            r.pageZ[pages[0] + 1] = 1;
+          }
+        }
+      } else {
+        if (data.display == self.DISPLAY_DOUBLE) {
+          if (pages[0] > 2) {
+            /** @type {boolean} */
+            r.pageV[pages[0] - 2] = true;
+            /** @type {number} */
+            r.pageZ[pages[0] - 2] = 1;
+          }
+          if (pages[1] < data.totalPages - 1) {
+            /** @type {boolean} */
+            r.pageV[pages[1] + 2] = true;
+            /** @type {number} */
+            r.pageZ[pages[1] + 2] = 1;
+          }
+        }
+      }
+    }
+    var page;
+    for (page in data.pageWrap) {
+      if (self.has(page, data.pageWrap)) {
+        if (void 0 === r.pageV[page]) {
+          if (this._isCoverPageVisible(page)) {
+            /** @type {boolean} */
+            r.pageV[page] = true;
+            /** @type {number} */
+            r.pageZ[page] = -1;
+          }
+        }
+      }
+    }
+    return r;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.update = function() {
+    var page;
+    var hover;
+    var data = this._data;
+    var pos = this.calcVisiblePages();
+    if (this.isAnimating() && 0 !== data.pageMv[0]) {
+      var view = this.view();
+      var h = this.view(data.tpage);
+      hover = "" === data.status ? data.options.hover : false;
+      for (page in data.pageWrap) {
+        if (self.has(page, data.pageWrap)) {
+          data.pageWrap[page].css({
+            display : self.isFirefoxOrIE ? "" : pos.pageV[page] ? "" : "none",
+            visibility : self.isFirefoxOrIE ? pos.pageV[page] ? "" : "hidden" : "",
+            zIndex : pos.pageZ[page] || 0
+          });
+          if (data.tpage) {
+            data.pages[page].flip("hover", false).flip("disable", -1 == $.inArray(parseInt(page, 10), data.pageMv) && (page != h[0] && page != h[1]));
+          } else {
+            data.pages[page].flip("hover", hover).flip("disable", page != view[0] && page != view[1]);
+          }
+        }
+      }
+    } else {
+      hover = data.options.hover;
+      for (page in data.pageWrap) {
+        if (self.has(page, data.pageWrap)) {
+          data.pageWrap[page].css({
+            display : self.isFirefoxOrIE ? "" : pos.pageV[page] ? "" : "none",
+            visibility : self.isFirefoxOrIE ? pos.pageV[page] ? "" : "hidden" : "",
+            zIndex : pos.pageZ[page] || 0
+          });
+          if (data.pages[page]) {
+            data.pages[page].flip("disable", data.disabled || 2 != pos.pageZ[page]).flip("hover", hover);
+            if (!pos.pageV[page]) {
+              /** @type {boolean} */
+              data.pages[page].data("f").visible = false;
+            }
+          }
+        }
+      }
+    }
+    return data.z = pos, this.$el;
+  };
+  /**
+   * @return {undefined}
+   */
+  that.prototype._updateShadow = function() {
+  };
+  /**
+   * @param {Object} options
+   * @return {?}
+   */
+  that.prototype.options = function(options) {
+    if (void 0 === options) {
+      return this._data.options;
+    }
+    var data = this._data;
+    var swipe = data.options.swipe;
+    if ($.extend(data.options, options), options.pages && this.pages(options.pages), options.page && this.page(options.page), (options.margin || options.pageMargin) && (this._calculateMargin(), this._resize()), options.display && this.display(options.display), options.direction && this.direction(options.direction), options.width && (options.height && this.size(options.width, options.height)), options.swipe === true && swipe ? this.$el.on("swipe", $.proxy(this, "_eventSwipe")) : options.swipe === 
+    false && this.$el.off("swipe", this._eventSwipe), options.cornerPosition) {
+      var octalLiteral = options.cornerPosition.split(" ");
+      data.options.cornerPosition = self.point2D(parseInt(octalLiteral[0], 10), parseInt(octalLiteral[1], 10));
+    }
+    if (options.margin && this._resize.call(this), options.animatedAutoCenter === true ? this.$el.css(self.addCssWithPrefix({
+      "@transition" : "margin-left " + options.duration + "ms"
+    })) : options.animatedAutoCenter === false && this.$el.css(self.addCssWithPrefix({
+      "@transition" : ""
+    })), options.delegate) {
+      var eventName;
+      for (eventName in options.delegate) {
+        if (self.has(eventName, options.delegate)) {
+          if ("tap" == eventName || "doubletap" == eventName) {
+            this.$el.off(eventName, ".page");
+            this.$el.on(eventName, ".page", options.delegate[eventName]);
+          } else {
+            this.$el.off(eventName).on(eventName, options.delegate[eventName]);
+          }
+        }
+      }
+    }
+    return this.$el;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.version = function() {
+    return version;
+  };
+  /**
+   * @param {number} i
+   * @return {?}
+   */
+  that.prototype._getDirectionStr = function(i) {
+    return i == self.DIRECTION_LTR ? "ltr" : i == self.DIRECTION_RTL ? "rtl" : void 0;
+  };
+  /**
+   * @param {string} fragment
+   * @return {?}
+   */
+  that.prototype._getDirectionConst = function(fragment) {
+    return "ltr" == fragment ? self.DIRECTION_LTR : "rtl" == fragment ? self.DIRECTION_RTL : void 0;
+  };
+  /**
+   * @param {string} current
+   * @return {?}
+   */
+  that.prototype.direction = function(current) {
+    var data = this._data;
+    var resultVec = this._getDirectionStr(data.direction);
+    if (void 0 === current) {
+      return resultVec;
+    }
+    current = current.toLowerCase();
+    var key = this._getDirectionConst(current);
+    if (!key) {
+      throw self.turnError('"' + current + '" is not a value for direction');
+    }
+    return "rtl" == current && this.$el.attr("dir", "ltr").css({
+      direction : "ltr"
+    }), data.direction = key, data.done && this.size(this.$el.width(), this.$el.height()), this.$el;
+  };
+  /**
+   * @param {Object} recurring
+   * @return {?}
+   */
+  that.prototype.disabled = function(recurring) {
+    return void 0 === recurring ? this._data.disabled === true : this.disable(recurring);
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.viewSize = function() {
+    var size = this.size();
+    if (this.display() == self.DISPLAY_DOUBLE) {
+      var data = this.view();
+      if (!(data[0] && data[1])) {
+        /** @type {number} */
+        size.width = Math.floor(size.width / 2);
+      }
+    }
+    return size;
+  };
+  /**
+   * @param {number} w
+   * @param {number} n
+   * @param {boolean} obj
+   * @return {?}
+   */
+  that.prototype.size = function(w, n, obj) {
+    if (void 0 === w || void 0 === n) {
+      return{
+        width : this.$el.width(),
+        height : this.$el.height()
+      };
+    }
+    var page;
+    var dimension;
+    var testWindow;
+    var data = this._data;
+    var keys = this.view();
+    if (data.display == self.DISPLAY_DOUBLE ? (w = Math.floor(w), n = Math.floor(n), 1 == w % 2 && (w -= 1), testWindow = Math.floor(w / 2)) : testWindow = w, this.stop(), this.$el.css({
+      width : w,
+      height : n
+    }), data.zoom > 1) {
+      var a = {};
+      /** @type {number} */
+      var i = 0;
+      for (;i < keys.length;i++) {
+        if (keys[i]) {
+          /** @type {number} */
+          a[keys[i]] = 1;
+        }
+      }
+      for (page in data.pageWrap) {
+        if (self.has(page, data.pageWrap)) {
+          if (this._isCoverPageVisible(page)) {
+            /** @type {number} */
+            a[page] = 1;
+          }
+        }
+      }
+      for (page in a) {
+        if (self.has(page, a)) {
+          dimension = this._pageSize(page, true);
+          if (!obj) {
+            data.pageObjs[page].css({
+              width : dimension.width,
+              height : dimension.height
+            });
+          }
+          data.pageWrap[page].css(dimension);
+          if (data.pages[page]) {
+            data.pages[page].flip("_restoreClip", false, true);
+            data.pages[page].flip("resize", dimension.width, dimension.height);
+          }
+        }
+      }
+    } else {
+      for (page in data.pageWrap) {
+        if (self.has(page, data.pageWrap)) {
+          dimension = this._pageSize(page, true);
+          if (!(obj && -1 != $.inArray(parseInt(page, 10), keys))) {
+            data.pageObjs[page].css({
+              width : dimension.width,
+              height : dimension.height
+            });
+          }
+          data.pageWrap[page].css(dimension);
+          if (data.pages[page]) {
+            data.pages[page].flip("_restoreClip");
+            data.pages[page].flip("resize", dimension.width, dimension.height);
+          }
+        }
+      }
+    }
+    if (data.pages[0]) {
+      data.pageWrap[0].css({
+        left : -this.$el.width()
       });
-      for (var k = 0; k < h.length; k++) h[k] && (i[h[k]] = 1);
-      for (g in d.pageWrap) b.has(g, d.pageWrap) && this._isCoverPageVisible(g) && (i[g] = 1);
-      for (g in i) b.has(g, i) && (e = this._pageSize(g, !0), e.position = "absolute", e.zIndex = d.pageWrap[g].css("z-index"), f = d.pageObjs[g].clone(), f.css(e), f.appendTo(j));
-      j.appendTo(this.$el), d.zoomer = j
+      data.pages[0].flip("resize");
     }
-  }, q.prototype._pageCURL = function(a) {
-    var c, d, e, f, g, h, i, j, k, l, m, n, q, r = this.$el.data("f"),
-      s = r.turnData,
-      t = this.$el.width(),
-      u = this.$el.height(),
-      v = this,
-      w = 0,
-      x = b.point2D(0, 0),
-      y = b.point2D(0, 0),
-      z = b.point2D(0, 0),
-      A = (this._foldingPage(), s.options.acceleration),
-      B = r.clip.height(),
-      C = function() {
-        c = v._startPoint(a.corner);
-        var j, k = t - c.x - a.x,
-          l = c.y - a.y,
-          m = Math.atan2(l, k),
-          n = Math.sqrt(k * k + l * l),
-          q = b.point2D(t - c.x - Math.cos(m) * t, c.y - Math.sin(m) * t);
-        n > t && (a.x = q.x, a.y = q.y);
-        var r = b.point2D(0, 0),
-          A = b.point2D(0, 0);
-        if (r.x = c.x ? c.x - a.x : a.x, r.y = b.hasRotation ? c.y ? c.y - a.y : a.y : 0, A.x = e ? t - r.x / 2 : a.x + r.x / 2, A.y = r.y / 2, m = o - Math.atan2(r.y, r.x), j = m - Math.atan2(A.y, A.x), n = Math.sin(j) * Math.sqrt(A.x * A.x + A.y * A.y), z = b.point2D(n * Math.sin(m), n * Math.cos(m)), m > o) {
-          if (z.x = z.x + Math.abs(z.y * r.y / r.x), z.y = 0, Math.round(z.x * Math.tan(p - m)) < u) return a.y = Math.sqrt(Math.pow(u, 2) + 2 * A.x * r.x), d && (a.y = u - a.y), C();
-          var D = p - m,
-            E = B - u / Math.sin(D);
-          x = b.point2D(Math.round(E * Math.cos(D)), Math.round(E * Math.sin(D))), e && (x.x = -x.x), d && (x.y = -x.y)
+    this._updateShadow();
+    var _self = this;
+    var options = data.options;
+    return options.autoCenter && (options.animatedAutoCenter && data.done ? (this.$el.css(self.addCssWithPrefix({
+      "@transition" : ""
+    })), _self.center(), setTimeout(function() {
+      _self.$el.css(self.addCssWithPrefix({
+        "@transition" : "margin-left " + options.duration + "ms"
+      }));
+    }, 0)) : this.center()), this.$el.css(this._position()), data.pages[0] && (page = data.pages[0].data("f").tPage, page && data.pageObjs[0].children().eq(0).css({
+      width : data.pageObjs[data.page].width(),
+      height : data.pageObjs[data.page].height()
+    })), data.peel && this.peel(data.peel.corner, data.peel.x, data.peel.y, false), this.flow(), this.$el;
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.stop = function() {
+    var c;
+    var page;
+    var data = this._data;
+    if (this.isAnimating()) {
+      /** @type {boolean} */
+      var path = data.display == self.DISPLAY_SINGLE;
+      if (data.tpage) {
+        data.page = data.tpage;
+        delete data.tpage;
+      }
+      for (;data.pageMv.length > 0;) {
+        if (page = data.pages[data.pageMv[0]], c = page.data("f")) {
+          var i = c.peel;
+          /** @type {null} */
+          c.peel = null;
+          page.flip("hideFoldedPage");
+          c.peel = i;
+          c.next = path ? c.page + 1 : data.options.showDoublePage ? 0 === c.page % 2 ? c.page + 1 : c.page - 1 : 0 === c.page % 2 ? c.page - 1 : c.page + 1;
+          page.flip("_bringClipToFront", false);
         }
-        w = Math.round(100 * b.deg(m)) / 100, f = Math.round(z.y / Math.tan(m) + z.x);
-        var F = t - f,
-          G = Math.min(u, F * Math.tan(m));
-        0 > G && (G = u);
-        var H = F * Math.cos(2 * m),
-          I = F * Math.sin(2 * m);
-        if (y = b.point2D(Math.round(e ? F - H : f + H), Math.round(d ? I : u - I)), s.options.gradients) {
-          var J = v._endPoint(a.corner);
-          i = Math.sqrt(Math.pow(J.x - a.x, 2) + Math.pow(J.y - a.y, 2)) / t, g = Math.min(100, F * Math.sin(m)), h = 1.3 * Math.min(F, G)
+      }
+      /** @type {string} */
+      data.status = "";
+      this.update();
+    } else {
+      for (page in data.pages) {
+        if (self.has(page, data.pages)) {
+          data.pages[page].flip("_bringClipToFront", false);
         }
-        return z.x = Math.round(z.x), z.y = Math.round(z.y), !0
-      },
-      D = function(a, c, j, k) {
-        var l = ["0", "auto"],
-          m = (t - B) * j[0] / 100,
-          n = (u - B) * j[1] / 100,
-          o = {
-            left: l[c[0]],
-            top: l[c[1]],
-            right: l[c[2]],
-            bottom: l[c[3]]
-          },
-          p = 90 != k && -90 != k ? e ? -1 : 1 : 0,
-          q = j[0] + "% " + j[1] + "%",
-          v = s.pages[r.over].data("f"),
-          w = r.clip.parent().position().left - s.pageWrap[r.over].position().left;
-        if (r.ipage.css(o).transform(b.rotate(k) + b.translate(a.x + p, a.y, A), q), v.ipage.css(o).transform(b.rotate(k) + b.translate(a.x + y.x - x.x - t * j[0] / 100, a.y + y.y - x.y - u * j[1] / 100, A) + b.rotate(Math.round(100 * (180 / k - 2) * k) / 100), q), r.clip.transform(b.translate(-a.x + m - p, -a.y + n, A) + b.rotate(-k), q), v.clip.transform(b.translate(w - a.x + x.x + m, -a.y + x.y + n, A) + b.rotate(-k), q), s.options.gradients) {
-          var z, C, D;
-          d ? e ? (C = k - 90, D = f - 50, g = -g, z = "50% 25%") : (C = k - 270, D = t - f - 50, z = "50% 25%") : e ? (D = f - 50, C = k - 270, g = -g, z = "50% 75%") : (D = t - f - 50, C = k - 90, z = "50% 75%");
-          var E = Math.max(.5, 2 - i);
-          E > 1 && (E = E >= 1.7 ? (2 - E) / .3 : 1), v.igradient.css({
-            opacity: Math.round(100 * E) / 100
-          }).transform(b.translate(D, 0, A) + b.rotate(C) + b.scale(g / 100, 1, A), z), d ? e ? (C = -270 - k, h = -h, D = t - f - 20, z = "20% 25%") : (C = -90 - k, D = f - 20, z = "20% 25%") : e ? (C = -90 - k, D = t - f - 20, h = -h, z = "20% 75%") : (C = 90 - k, D = f - 20, z = "20% 75%"), E = .3 > i ? i / .3 : 1, r.ogradient.css({
-            opacity: Math.round(100 * E) / 100
-          }).transform(b.translate(D, 0, A) + b.rotate(C) + b.scale(-h / 100, 1, A), z)
+      }
+    }
+    return this.$el;
+  };
+  /**
+   * @param {Event} evt
+   * @param {?} dataAndEvents
+   * @param {?} e
+   * @return {?}
+   */
+  that.prototype._eventStart = function(evt, dataAndEvents, e) {
+    var data = this._data;
+    var opts = $(evt.target).data("f");
+    return data.display == self.DISPLAY_SINGLE && (e && (opts.next = "l" == e.charAt(1) && data.direction == self.DIRECTION_LTR || "r" == e.charAt(1) && data.direction == self.DIRECTION_RTL ? opts.next < opts.page ? opts.next : opts.page - 1 : opts.next > opts.page ? opts.next : opts.page + 1)), evt.isDefaultPrevented() ? (this._updateShadow(), void 0) : (this._updateShadow(), void 0);
+  };
+  /**
+   * @param {Event} event
+   * @return {?}
+   */
+  that.prototype._eventPress = function(event) {
+    var data = this._data;
+    data.finger = self.eventPoint(event);
+    /** @type {boolean} */
+    data.hasSelection = "" === self.getSelectedText();
+    data.fingerZoom = data.zoom;
+    var page;
+    for (page in data.pages) {
+      if (self.has(page, data.pages) && data.pages[page].flip("_pagePress", event)) {
+        return data.tmpListeners || (data.tmpListeners = {}, data.tmpListeners.tap = self.getListeners(this.$el, "tap", true), data.tmpListeners.doubleTap = self.getListeners(this.$el, "doubleTap", true)), event.preventDefault(), data.statusHolding = true, void 0;
+      }
+    }
+    if (data.options.smartFlip) {
+      event.preventDefault();
+    }
+  };
+  /**
+   * @param {Event} e
+   * @return {undefined}
+   */
+  that.prototype._eventMove = function(e) {
+    var that = this._data;
+    var page;
+    for (page in that.pages) {
+      if (self.has(page, that.pages)) {
+        that.pages[page].flip("_pageMove", e);
+      }
+    }
+    if (that.finger) {
+      var prev = $.extend({}, that.finger);
+      if (!that.tmpListeners) {
+        that.tmpListeners = {};
+        that.tmpListeners.tap = self.getListeners(this.$el, "tap", true);
+        that.tmpListeners.doubleTap = self.getListeners(this.$el, "doubleTap", true);
+      }
+      that.finger = self.eventPoint(e);
+      that.finger.prev = prev;
+      if (that.zoom > 1) {
+        if (!val || val && 1 == e.originalEvent.originalEvent.touches.length) {
+          this.scroll(that.scroll.left + that.finger.x - prev.x, that.scroll.top + that.finger.y - prev.y);
         }
+      }
+    } else {
+      if (!val && (that.zoom > 1 && that.options.autoScroll)) {
+        if (!that.initScroll) {
+          that.initScroll = this.scroll();
+          that.initCursor = self.eventPoint(e);
+          that.viewerOffset = that.options.viewer.offset();
+        }
+        var cur = self.eventPoint(e);
+        var scroll = self.point2D(that.initScroll.x, that.initScroll.y);
+        var borderBoxSize = this.scrollSize();
+        if (cur.x < that.initCursor.x) {
+          /** @type {number} */
+          scroll.x = that.initScroll.left * Math.max(0, (cur.x - that.viewerOffset.left - 20) / that.initCursor.x);
+        } else {
+          if (cur.x > that.initCursor.x) {
+            scroll.x = that.initScroll.left + (borderBoxSize.width - that.initScroll.left) * Math.min(1, (cur.x - that.initCursor.x + 20) / (that.viewerWidth - that.initCursor.x));
+          }
+        }
+        if (cur.y < that.initCursor.y) {
+          /** @type {number} */
+          scroll.y = that.initScroll.top * Math.max(0, (cur.y - that.viewerOffset.top - 20) / that.initCursor.y);
+        } else {
+          if (cur.y > that.initCursor.y) {
+            scroll.y = that.initScroll.top + (borderBoxSize.height - that.initScroll.top) * Math.min(1, (cur.y - that.initCursor.y + 20) / (that.viewerHeight - that.initCursor.y));
+          }
+        }
+        this.scroll(scroll.x, scroll.y);
+      }
+    }
+  };
+  /**
+   * @param {?} deepDataAndEvents
+   * @return {undefined}
+   */
+  that.prototype._eventRelease = function(deepDataAndEvents) {
+    var head = this;
+    var data = this._data;
+    if (setTimeout(function() {
+      if (data.tmpListeners) {
+        self.setListeners(head.$el, "tap", data.tmpListeners.tap);
+        self.setListeners(head.$el, "doubleTap", data.tmpListeners.doubleTap);
+        delete data.tmpListeners;
+      }
+    }, 1), data.finger) {
+      var page;
+      for (page in data.pages) {
+        if (self.has(page, data.pages)) {
+          data.pages[page].flip("_pageUnpress", deepDataAndEvents);
+        }
+      }
+      delete data.finger;
+      delete data.fingerZoom;
+      if (data.statusHolding) {
+        /** @type {boolean} */
+        data.statusHolding = false;
+        if (!data.statusHover) {
+          this._hasMotionListener(false);
+        }
+      }
+      if (data.zoomed) {
+        this.zoom(data.zoomed[0], data.zoomed[1]);
+        delete data.zoomed;
+      }
+    }
+  };
+  /**
+   * @param {Object} a
+   * @return {undefined}
+   */
+  that.prototype._eventSwipe = function(a) {
+    var data = this._data;
+    /** @type {boolean} */
+    var ok = "" === self.getSelectedText();
+    if ("turning" != data.status && (1 == data.zoom && data.hasSelection == ok)) {
+      if (data.display == self.DISPLAY_SINGLE) {
+        var i = data.page;
+        if (a.speed < 0) {
+          if (~$.inArray(data.corner, self.corners.forward)) {
+            this.next();
+          } else {
+            if (data.status = "swiped", data.pages[i].flip("hideFoldedPage", true), i > 1) {
+              var target = data.pages[i - 1].data("f").point;
+              data.pages[i - 1].flip("turnPage", target ? target.corner : "");
+            }
+          }
+        } else {
+          if (a.speed > 0) {
+            if (~$.inArray(data.corner, self.corners.backward)) {
+              this.previous();
+            } else {
+              /** @type {string} */
+              data.status = "swiped";
+              data.pages[i].flip("hideFoldedPage", true);
+            }
+          }
+        }
+      } else {
+        if (data.display == self.DISPLAY_DOUBLE) {
+          if (a.speed < 0) {
+            if (this.isAnimating()) {
+              if (~$.inArray(data.corner, self.corners.forward)) {
+                this.next();
+              }
+            } else {
+              this.next();
+            }
+          } else {
+            if (a.speed > 0) {
+              if (this.isAnimating()) {
+                if (~$.inArray(data.corner, self.corners.backward)) {
+                  this.previous();
+                }
+              } else {
+                this.previous();
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  /**
+   * @return {undefined}
+   */
+  that.prototype._eventHover = function() {
+    var data = this._data;
+    clearInterval(data.noHoverTimer);
+    /** @type {boolean} */
+    data.statusHover = true;
+    this._hasMotionListener(true);
+  };
+  /**
+   * @param {Event} datum
+   * @return {undefined}
+   */
+  that.prototype._eventNoHover = function(datum) {
+    var that = this;
+    var data = this._data;
+    /** @type {number} */
+    data.noHoverTimer = setTimeout(function() {
+      if (!data.statusHolding) {
+        that._eventMove(datum);
+        that._hasMotionListener(false);
+      }
+      delete data.noHoverTimer;
+      /** @type {boolean} */
+      data.statusHover = false;
+    }, 10);
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {undefined}
+   */
+  that.prototype._hasMotionListener = function(recurring) {
+    var data = this._data;
+    if (recurring) {
+      if (!data.hasMoveListener) {
+        $(document).on("vmousemove", $.proxy(this, "_eventMove")).on("vmouseup", $.proxy(this, "_eventRelease"));
+        /** @type {boolean} */
+        data.hasMoveListener = true;
+      }
+    } else {
+      if (data.hasMoveListener) {
+        $(document).off("vmousemove", this._eventMove).off("vmouseup", this._eventRelease);
+        /** @type {boolean} */
+        data.hasMoveListener = false;
+      }
+    }
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.focusPoint = function() {
+    var data = this._data;
+    if (data.focusPoint) {
+      return data.focusPoint;
+    }
+    var view = this.view();
+    return view[0] ? view[1] ? self.point2D(this.width() / 2, this.height() / 2) : self.point2D(3 * this.width() / 4, this.height() / 2) : self.point2D(this.width() / 4, this.height() / 2);
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.maxZoom = function() {
+    var data = this._data;
+    if (data.options.responsive) {
+      if ("string" == typeof data.options.width && ~data.options.width.indexOf("%")) {
+        return 1;
+      }
+      /** @type {number} */
+      var olen = data.viewerWidth - data.margin[1] - data.margin[3];
+      /** @type {number} */
+      var one_vh = data.viewerHeight - data.margin[0] - data.margin[2];
+      return data.options.width / self.calculateBounds({
+        width : data.options.width,
+        height : data.options.height,
+        boundWidth : Math.min(data.options.width, olen),
+        boundHeight : Math.min(data.options.height, one_vh)
+      }).width;
+    }
+    return data.options.zoom;
+  };
+  /**
+   * @param {Object} event
+   * @return {?}
+   */
+  that.prototype.zoomIn = function(event) {
+    return this._data, this.zoom(this.maxZoom(), event);
+  };
+  /**
+   * @param {Object} xy
+   * @return {?}
+   */
+  that.prototype.zoomOut = function(xy) {
+    return this.zoom(1, xy);
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype._halfWidth = function() {
+    var data = this._data;
+    var view = this.view();
+    return data.display == self.DISPLAY_DOUBLE && (data.options.autoCenter && (!view[0] || !view[1]));
+  };
+  /**
+   * @return {?}
+   */
+  that.prototype.scrollSize = function() {
+    var padding = this._data;
+    var size = this.size();
+    var width = this._halfWidth() ? size.width / 2 : size.width;
+    return{
+      width : Math.max(0, width - padding.viewerWidth),
+      height : Math.max(0, size.height - padding.viewerHeight)
+    };
+  };
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @return {?}
+   */
+  that.prototype.scroll = function(x, y) {
+    var data = this._data;
+    if (void 0 === y && void 0 === x) {
+      return data.scroll;
+    }
+    if (data.zoom > 1 && !data.silentZoom) {
+      var size = this.size();
+      this.view();
+      var viewSize = this.scrollSize();
+      var result = self.point2D(data.viewerWidth / 2 - size.width / 2, data.viewerHeight / 2 - size.height / 2);
+      /** @type {number} */
+      y = Math.min(viewSize.height, Math.max(0, y));
+      /** @type {number} */
+      x = Math.min(viewSize.width, Math.max(0, x));
+      if (this._trigger("scrolling", x, y) != self.EVENT_PREVENTED) {
+        /** @type {number} */
+        result.x = result.x + viewSize.width / 2 - x;
+        /** @type {number} */
+        result.y = result.y + viewSize.height / 2 - y;
+        this.$el.css({
+          left : result.x,
+          top : result.y
+        });
+        data.scroll = {
+          top : y,
+          left : x
+        };
+      }
+    }
+    return this.$el;
+  };
+  /**
+   * @param {Object} e
+   * @return {?}
+   */
+  that.prototype._mouseRel = function(e) {
+    var off = this.$el.offset();
+    var data = this._data;
+    var size = this.size();
+    var b = self.point2D(e.pageX - off.left, e.pageY - off.top);
+    if (data.display == self.DISPLAY_DOUBLE) {
+      var view = this.view();
+      if (view[0]) {
+        if (view[1]) {
+          if (b.x < 0 || b.x > size.width) {
+            return null;
+          }
+        } else {
+          if (b.x = b.x, b.x < 0 || b.x > size.width / 2) {
+            return null;
+          }
+        }
+      } else {
+        if (b.x = b.x - size.width / 2, b.x < 0 || b.x > size.width / 2) {
+          return null;
+        }
+      }
+    } else {
+      if (data.display == self.DISPLAY_SINGLE && (b.x < 0 || b.x > size.width)) {
+        return null;
+      }
+    }
+    return b;
+  };
+  /**
+   * @param {Function} scale
+   * @param {Object} xy
+   * @return {?}
+   */
+  that.prototype.zoom = function(scale, xy) {
+    var data = this._data;
+    if (void 0 === scale) {
+      return data.zoom;
+    }
+    xy = xy || {};
+    var size = this.size();
+    var _halfWidth = this._halfWidth();
+    if ("pageX" in xy && "pageY" in xy) {
+      var details = this._mouseRel(xy);
+      if (null === details) {
+        return this.$el;
+      }
+      xy = $.extend(xy, details);
+      if ("factor" in xy) {
+        /** @type {number} */
+        scale = xy.factor * data.fingerZoom;
+        /** @type {boolean} */
+        xy.animate = false;
+      }
+    } else {
+      if (!("x" in xy && "y" in xy)) {
+        /** @type {number} */
+        xy.x = _halfWidth ? size.width / 4 : size.width / 2;
+        /** @type {number} */
+        xy.y = size.height / 2;
+      }
+    }
+    if (data.silentZoom || this._trigger("willZoom", scale, data.zoom) != self.EVENT_PREVENTED) {
+      var page;
+      var _ = this;
+      var code = data.zoom;
+      data.options.viewer;
+      var view = this.view();
+      /** @type {number} */
+      var value = parseFloat(Math.min(this.maxZoom(), Math.max(0.1, scale)), 10);
+      var cur = this._position(value);
+      self.vendor + "transition";
+      var o = void 0 === xy.animate ? true : xy.animate;
+      var containerPos = this.$el.offset();
+      var buttonPos = data.options.viewer.offset();
+      var elem = this._size(value, true);
+      /** @type {number} */
+      var tX = 1 / data.zoom * value;
+      var t = data.display == self.DISPLAY_DOUBLE && data.options.autoCenter;
+      var lines = self.point2D(Math.max(0, elem.width - data.viewerWidth), Math.max(0, elem.height - data.viewerHeight));
+      var e = self.point2D(xy.x * tX - containerPos.left - xy.x, xy.y * tX - containerPos.top - xy.y);
+      if (t) {
+        if (!view[0]) {
+          /** @type {number} */
+          e.x = e.x - size.width / 2;
+        }
+      }
+      e = self.point2D(Math.min(lines.x, Math.max(0, e.x)), Math.min(lines.y, Math.max(0, e.y)));
+      if (_halfWidth) {
+        cur.left += elem.width / 2;
+      }
+      var pos = self.point2D(buttonPos.left - containerPos.left + Math.max(0, cur.left), buttonPos.top - containerPos.top + Math.max(0, cur.top));
+      if (t) {
+        if (!view[0]) {
+          pos.x -= elem.width;
+        }
+      }
+      var x = self.translate(pos.x - e.x, pos.y - e.y, true) + self.scale(value, value, true);
+      if (this.stop(), this.disable(true), this._cloneView(true), o) {
+        if (code > value) {
+          for (page in data.pageWrap) {
+            data.pageWrap[page].css({
+              visibility : "hidden"
+            });
+          }
+        }
+        /** @type {boolean} */
+        data.silentZoom = true;
+        /** @type {number} */
+        var drag = size.width / data.zoomer.width();
+        data.zoomer.css(self.addCssWithPrefix({
+          "@transform-origin" : "0% 0%",
+          "@transform" : self.scale(drag, drag, true)
+        }));
+        setTimeout(function() {
+          data.zoomer.css(self.addCssWithPrefix({
+            "@transition" : "@transform 500ms ease-in-out",
+            "@transform" : x
+          }));
+        }, 10);
+        self.getTransitionEnd(data.zoomer, function() {
+          if (!data.finger) {
+            _.zoom(scale, {
+              animate : false,
+              x : xy.x,
+              y : xy.y
+            });
+          }
+        });
+      } else {
+        var target = data.peel;
+        if (data.zoomer.css(self.addCssWithPrefix({
+          "@transition" : "",
+          "@transform-origin" : "0% 0%",
+          "@transform" : x
+        })), "factor" in xy) {
+          if (code > value) {
+            for (page in data.pageWrap) {
+              data.pageWrap[page].css({
+                visibility : "hidden"
+              });
+            }
+          }
+          /** @type {Array} */
+          data.zoomed = [scale, {
+            pageX : xy.pageX,
+            pageY : xy.pageY,
+            animate : false
+          }];
+        } else {
+          for (page in data.pageWrap) {
+            data.pageWrap[page].css({
+              visibility : ""
+            });
+          }
+          /** @type {Function} */
+          data.zoom = scale;
+          elem = this._defaultSize();
+          /** @type {number} */
+          elem.width = elem.width * value;
+          /** @type {number} */
+          elem.height = elem.height * value;
+          /** @type {number} */
+          data.zoom = value;
+          /** @type {boolean} */
+          data.silentZoom = false;
+          delete data.initScroll;
+          delete data.initCursor;
+          /** @type {null} */
+          data.peel = null;
+          this.display(elem.display);
+          this.size(elem.width, elem.height, data.options.autoScaleContent);
+          this.scroll(e.x, e.y);
+          if (1 == value) {
+            this.disable(false);
+            if (target) {
+              this.peel(target.corner, target.x, target.y, true);
+            }
+          } else {
+            data.peel = target;
+          }
+          if (data.options.autoScaleContent) {
+            this.scaleContent(value);
+          }
+          data.zoomer.css(self.addCssWithPrefix({
+            "@transform" : self.translate(-1E4, 0, true)
+          }));
+          this.$el.trigger("zoomed", [value, code]);
+        }
+      }
+    }
+    return this.$el;
+  };
+  /**
+   * @param {number} putativeSpy
+   * @return {undefined}
+   */
+  that.prototype.scaleContent = function(putativeSpy) {
+    var data = this._data;
+    var codeSegments = this.view();
+    /** @type {number} */
+    var i = 0;
+    for (;i < codeSegments.length;i++) {
+      if (codeSegments[i]) {
+        data.pageObjs[codeSegments[i]].transform("scale(" + putativeSpy + ")", "0% 0%");
+      }
+    }
+  };
+  /**
+   * @param {Function} value
+   * @return {?}
+   */
+  that.prototype._position = function(value) {
+    var self = this._data;
+    var class2remove = value || self.zoom;
+    var data = value ? this._size(value) : this.size();
+    var pos = {
+      top : 0,
+      left : 0
+    };
+    if (self.options.responsive && (pos.top = self.viewerHeight / 2 - data.height / 2, pos.left = self.viewerWidth / 2 - data.width / 2, 1 == class2remove)) {
+      var cursor = self.margin;
+      if (pos.top < cursor[0] || pos.top + data.height > self.viewerHeight - cursor[2]) {
+        pos.top = cursor[0];
+      }
+      if (pos.left < cursor[1] || pos.left + data.width > self.viewerWidth - cursor[3]) {
+        pos.left = cursor[3];
+      }
+    }
+    return pos;
+  };
+  /**
+   * @param {Object} event
+   * @return {undefined}
+   */
+  that.prototype.toggleZoom = function(event) {
+    var d = this._data;
+    if (1 == d.zoom) {
+      this.zoomIn(event);
+    } else {
+      this.zoomOut(event);
+    }
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {undefined}
+   */
+  that.prototype._cloneView = function(recurring) {
+    var data = this._data;
+    if (data.zoomer) {
+      if (recurring) {
+        data.zoomer.show();
+      } else {
+        data.zoomer.remove();
+        delete data.zoomer;
+      }
+    } else {
+      if (recurring) {
+        var pos;
+        var div;
+        var page;
+        var codeSegments = this.view();
+        var r = {};
+        var node = $("<div />");
+        node.css(self.addCssWithPrefix({
+          "@transform-origin" : "0% 0%"
+        }));
+        node.css({
+          position : "absolute",
+          top : 0,
+          left : 0,
+          "z-index" : 10,
+          width : this.$el.width(),
+          height : this.$el.height()
+        });
+        /** @type {number} */
+        var i = 0;
+        for (;i < codeSegments.length;i++) {
+          if (codeSegments[i]) {
+            /** @type {number} */
+            r[codeSegments[i]] = 1;
+          }
+        }
+        for (page in data.pageWrap) {
+          if (self.has(page, data.pageWrap)) {
+            if (this._isCoverPageVisible(page)) {
+              /** @type {number} */
+              r[page] = 1;
+            }
+          }
+        }
+        for (page in r) {
+          if (self.has(page, r)) {
+            pos = this._pageSize(page, true);
+            /** @type {string} */
+            pos.position = "absolute";
+            pos.zIndex = data.pageWrap[page].css("z-index");
+            div = data.pageObjs[page].clone();
+            div.css(pos);
+            div.appendTo(node);
+          }
+        }
+        node.appendTo(this.$el);
+        data.zoomer = node;
+      }
+    }
+  };
+  /**
+   * @param {Object} node
+   * @return {undefined}
+   */
+  results.prototype._pageCURL = function(node) {
+    var options;
+    var top;
+    var left;
+    var px;
+    var size;
+    var halfWidth;
+    var index;
+    var y;
+    var tubeRadius;
+    var radius;
+    var dY;
+    var dX;
+    var angle;
+    var e = this.$el.data("f");
+    var data = e.turnData;
+    var width = this.$el.width();
+    var height = this.$el.height();
+    var $ = this;
+    /** @type {number} */
+    var newTime = 0;
+    var that = self.point2D(0, 0);
+    var rCenter = self.point2D(0, 0);
+    var pos = self.point2D(0, 0);
+    var deepDataAndEvents = (this._foldingPage(), data.options.acceleration);
+    var h = e.clip.height();
+    /**
+     * @return {?}
+     */
+    var compute = function() {
+      options = $._startPoint(node.corner);
+      var angleMid;
+      /** @type {number} */
+      var x = width - options.x - node.x;
+      /** @type {number} */
+      var y = options.y - node.y;
+      /** @type {number} */
+      var angle = Math.atan2(y, x);
+      /** @type {number} */
+      var i = Math.sqrt(x * x + y * y);
+      var o = self.point2D(width - options.x - Math.cos(angle) * width, options.y - Math.sin(angle) * width);
+      if (i > width) {
+        node.x = o.x;
+        node.y = o.y;
+      }
+      var delta = self.point2D(0, 0);
+      var diff = self.point2D(0, 0);
+      if (delta.x = options.x ? options.x - node.x : node.x, delta.y = self.hasRotation ? options.y ? options.y - node.y : node.y : 0, diff.x = left ? width - delta.x / 2 : node.x + delta.x / 2, diff.y = delta.y / 2, angle = lastAngle - Math.atan2(delta.y, delta.x), angleMid = angle - Math.atan2(diff.y, diff.x), i = Math.sin(angleMid) * Math.sqrt(diff.x * diff.x + diff.y * diff.y), pos = self.point2D(i * Math.sin(angle), i * Math.cos(angle)), angle > lastAngle) {
+        if (pos.x = pos.x + Math.abs(pos.y * delta.y / delta.x), pos.y = 0, Math.round(pos.x * Math.tan(PI - angle)) < height) {
+          return node.y = Math.sqrt(Math.pow(height, 2) + 2 * diff.x * delta.x), top && (node.y = height - node.y), compute();
+        }
+        /** @type {number} */
+        var beta = PI - angle;
+        /** @type {number} */
+        var dd = h - height / Math.sin(beta);
+        that = self.point2D(Math.round(dd * Math.cos(beta)), Math.round(dd * Math.sin(beta)));
+        if (left) {
+          /** @type {number} */
+          that.x = -that.x;
+        }
+        if (top) {
+          /** @type {number} */
+          that.y = -that.y;
+        }
+      }
+      /** @type {number} */
+      newTime = Math.round(100 * self.deg(angle)) / 100;
+      /** @type {number} */
+      px = Math.round(pos.y / Math.tan(angle) + pos.x);
+      /** @type {number} */
+      var side = width - px;
+      /** @type {number} */
+      var windowHeight = Math.min(height, side * Math.tan(angle));
+      if (0 > windowHeight) {
+        windowHeight = height;
+      }
+      /** @type {number} */
+      var sideX = side * Math.cos(2 * angle);
+      /** @type {number} */
+      var sideY = side * Math.sin(2 * angle);
+      if (rCenter = self.point2D(Math.round(left ? side - sideX : px + sideX), Math.round(top ? sideY : height - sideY)), data.options.gradients) {
+        var e = $._endPoint(node.corner);
+        /** @type {number} */
+        index = Math.sqrt(Math.pow(e.x - node.x, 2) + Math.pow(e.y - node.y, 2)) / width;
+        /** @type {number} */
+        size = Math.min(100, side * Math.sin(angle));
+        /** @type {number} */
+        halfWidth = 1.3 * Math.min(side, windowHeight);
+      }
+      return pos.x = Math.round(pos.x), pos.y = Math.round(pos.y), true;
+    };
+    /**
+     * @param {?} pos
+     * @param {Array} nodeLength
+     * @param {Array} opt_attributes
+     * @param {number} r
+     * @return {undefined}
+     */
+    var init = function(pos, nodeLength, opt_attributes, r) {
+      /** @type {Array} */
+      var f = ["0", "auto"];
+      /** @type {number} */
+      var i = (width - h) * opt_attributes[0] / 100;
+      /** @type {number} */
+      var err = (height - h) * opt_attributes[1] / 100;
+      var v = {
+        left : f[nodeLength[0]],
+        top : f[nodeLength[1]],
+        right : f[nodeLength[2]],
+        bottom : f[nodeLength[3]]
       };
-    switch (r.point = b.peelingPoint(a.corner, a.x, a.y), a.corner) {
+      /** @type {number} */
+      var offset = 90 != r && -90 != r ? left ? -1 : 1 : 0;
+      /** @type {string} */
+      var gg = opt_attributes[0] + "% " + opt_attributes[1] + "%";
+      var g = data.pages[e.over].data("f");
+      /** @type {number} */
+      var x = e.clip.parent().position().left - data.pageWrap[e.over].position().left;
+      if (e.ipage.css(v).transform(self.rotate(r) + self.translate(pos.x + offset, pos.y, deepDataAndEvents), gg), g.ipage.css(v).transform(self.rotate(r) + self.translate(pos.x + rCenter.x - that.x - width * opt_attributes[0] / 100, pos.y + rCenter.y - that.y - height * opt_attributes[1] / 100, deepDataAndEvents) + self.rotate(Math.round(100 * (180 / r - 2) * r) / 100), gg), e.clip.transform(self.translate(-pos.x + i - offset, -pos.y + err, deepDataAndEvents) + self.rotate(-r), gg), g.clip.transform(self.translate(x - 
+      pos.x + that.x + i, -pos.y + that.y + err, deepDataAndEvents) + self.rotate(-r), gg), data.options.gradients) {
+        var source;
+        var a;
+        var m;
+        if (top) {
+          if (left) {
+            /** @type {number} */
+            a = r - 90;
+            /** @type {number} */
+            m = px - 50;
+            /** @type {number} */
+            size = -size;
+            /** @type {string} */
+            source = "50% 25%";
+          } else {
+            /** @type {number} */
+            a = r - 270;
+            /** @type {number} */
+            m = width - px - 50;
+            /** @type {string} */
+            source = "50% 25%";
+          }
+        } else {
+          if (left) {
+            /** @type {number} */
+            m = px - 50;
+            /** @type {number} */
+            a = r - 270;
+            /** @type {number} */
+            size = -size;
+            /** @type {string} */
+            source = "50% 75%";
+          } else {
+            /** @type {number} */
+            m = width - px - 50;
+            /** @type {number} */
+            a = r - 90;
+            /** @type {string} */
+            source = "50% 75%";
+          }
+        }
+        /** @type {number} */
+        var change = Math.max(0.5, 2 - index);
+        if (change > 1) {
+          /** @type {number} */
+          change = change >= 1.7 ? (2 - change) / 0.3 : 1;
+        }
+        g.igradient.css({
+          opacity : Math.round(100 * change) / 100
+        }).transform(self.translate(m, 0, deepDataAndEvents) + self.rotate(a) + self.scale(size / 100, 1, deepDataAndEvents), source);
+        if (top) {
+          if (left) {
+            /** @type {number} */
+            a = -270 - r;
+            /** @type {number} */
+            halfWidth = -halfWidth;
+            /** @type {number} */
+            m = width - px - 20;
+            /** @type {string} */
+            source = "20% 25%";
+          } else {
+            /** @type {number} */
+            a = -90 - r;
+            /** @type {number} */
+            m = px - 20;
+            /** @type {string} */
+            source = "20% 25%";
+          }
+        } else {
+          if (left) {
+            /** @type {number} */
+            a = -90 - r;
+            /** @type {number} */
+            m = width - px - 20;
+            /** @type {number} */
+            halfWidth = -halfWidth;
+            /** @type {string} */
+            source = "20% 75%";
+          } else {
+            /** @type {number} */
+            a = 90 - r;
+            /** @type {number} */
+            m = px - 20;
+            /** @type {string} */
+            source = "20% 75%";
+          }
+        }
+        /** @type {number} */
+        change = 0.3 > index ? index / 0.3 : 1;
+        e.ogradient.css({
+          opacity : Math.round(100 * change) / 100
+        }).transform(self.translate(m, 0, deepDataAndEvents) + self.rotate(a) + self.scale(-halfWidth / 100, 1, deepDataAndEvents), source);
+      }
+    };
+    switch(e.point = self.peelingPoint(node.corner, node.x, node.y), node.corner) {
       case "l":
-        m = a.y - r.startPoint.y, n = a.x, q = Math.atan2(m, n), q > 0 ? (j = r.startPoint.y, k = Math.sqrt(n * n + m * m), l = 2 * j * Math.sin(q) + k, a.x = l * Math.cos(q), a.y = l * Math.sin(q), a.corner = "tl", e = !0, d = !0, C(), D(z, [1, 0, 0, 1], [100, 0], w)) : (q = -q, j = u - r.startPoint.y, k = Math.sqrt(n * n + m * m), l = 2 * j * Math.cos(o - q) + k, a.x = l * Math.cos(q), a.y = u - l * Math.sin(q), a.corner = "bl", e = !0, C(), D(b.point2D(z.x, -z.y), [1, 1, 0, 0], [100, 100], -w));
+        /** @type {number} */
+        dY = node.y - e.startPoint.y;
+        dX = node.x;
+        /** @type {number} */
+        angle = Math.atan2(dY, dX);
+        if (angle > 0) {
+          y = e.startPoint.y;
+          /** @type {number} */
+          tubeRadius = Math.sqrt(dX * dX + dY * dY);
+          /** @type {number} */
+          radius = 2 * y * Math.sin(angle) + tubeRadius;
+          /** @type {number} */
+          node.x = radius * Math.cos(angle);
+          /** @type {number} */
+          node.y = radius * Math.sin(angle);
+          /** @type {string} */
+          node.corner = "tl";
+          /** @type {boolean} */
+          left = true;
+          /** @type {boolean} */
+          top = true;
+          compute();
+          init(pos, [1, 0, 0, 1], [100, 0], newTime);
+        } else {
+          /** @type {number} */
+          angle = -angle;
+          /** @type {number} */
+          y = height - e.startPoint.y;
+          /** @type {number} */
+          tubeRadius = Math.sqrt(dX * dX + dY * dY);
+          /** @type {number} */
+          radius = 2 * y * Math.cos(lastAngle - angle) + tubeRadius;
+          /** @type {number} */
+          node.x = radius * Math.cos(angle);
+          /** @type {number} */
+          node.y = height - radius * Math.sin(angle);
+          /** @type {string} */
+          node.corner = "bl";
+          /** @type {boolean} */
+          left = true;
+          compute();
+          init(self.point2D(pos.x, -pos.y), [1, 1, 0, 0], [100, 100], -newTime);
+        }
         break;
       case "r":
-        m = r.startPoint.y - a.y, n = t - a.x, q = Math.atan2(m, n), 0 > q ? (j = r.startPoint.y, q = -q, k = Math.sqrt(n * n + m * m), l = 2 * j * Math.sin(q) + k, a.x = t - l * Math.cos(q), a.y = l * Math.sin(q), a.corner = "tr", d = !0, C(), D(b.point2D(-z.x, z.y), [0, 0, 0, 1], [0, 0], -w)) : (j = u - r.startPoint.y, k = Math.sqrt(n * n + m * m), l = 2 * j * Math.cos(o - q) + k, a.x = t - l * Math.cos(q), a.y = u - l * Math.sin(q), a.corner = "br", C(), D(b.point2D(-z.x, -z.y), [0, 1, 1, 0], [0, 100], w));
+        /** @type {number} */
+        dY = e.startPoint.y - node.y;
+        /** @type {number} */
+        dX = width - node.x;
+        /** @type {number} */
+        angle = Math.atan2(dY, dX);
+        if (0 > angle) {
+          y = e.startPoint.y;
+          /** @type {number} */
+          angle = -angle;
+          /** @type {number} */
+          tubeRadius = Math.sqrt(dX * dX + dY * dY);
+          /** @type {number} */
+          radius = 2 * y * Math.sin(angle) + tubeRadius;
+          /** @type {number} */
+          node.x = width - radius * Math.cos(angle);
+          /** @type {number} */
+          node.y = radius * Math.sin(angle);
+          /** @type {string} */
+          node.corner = "tr";
+          /** @type {boolean} */
+          top = true;
+          compute();
+          init(self.point2D(-pos.x, pos.y), [0, 0, 0, 1], [0, 0], -newTime);
+        } else {
+          /** @type {number} */
+          y = height - e.startPoint.y;
+          /** @type {number} */
+          tubeRadius = Math.sqrt(dX * dX + dY * dY);
+          /** @type {number} */
+          radius = 2 * y * Math.cos(lastAngle - angle) + tubeRadius;
+          /** @type {number} */
+          node.x = width - radius * Math.cos(angle);
+          /** @type {number} */
+          node.y = height - radius * Math.sin(angle);
+          /** @type {string} */
+          node.corner = "br";
+          compute();
+          init(self.point2D(-pos.x, -pos.y), [0, 1, 1, 0], [0, 100], newTime);
+        }
         break;
       case "tl":
-        d = !0, e = !0, a.x = Math.max(a.x, 1), r.point.x = a.x, c = this._startPoint("tl"), C(), D(z, [1, 0, 0, 1], [100, 0], w);
+        /** @type {boolean} */
+        top = true;
+        /** @type {boolean} */
+        left = true;
+        /** @type {number} */
+        node.x = Math.max(node.x, 1);
+        /** @type {number} */
+        e.point.x = node.x;
+        options = this._startPoint("tl");
+        compute();
+        init(pos, [1, 0, 0, 1], [100, 0], newTime);
         break;
       case "tr":
-        d = !0, a.x = Math.min(a.x, t - 1), r.point.x = a.x, C(), D(b.point2D(-z.x, z.y), [0, 0, 0, 1], [0, 0], -w);
+        /** @type {boolean} */
+        top = true;
+        /** @type {number} */
+        node.x = Math.min(node.x, width - 1);
+        /** @type {number} */
+        e.point.x = node.x;
+        compute();
+        init(self.point2D(-pos.x, pos.y), [0, 0, 0, 1], [0, 0], -newTime);
         break;
       case "bl":
-        e = !0, a.x = Math.max(a.x, 1), r.point.x = a.x, C(), D(b.point2D(z.x, -z.y), [1, 1, 0, 0], [100, 100], -w);
+        /** @type {boolean} */
+        left = true;
+        /** @type {number} */
+        node.x = Math.max(node.x, 1);
+        /** @type {number} */
+        e.point.x = node.x;
+        compute();
+        init(self.point2D(pos.x, -pos.y), [1, 1, 0, 0], [100, 100], -newTime);
         break;
       case "br":
-        a.x = Math.min(a.x, t - 1), r.point.x = a.x, C(), D(b.point2D(-z.x, -z.y), [0, 1, 1, 0], [0, 100], w)
+        /** @type {number} */
+        node.x = Math.min(node.x, width - 1);
+        /** @type {number} */
+        e.point.x = node.x;
+        compute();
+        init(self.point2D(-pos.x, -pos.y), [0, 1, 1, 0], [0, 100], newTime);
     }
-  }, q.prototype._hardSingle = function(a) {
-    var c, d = this.$el.data("f"),
-      e = d.turnData;
-    c = this.$el.hasClass("cover") ? d.next : 0;
-    var f = d.page,
-      g = e.pages[c].data("f"),
-      h = this.$el.width();
+  };
+  /**
+   * @param {Object} data
+   * @return {undefined}
+   */
+  results.prototype._hardSingle = function(data) {
+    var page;
+    var s = this.$el.data("f");
+    var that = s.turnData;
+    page = this.$el.hasClass("cover") ? s.next : 0;
+    var id = s.page;
+    var g = that.pages[page].data("f");
+    var scale = this.$el.width();
     this.$el.height();
-    var i = ("l" == a.corner, this._startPoint(a.corner)),
-      j = e.totalPages,
-      k = d["z-index"] || j,
-      l = i.x ? (i.x - a.x) / h : a.x / h,
-      m = 90 * -l,
-      n = 180 + m,
-      o = 1 > l;
-    console.log(a.corner), d.ipage.css(b.addCssWithPrefix({
-      "@transform": "rotateY(" + m + "deg) translate3d(0px, 0px, " + (this.$el.attr("depth") || 0) + "px)",
-      "@transform-origin": "0% 50%"
-    })), e.pageWrap[f].css(b.addCssWithPrefix({
-      overflow: "visible",
-      "@perspective-origin": "0% 50%"
-    })), g.ipage.css(b.addCssWithPrefix({
-      "@transform": "rotateY(" + n + "deg)",
-      "@transform-origin": "100% 50%"
-    })), e.pageWrap[c].css(b.addCssWithPrefix({
-      overflow: "visible",
-      "@perspective-origin": "100% 50%"
-    })), o ? (l = -l + 1, d.ipage.css({
-      zIndex: k + 1
-    }), g.ipage.css({
-      zIndex: k
-    })) : (l -= 1, d.ipage.css({
-      zIndex: k
-    }), g.ipage.css({
-      zIndex: k + 1
-    })), d.point = b.peelingPoint(a.corner, a.x, a.y)
-  }, q.prototype._hardDouble = function(a) {
-    var c = this.$el.data("f"),
-      d = c.turnData,
-      e = this.$el.width();
-    this.$el.height();
-    var f, g, h, i, j, k, l, m = "l" == a.corner,
-      n = this._startPoint(a.corner),
-      o = d.totalPages,
-      p = c["z-index"] || o,
-      q = {
-        overflow: "visible"
-      };
-    a.x = m ? Math.min(Math.max(a.x, 0), 2 * e) : Math.max(Math.min(a.x, e), -e);
-    var r = n.x ? (n.x - a.x) / e : a.x / e,
-      s = 90 * r,
-      t = 90 > s,
-      u = c.next,
-      v = d.pages[u].data("f");
-    if (m ? (i = "0% 50%", j = "100% 50%", t ? (f = 0, k = c.next - 1, g = k > 0, l = c.page, h = 1) : (f = "100%", k = c.page + 1, g = o > k, l = c.next, h = 0)) : (i = "100% 50%", j = "0% 50%", s = -s, e = -e, t ? (f = 0, k = c.next + 1, l = c.page, g = o > k, h = 0) : (f = "-100%", k = c.page - 1, l = c.next, g = k > 0, h = 1)), q[b.vendor + "perspective-origin"] = j, d.pageWrap[c.page].css(q), c.ipage.transform("rotateY(" + s + "deg)" + "translate3d(0px, 0px, " + (this.$el.attr("depth") || 0) + "px)", j), d.pageWrap[u].css(b.addCssWithPrefix({
-        overflow: "visible",
-        "@perspective-origin": i
-      })), v.ipage.transform("rotateY(" + (180 + s) + "deg)", i), t ? (r = -r + 1, c.ipage.css({
-        zIndex: p + 1
-      }), v.ipage.css({
-        zIndex: p
-      })) : (r -= 1, c.ipage.css({
-        zIndex: p
-      }), v.ipage.css({
-        zIndex: p + 1
-      })), d.options.gradients) {
-      if (g) {
-        var w = d.pages[k].data("f");
-        c.ogradient.parent()[0] != w.ipage[0] && c.ogradient.appendTo(w.ipage), c.ogradient.css({
-          left: f,
-          backgroundColor: "black",
-          opacity: .5 * r
-        }).transform("rotateY(0deg)")
-      } else c.ogradient.css({
-        opacity: 0
+    var e = ("l" == data.corner, this._startPoint(data.corner));
+    var element = that.totalPages;
+    var zIndex = s["z-index"] || element;
+    /** @type {number} */
+    var yearsTo = e.x ? (e.x - data.x) / scale : data.x / scale;
+    /** @type {number} */
+    var value = 90 * -yearsTo;
+    /** @type {number} */
+    var tval = 180 + value;
+    /** @type {boolean} */
+    var reverse = 1 > yearsTo;
+    console.log(data.corner);
+    s.ipage.css(self.addCssWithPrefix({
+      "@transform" : "rotateY(" + value + "deg) translate3d(0px, 0px, " + (this.$el.attr("depth") || 0) + "px)",
+      "@transform-origin" : "0% 50%"
+    }));
+    that.pageWrap[id].css(self.addCssWithPrefix({
+      overflow : "visible",
+      "@perspective-origin" : "0% 50%"
+    }));
+    g.ipage.css(self.addCssWithPrefix({
+      "@transform" : "rotateY(" + tval + "deg)",
+      "@transform-origin" : "100% 50%"
+    }));
+    that.pageWrap[page].css(self.addCssWithPrefix({
+      overflow : "visible",
+      "@perspective-origin" : "100% 50%"
+    }));
+    if (reverse) {
+      /** @type {number} */
+      yearsTo = -yearsTo + 1;
+      s.ipage.css({
+        zIndex : zIndex + 1
       });
-      var x = d.pages[l].data("f");
-      c.igradient.parent()[0] != x.ipage[0] && c.igradient.appendTo(x.ipage), c.igradient.css({
-        opacity: -r + 1
-      }), b.gradient(c.igradient, b.point2D(100 * h, 0), b.point2D(100 * (-h + 1), 0), [
-        [0, "rgba(0,0,0,0.3)"],
-        [1, "rgba(0,0,0,0)"]
-      ], 2)
+      g.ipage.css({
+        zIndex : zIndex
+      });
+    } else {
+      yearsTo -= 1;
+      s.ipage.css({
+        zIndex : zIndex
+      });
+      g.ipage.css({
+        zIndex : zIndex + 1
+      });
     }
-    c.point = b.peelingPoint(a.corner, a.x, a.y)
-  }, q.prototype._hard = function(a) {
-    this.$el.data("f").turnData.display == b.DISPLAY_SINGLE ? this._hardSingle(a) : this._hardDouble(a)
-  }, b.widgetFactory("turn", n), b.widgetFactory("flip", q);
-  var r = b.UIComponent(function(c) {
-    var d = this._data;
-    d.options = a.extend({
-      min: 0,
-      max: 100,
-      step: 1,
-      value: 0,
-      style: "horizontal"
-    }, c), d.disabled = c.disabled === !0, "vertical" == d.options.style ? d.verticalStyle = !0 : "horizontal" == d.options.style && (d.verticalStyle = !1), this.$el.on("vmousedown", a.proxy(this, "_eventPress")), this.value(this._data.options.value), b.addDelegateList(c.delegate, this.$el)
-  });
-  r.prototype.value = function(a, c) {
-    var d = this._data;
-    if (void 0 === a) return d.value;
-    var e;
-    if (a = Math.min(d.options.max, Math.max(d.options.min, a)), a = Math.round(a / d.options.step), a *= d.options.step, d.pressed) a != d.pvalue && (c || this._trigger("slide", a) != b.EVENT_PREVENTED) && (e = 100 * ((a - d.options.min) / (d.options.max - d.options.min)), d.verticalStyle ? this.$el.find(".progress").height(e + "%") : this.$el.find(".progress").width(e + "%"), d.pvalue = a);
-    else if (a != d.value) {
-      var f = c ? !0 : this._trigger("changeValue", a) != b.EVENT_PREVENTED;
-      f ? (e = 100 * ((a - d.options.min) / (d.options.max - d.options.min)), d.value = a) : e = 100 * ((d.value - d.options.min) / (d.options.max - d.options.min)), d.verticalStyle ? this.$el.find(".progress").height(e + "%") : this.$el.find(".progress").width(e + "%")
-    } else c || this._trigger("valueUnchanged");
-    return this.$el
-  }, r.prototype._percentToValue = function(a) {
-    var b = this._data;
-    return a * (b.options.max - b.options.min) + b.options.min
-  }, r.prototype._eventPress = function(c) {
-    var d, e, f = this._data,
-      g = this.$el.find(".progress").parent();
-    f.pressed = !0, f.pvalue = null, f.verticalStyle ? (d = b.eventPoint(c).y - g.offset().top, this.$el.addClass("changing"), e = g.height()) : (d = b.eventPoint(c).x - g.offset().left, this.$el.addClass("changing"), e = g.width()), this.value(this._percentToValue(d / e)), a(document).on("vmousemove", a.proxy(this, "_eventMoving")), a(document).on("vmouseup", a.proxy(this, "_eventRelease")), c.preventDefault()
-  }, r.prototype._eventMoving = function(a) {
-    var c, d = this._data;
-    if (d.pressed && !d.disabled) {
-      var e = this.$el.find(".progress").parent();
-      if (d.verticalStyle ? (d.offset = b.eventPoint(a).y - e.offset().top, c = e.height()) : (d.offset = b.eventPoint(a).x - e.offset().left, c = e.width()), !d.animationScheduled) {
-        var f = this;
-        d.animationScheduled = !0, window.requestAnimationFrame(function() {
-          d.animationScheduled = !1, f.value(f._percentToValue(d.offset / c))
-        })
+    s.point = self.peelingPoint(data.corner, data.x, data.y);
+  };
+  /**
+   * @param {Object} data
+   * @return {undefined}
+   */
+  results.prototype._hardDouble = function(data) {
+    var s = this.$el.data("f");
+    var that = s.turnData;
+    var y = this.$el.width();
+    this.$el.height();
+    var pickWinLeft;
+    var test;
+    var change;
+    var source;
+    var gg;
+    var i;
+    var index;
+    /** @type {boolean} */
+    var config = "l" == data.corner;
+    var e = this._startPoint(data.corner);
+    var l = that.totalPages;
+    var zIndex = s["z-index"] || l;
+    var CSS = {
+      overflow : "visible"
+    };
+    /** @type {number} */
+    data.x = config ? Math.min(Math.max(data.x, 0), 2 * y) : Math.max(Math.min(data.x, y), -y);
+    /** @type {number} */
+    var opacity = e.x ? (e.x - data.x) / y : data.x / y;
+    /** @type {number} */
+    var distance = 90 * opacity;
+    /** @type {boolean} */
+    var isRightSwipe = 90 > distance;
+    var page = s.next;
+    var body = that.pages[page].data("f");
+    if (config ? (source = "0% 50%", gg = "100% 50%", isRightSwipe ? (pickWinLeft = 0, i = s.next - 1, test = i > 0, index = s.page, change = 1) : (pickWinLeft = "100%", i = s.page + 1, test = l > i, index = s.next, change = 0)) : (source = "100% 50%", gg = "0% 50%", distance = -distance, y = -y, isRightSwipe ? (pickWinLeft = 0, i = s.next + 1, index = s.page, test = l > i, change = 0) : (pickWinLeft = "-100%", i = s.page - 1, index = s.next, test = i > 0, change = 1)), CSS[self.vendor + "perspective-origin"] = 
+    gg, that.pageWrap[s.page].css(CSS), s.ipage.transform("rotateY(" + distance + "deg)" + "translate3d(0px, 0px, " + (this.$el.attr("depth") || 0) + "px)", gg), that.pageWrap[page].css(self.addCssWithPrefix({
+      overflow : "visible",
+      "@perspective-origin" : source
+    })), body.ipage.transform("rotateY(" + (180 + distance) + "deg)", source), isRightSwipe ? (opacity = -opacity + 1, s.ipage.css({
+      zIndex : zIndex + 1
+    }), body.ipage.css({
+      zIndex : zIndex
+    })) : (opacity -= 1, s.ipage.css({
+      zIndex : zIndex
+    }), body.ipage.css({
+      zIndex : zIndex + 1
+    })), that.options.gradients) {
+      if (test) {
+        var params = that.pages[i].data("f");
+        if (s.ogradient.parent()[0] != params.ipage[0]) {
+          s.ogradient.appendTo(params.ipage);
+        }
+        s.ogradient.css({
+          left : pickWinLeft,
+          backgroundColor : "black",
+          opacity : 0.5 * opacity
+        }).transform("rotateY(0deg)");
+      } else {
+        s.ogradient.css({
+          opacity : 0
+        });
+      }
+      var d = that.pages[index].data("f");
+      if (s.igradient.parent()[0] != d.ipage[0]) {
+        s.igradient.appendTo(d.ipage);
+      }
+      s.igradient.css({
+        opacity : -opacity + 1
+      });
+      self.gradient(s.igradient, self.point2D(100 * change, 0), self.point2D(100 * (-change + 1), 0), [[0, "rgba(0,0,0,0.3)"], [1, "rgba(0,0,0,0)"]], 2);
+    }
+    s.point = self.peelingPoint(data.corner, data.x, data.y);
+  };
+  /**
+   * @param {Object} inplace
+   * @return {undefined}
+   */
+  results.prototype._hard = function(inplace) {
+    if (this.$el.data("f").turnData.display == self.DISPLAY_SINGLE) {
+      this._hardSingle(inplace);
+    } else {
+      this._hardDouble(inplace);
+    }
+  };
+  self.widgetFactory("turn", that);
+  self.widgetFactory("flip", results);
+  var jQuery = self.UIComponent(function(options) {
+    var data = this._data;
+    data.options = $.extend({
+      min : 0,
+      max : 100,
+      step : 1,
+      value : 0,
+      style : "horizontal"
+    }, options);
+    /** @type {boolean} */
+    data.disabled = options.disabled === true;
+    if ("vertical" == data.options.style) {
+      /** @type {boolean} */
+      data.verticalStyle = true;
+    } else {
+      if ("horizontal" == data.options.style) {
+        /** @type {boolean} */
+        data.verticalStyle = false;
       }
     }
-  }, r.prototype._eventRelease = function() {
-    var b = this._data;
-    b.pressed = !1, this._trigger("released"), b.pvalue ? this.value(b.pvalue) : this._trigger("valueUnchanged"), b.pvalue = null, this.$el.removeClass("changing"), a(document).off("vmousemove", this._eventMoving), a(document).off("vmouseup", this._eventRelease)
-  }, r.prototype.options = function(b) {
-    var c = this._data;
-    return void 0 === b ? c.options : (c.options = a.extend(c.options, b), void 0)
-  }, r.prototype.increase = function() {
-    var a = this._data;
-    this.value(a.value + a.options.step)
-  }, r.prototype.decrease = function() {
-    var a = this._data;
-    this.value(a.value - a.options.step)
-  }, r.prototype.style = function(a) {
-    var b = this._data,
-      c = b.value;
-    "vertical" == a ? (this.$el.find(".progress").css({
-      width: ""
-    }), b.verticalStyle = !0) : "horizontal" == a && (this.$el.find(".progress").css({
-      height: ""
-    }), b.verticalStyle = !1), b.value = null, this.value(c, !0)
-  }, r.prototype.disable = function(a) {
-    this._data.disabled = a === !0
-  }, r.prototype.isUserInteracting = function() {
-    return this._data.pressed === !0
-  }, b.widgetFactory("slider", r);
-  var s = b.UIComponent(function(c) {
-    if (!c.flipbook) throw b.turnError("Miniatures: Flipbook required");
-    var d = this._data;
-    d.pages = [], d.reusablePages = [], d.listenToFlipbook = !0, d.focusedPage = 0, d.offsetX = 0, d.hasListeners = !1, d.options = a.extend({
-      pageMargin: 10,
-      duration: 500
-    }, c), d.$flipbook = a(c.flipbook), d.$container = a("<div />", {
-      "class": "container"
-    }), d.$pageNumber = a("<div />", {
-      "class": "page-number"
-    }), d.$container.appendTo(this.$el), d.$pageNumber.appendTo(this.$el), b.addDelegateList(c.delegate, this.$el), this._setValues(), d.disabled = c.disabled, this._addMiniature(), this._update(d.$flipbook.turn("page")), this._eventDelegation(), d.$flipbook.on("turned", a.proxy(this, "_eventPageTurned")), d.$flipbook.on("changeDisplay", a.proxy(this, "_eventChangeDisplay")), d.done = !0
+    this.$el.on("vmousedown", $.proxy(this, "_eventPress"));
+    this.value(this._data.options.value);
+    self.addDelegateList(options.delegate, this.$el);
   });
-  s.prototype._addMiniature = function(b) {
-    b = b || -1e3;
-    var c = this._data,
-      d = a("<div />", {
-        css: {
-          position: "absolute",
-          left: "0px",
-          top: "0px",
-          width: c.pageWidth,
-          height: c.pageHeight
-        },
-        "class": "ui-page"
-      }).html('<div class="page-img"></div>'),
-      e = {
-        pageNum: null,
-        x: b,
-        $el: d
-      };
-    return c.$container.append(d), c.pages.push(e), e
-  }, s.prototype._findPage = function(a) {
-    for (var b = this._data, c = 0; c < b.pages.length; c++)
-      if (b.pages[c].pageNum == a) return b.pages[c];
-    return null
-  }, s.prototype._update = function(a, b) {
-    var c, d, e = this._data,
-      f = a - 1,
-      g = !0;
-    if (!(e.focusedPage == a && e.done && !b || 1 > a || a > e.$flipbook.turn("pages") || (e.prevFocusedPage = e.focusedPage, e.focusedPage = a, e.disabled))) {
-      for (e.focusedView = e.$flipbook.turn("view", e.focusedPage, !0), this._updateQueueReusablePages(), e.$pageNumber.html(e.focusedView.join("-")); this._isPageVisible(f);) c = this._findPage(f) || this._reusablePage(), null === c && (c = this._addMiniature()), this._updatePage(f, c, !0), f--, g = !1;
-      for (f = a;
-        (d = this._isPageVisible(f)) || g && f <= e.totalPages;) d && (c = this._findPage(f) || this._reusablePage(), null === c && (c = this._addMiniature()), this._updatePage(f, c, !0), g = !1), f++
+  /**
+   * @param {number} val
+   * @param {boolean} type
+   * @return {?}
+   */
+  jQuery.prototype.value = function(val, type) {
+    var that = this._data;
+    if (void 0 === val) {
+      return that.value;
     }
-  }, s.prototype._updateQueueReusablePages = function() {
-    for (var a, b = this._data, c = 0; c < b.pages.length; c++) a = b.pages[c], null !== a.pageNum && this._isPageVisible(a.pageNum, b.focusedPage) || (this._updatePage(a.pageNum, a, !0), this._isReusablePage(a) || b.reusablePages.push(a))
-  }, s.prototype._isReusablePage = function(a) {
-    for (var b = this._data, c = 0; c < b.reusablePages.length; c++)
-      if (a == b.reusablePages[c]) return !0;
-    return !1
-  }, s.prototype._updatePage = function(b, c, d) {
-    var e = this,
-      f = this._data,
-      g = c.$el;
-    if (null === b) this._updatePageX(c, -1e3);
-    else {
-      var h = this._getPageOffsetLeft(b);
-      d && b != c.pageNum ? (g.removeClass("animated-page"), this._updatePageX(c, this._getPageOffsetLeft(b, f.prevFocusedPage)), setTimeout(function() {
-        g.addClass("animated-page"), e._updatePageX(c, h)
-      }, 0)) : (d && f.done ? g.addClass("animated-page") : g.removeClass("animated-page"), this._updatePageX(c, h)), -1 != a.inArray(b, f.focusedView) ? g.addClass("focused-page") : g.removeClass("focused-page");
-      var i = f.$flipbook.turn("view", b, !0);
-      g.removeClass("left-page right-page single-page"), 2 == i.length ? i[0] == b ? g.addClass("left-page") : g.addClass("right-page") : g.addClass("single-page"), b != c.pageNum && (c.pageNum = b, g.attr("page", b), this._trigger("refreshPicture", b, g.find(".page-img")))
-    }
-  }, s.prototype._updatePageX = function(a, c) {
-    a.x = c, a.$el.css(b.addCssWithPrefix({
-      "@transform": "translate3d(" + c + "px, 0px, 0px)"
-    }))
-  }, s.prototype._getPageOffsetLeft = function(a, b) {
-    var c, d, e = this._data,
-      f = "single" == e.$flipbook.turn("display");
-    if (b = b || e.focusedPage, f) return e.scrollerWidth / 2 - e.pageWidth / 2 + (a - b) * (e.pageWidth + e.pageMargin) + e.offsetX;
-    var g, h, i = e.$flipbook.turn("view", b, !0),
-      j = b == a ? i : e.$flipbook.turn("view", a, !0),
-      k = e.scrollerWidth / 2 - i.length * e.pageWidth / 2;
-    if (a >= b) {
-      for (g = i[i.length - 1], h = j[0] - 1, c = g; h >= c;) d = e.$flipbook.turn("view", c, !0), k += d.length * e.pageWidth + e.pageMargin, c = d[d.length - 1] + 1;
-      return a == j[0] ? k + e.offsetX : k + e.pageWidth + e.offsetX
-    }
-    for (g = i[0] - 1, h = j[j.length - 1], c = g; c >= h;) d = e.$flipbook.turn("view", c, !0), k -= d.length * e.pageWidth + e.pageMargin, c = d[0] - 1;
-    return a == j[0] ? k + e.offsetX : k + e.pageWidth + e.offsetX
-  }, s.prototype._isPageVisible = function(a) {
-    var b = this._data;
-    if (null === a || 1 > a || a > b.totalPages) return !1;
-    var c = b.focusedPage,
-      d = this._getPageOffsetLeft(a);
-    return a > c ? d < b.scrollerWidth : d + b.pageWidth > 0
-  }, s.prototype._reusablePage = function() {
-    return this._data.reusablePages.length > 2 ? this._data.reusablePages.shift() : null
-  }, s.prototype._setValues = function() {
-    var a = this._data;
-    if (!a.disabled) {
-      var b = a.$flipbook.turn("size");
-      b.width = b.width / a.$flipbook.turn("view").length, a.scrollerWidth = a.$container.width(), a.pageHeight = a.$container.height(), a.pageWidth = Math.round(a.pageHeight * (b.width / b.height)), a.pageMargin = 50, a.totalPages = a.$flipbook.turn("pages")
-    }
-  }, s.prototype._eventResize = function() {
-    this.refresh()
-  }, s.prototype._eventDelegation = function(b) {
-    var c = this._data;
-    b ? c.disabled || c.hasListeners || (c.hasListeners = !0, a(window).on("resize", a.proxy(this, "_eventResize")), this.$el.on("tap", ".ui-page", a.proxy(this, "_eventTap")), this.$el.on("vmousedown", a.proxy(this, "_eventPress"))) : (c.hasListeners = !1, a(window).off("resize", this._eventResize), this.$el.off("tap", this._eventTap), this.$el.off("vmousedown", this._eventPress))
-  }, s.prototype._eventPageTurned = function(a, b) {
-    var c = this._data;
-    c.listenToFlipbook && (c.offsetX = 0, this._update(b))
-  }, s.prototype._eventChangeDisplay = function() {
-    this._data.forceRefresh = !0
-  }, s.prototype._eventTap = function(b) {
-    var c, d = this._data,
-      e = a(b.currentTarget);
-    !d.moving && (c = e.attr("page")) && d.$flipbook.turn("page", c)
-  }, s.prototype._eventPress = function(b) {
-    var c = this._data;
-    return this.animation && this.animation.stop(), a(document).on("vmousemove", a.proxy(this, "_eventMove")).on("vmouseup", a.proxy(this, "_eventRelease")), c.x1 = b.pageX, c.x2 = c.x1, c.dxDistance = 0, c.timeStamp1 = b.timeStamp, c.timeStamp2 = b.timeStamp, !1
-  }, s.prototype._eventMove = function(a) {
-    var b = this._data;
-    b.offsetX = b.offsetX + b.x2 - b.x1, b.done = !1, this._update(b.focusedPage, !0), b.done = !0, b.moving = !0, b.x1 = b.x2, b.x2 = a.pageX, b.timeStamp1 = b.timeStamp2, b.timeStamp2 = a.timeStamp
-  }, s.prototype._eventRelease = function() {
-    var c = this._data;
-    if (a(document).off("vmousemove", this._eventMove).off("vmouseup", this._eventRelease), c.moving) {
-      var d = c.offsetX;
-      c.offsetX = 0;
-      var e = this._getPageOffsetLeft(1, 1),
-        f = this._getPageOffsetLeft(c.$flipbook.turn("pages"), 1),
-        g = this._getPageOffsetLeft(c.focusedPage, 1),
-        h = g - d;
-      if (e > h) c.offsetX = g - e, this._update(c.focusedPage, !0);
-      else if (h > f) c.offsetX = g - f, this._update(c.focusedPage, !0);
-      else {
-        var i = this,
-          j = c.timeStamp2 - c.timeStamp1,
-          k = c.x2 - c.x1,
-          l = this._momentum(k, j, g - e - d, g - f - d, 1);
-        c.offsetX = d, b.animate(this, {
-          from: [0],
-          to: [l.dist],
-          duration: l.time,
-          frame: function(a) {
-            c.offsetX = d + a[0], c.done = !1, i._update(c.focusedPage, !0), c.done = !0
+    var layout_text_media;
+    if (val = Math.min(that.options.max, Math.max(that.options.min, val)), val = Math.round(val / that.options.step), val *= that.options.step, that.pressed) {
+      if (val != that.pvalue) {
+        if (type || this._trigger("slide", val) != self.EVENT_PREVENTED) {
+          /** @type {number} */
+          layout_text_media = 100 * ((val - that.options.min) / (that.options.max - that.options.min));
+          if (that.verticalStyle) {
+            this.$el.find(".progress").height(layout_text_media + "%");
+          } else {
+            this.$el.find(".progress").width(layout_text_media + "%");
           }
-        })
+          /** @type {number} */
+          that.pvalue = val;
+        }
+      }
+    } else {
+      if (val != that.value) {
+        /** @type {boolean} */
+        var _args = type ? true : this._trigger("changeValue", val) != self.EVENT_PREVENTED;
+        if (_args) {
+          /** @type {number} */
+          layout_text_media = 100 * ((val - that.options.min) / (that.options.max - that.options.min));
+          /** @type {number} */
+          that.value = val;
+        } else {
+          /** @type {number} */
+          layout_text_media = 100 * ((that.value - that.options.min) / (that.options.max - that.options.min));
+        }
+        if (that.verticalStyle) {
+          this.$el.find(".progress").height(layout_text_media + "%");
+        } else {
+          this.$el.find(".progress").width(layout_text_media + "%");
+        }
+      } else {
+        if (!type) {
+          this._trigger("valueUnchanged");
+        }
+      }
+    }
+    return this.$el;
+  };
+  /**
+   * @param {number} i
+   * @return {?}
+   */
+  jQuery.prototype._percentToValue = function(i) {
+    var data = this._data;
+    return i * (data.options.max - data.options.min) + data.options.min;
+  };
+  /**
+   * @param {Event} ev
+   * @return {undefined}
+   */
+  jQuery.prototype._eventPress = function(ev) {
+    var a;
+    var b;
+    var data = this._data;
+    var env = this.$el.find(".progress").parent();
+    /** @type {boolean} */
+    data.pressed = true;
+    /** @type {null} */
+    data.pvalue = null;
+    if (data.verticalStyle) {
+      /** @type {number} */
+      a = self.eventPoint(ev).y - env.offset().top;
+      this.$el.addClass("changing");
+      b = env.height();
+    } else {
+      /** @type {number} */
+      a = self.eventPoint(ev).x - env.offset().left;
+      this.$el.addClass("changing");
+      b = env.width();
+    }
+    this.value(this._percentToValue(a / b));
+    $(document).on("vmousemove", $.proxy(this, "_eventMoving"));
+    $(document).on("vmouseup", $.proxy(this, "_eventRelease"));
+    ev.preventDefault();
+  };
+  /**
+   * @param {Event} part
+   * @return {undefined}
+   */
+  jQuery.prototype._eventMoving = function(part) {
+    var chunkSize;
+    var data = this._data;
+    if (data.pressed && !data.disabled) {
+      var env = this.$el.find(".progress").parent();
+      if (data.verticalStyle ? (data.offset = self.eventPoint(part).y - env.offset().top, chunkSize = env.height()) : (data.offset = self.eventPoint(part).x - env.offset().left, chunkSize = env.width()), !data.animationScheduled) {
+        var amount = this;
+        /** @type {boolean} */
+        data.animationScheduled = true;
+        window.requestAnimationFrame(function() {
+          /** @type {boolean} */
+          data.animationScheduled = false;
+          amount.value(amount._percentToValue(data.offset / chunkSize));
+        });
+      }
+    }
+  };
+  /**
+   * @return {undefined}
+   */
+  jQuery.prototype._eventRelease = function() {
+    var value = this._data;
+    /** @type {boolean} */
+    value.pressed = false;
+    this._trigger("released");
+    if (value.pvalue) {
+      this.value(value.pvalue);
+    } else {
+      this._trigger("valueUnchanged");
+    }
+    /** @type {null} */
+    value.pvalue = null;
+    this.$el.removeClass("changing");
+    $(document).off("vmousemove", this._eventMoving);
+    $(document).off("vmouseup", this._eventRelease);
+  };
+  /**
+   * @param {number} options
+   * @return {?}
+   */
+  jQuery.prototype.options = function(options) {
+    var that = this._data;
+    return void 0 === options ? that.options : (that.options = $.extend(that.options, options), void 0);
+  };
+  /**
+   * @return {undefined}
+   */
+  jQuery.prototype.increase = function() {
+    var _this = this._data;
+    this.value(_this.value + _this.options.step);
+  };
+  /**
+   * @return {undefined}
+   */
+  jQuery.prototype.decrease = function() {
+    var a = this._data;
+    this.value(a.value - a.options.step);
+  };
+  /**
+   * @param {string} element
+   * @return {undefined}
+   */
+  jQuery.prototype.style = function(element) {
+    var data = this._data;
+    var val = data.value;
+    if ("vertical" == element) {
+      this.$el.find(".progress").css({
+        width : ""
+      });
+      /** @type {boolean} */
+      data.verticalStyle = true;
+    } else {
+      if ("horizontal" == element) {
+        this.$el.find(".progress").css({
+          height : ""
+        });
+        /** @type {boolean} */
+        data.verticalStyle = false;
+      }
+    }
+    /** @type {null} */
+    data.value = null;
+    this.value(val, true);
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {undefined}
+   */
+  jQuery.prototype.disable = function(recurring) {
+    /** @type {boolean} */
+    this._data.disabled = recurring === true;
+  };
+  /**
+   * @return {?}
+   */
+  jQuery.prototype.isUserInteracting = function() {
+    return this._data.pressed === true;
+  };
+  self.widgetFactory("slider", jQuery);
+  var editor = self.UIComponent(function(e) {
+    if (!e.flipbook) {
+      throw self.turnError("Miniatures: Flipbook required");
+    }
+    var data = this._data;
+    /** @type {Array} */
+    data.pages = [];
+    /** @type {Array} */
+    data.reusablePages = [];
+    /** @type {boolean} */
+    data.listenToFlipbook = true;
+    /** @type {number} */
+    data.focusedPage = 0;
+    /** @type {number} */
+    data.offsetX = 0;
+    /** @type {boolean} */
+    data.hasListeners = false;
+    data.options = $.extend({
+      pageMargin : 10,
+      duration : 500
+    }, e);
+    data.$flipbook = $(e.flipbook);
+    data.$container = $("<div />", {
+      "class" : "container"
+    });
+    data.$pageNumber = $("<div />", {
+      "class" : "page-number"
+    });
+    data.$container.appendTo(this.$el);
+    data.$pageNumber.appendTo(this.$el);
+    self.addDelegateList(e.delegate, this.$el);
+    this._setValues();
+    data.disabled = e.disabled;
+    this._addMiniature();
+    this._update(data.$flipbook.turn("page"));
+    this._eventDelegation();
+    data.$flipbook.on("turned", $.proxy(this, "_eventPageTurned"));
+    data.$flipbook.on("changeDisplay", $.proxy(this, "_eventChangeDisplay"));
+    /** @type {boolean} */
+    data.done = true;
+  });
+  /**
+   * @param {number} tx
+   * @return {?}
+   */
+  editor.prototype._addMiniature = function(tx) {
+    tx = tx || -1E3;
+    var data = this._data;
+    var $demoSloganizer = $("<div />", {
+      css : {
+        position : "absolute",
+        left : "0px",
+        top : "0px",
+        width : data.pageWidth,
+        height : data.pageHeight
+      },
+      "class" : "ui-page"
+    }).html('<div class="page-img"></div>');
+    var copies = {
+      pageNum : null,
+      x : tx,
+      $el : $demoSloganizer
+    };
+    return data.$container.append($demoSloganizer), data.pages.push(copies), copies;
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  editor.prototype._findPage = function(page) {
+    var data = this._data;
+    /** @type {number} */
+    var i = 0;
+    for (;i < data.pages.length;i++) {
+      if (data.pages[i].pageNum == page) {
+        return data.pages[i];
+      }
+    }
+    return null;
+  };
+  /**
+   * @param {number} event
+   * @param {boolean} dataAndEvents
+   * @return {undefined}
+   */
+  editor.prototype._update = function(event, dataAndEvents) {
+    var suiteView;
+    var parts;
+    var data = this._data;
+    /** @type {number} */
+    var page = event - 1;
+    /** @type {boolean} */
+    var g = true;
+    if (!(data.focusedPage == event && (data.done && !dataAndEvents) || (1 > event || (event > data.$flipbook.turn("pages") || (data.prevFocusedPage = data.focusedPage, data.focusedPage = event, data.disabled))))) {
+      data.focusedView = data.$flipbook.turn("view", data.focusedPage, true);
+      this._updateQueueReusablePages();
+      data.$pageNumber.html(data.focusedView.join("-"));
+      for (;this._isPageVisible(page);) {
+        suiteView = this._findPage(page) || this._reusablePage();
+        if (null === suiteView) {
+          suiteView = this._addMiniature();
+        }
+        this._updatePage(page, suiteView, true);
+        page--;
+        /** @type {boolean} */
+        g = false;
+      }
+      /** @type {number} */
+      page = event;
+      for (;(parts = this._isPageVisible(page)) || g && page <= data.totalPages;) {
+        if (parts) {
+          suiteView = this._findPage(page) || this._reusablePage();
+          if (null === suiteView) {
+            suiteView = this._addMiniature();
+          }
+          this._updatePage(page, suiteView, true);
+          /** @type {boolean} */
+          g = false;
+        }
+        page++;
+      }
+    }
+  };
+  /**
+   * @return {undefined}
+   */
+  editor.prototype._updateQueueReusablePages = function() {
+    var existing;
+    var data = this._data;
+    /** @type {number} */
+    var i = 0;
+    for (;i < data.pages.length;i++) {
+      existing = data.pages[i];
+      if (!(null !== existing.pageNum && this._isPageVisible(existing.pageNum, data.focusedPage))) {
+        this._updatePage(existing.pageNum, existing, true);
+        if (!this._isReusablePage(existing)) {
+          data.reusablePages.push(existing);
+        }
+      }
+    }
+  };
+  /**
+   * @param {?} obj
+   * @return {?}
+   */
+  editor.prototype._isReusablePage = function(obj) {
+    var data = this._data;
+    /** @type {number} */
+    var i = 0;
+    for (;i < data.reusablePages.length;i++) {
+      if (obj == data.reusablePages[i]) {
+        return true;
+      }
+    }
+    return false;
+  };
+  /**
+   * @param {?} page
+   * @param {Error} obj
+   * @param {boolean} dataAndEvents
+   * @return {undefined}
+   */
+  editor.prototype._updatePage = function(page, obj, dataAndEvents) {
+    var jQuery = this;
+    var data = this._data;
+    var layer = obj.$el;
+    if (null === page) {
+      this._updatePageX(obj, -1E3);
+    } else {
+      var pdataOld = this._getPageOffsetLeft(page);
+      if (dataAndEvents && page != obj.pageNum) {
+        layer.removeClass("animated-page");
+        this._updatePageX(obj, this._getPageOffsetLeft(page, data.prevFocusedPage));
+        setTimeout(function() {
+          layer.addClass("animated-page");
+          jQuery._updatePageX(obj, pdataOld);
+        }, 0);
+      } else {
+        if (dataAndEvents && data.done) {
+          layer.addClass("animated-page");
+        } else {
+          layer.removeClass("animated-page");
+        }
+        this._updatePageX(obj, pdataOld);
+      }
+      if (-1 != $.inArray(page, data.focusedView)) {
+        layer.addClass("focused-page");
+      } else {
+        layer.removeClass("focused-page");
+      }
+      var pages = data.$flipbook.turn("view", page, true);
+      layer.removeClass("left-page right-page single-page");
+      if (2 == pages.length) {
+        if (pages[0] == page) {
+          layer.addClass("left-page");
+        } else {
+          layer.addClass("right-page");
+        }
+      } else {
+        layer.addClass("single-page");
+      }
+      if (page != obj.pageNum) {
+        obj.pageNum = page;
+        layer.attr("page", page);
+        this._trigger("refreshPicture", page, layer.find(".page-img"));
+      }
+    }
+  };
+  /**
+   * @param {Object} element
+   * @param {number} value
+   * @return {undefined}
+   */
+  editor.prototype._updatePageX = function(element, value) {
+    /** @type {number} */
+    element.x = value;
+    element.$el.css(self.addCssWithPrefix({
+      "@transform" : "translate3d(" + value + "px, 0px, 0px)"
+    }));
+  };
+  /**
+   * @param {number} page
+   * @param {number} value
+   * @return {?}
+   */
+  editor.prototype._getPageOffsetLeft = function(page, value) {
+    var maxX;
+    var factors;
+    var data = this._data;
+    /** @type {boolean} */
+    var isArr = "single" == data.$flipbook.turn("display");
+    if (value = value || data.focusedPage, isArr) {
+      return data.scrollerWidth / 2 - data.pageWidth / 2 + (page - value) * (data.pageWidth + data.pageMargin) + data.offsetX;
+    }
+    var tmp;
+    var x;
+    var fn = data.$flipbook.turn("view", value, true);
+    var xs = value == page ? fn : data.$flipbook.turn("view", page, true);
+    /** @type {number} */
+    var url = data.scrollerWidth / 2 - fn.length * data.pageWidth / 2;
+    if (page >= value) {
+      tmp = fn[fn.length - 1];
+      /** @type {number} */
+      x = xs[0] - 1;
+      maxX = tmp;
+      for (;x >= maxX;) {
+        factors = data.$flipbook.turn("view", maxX, true);
+        url += factors.length * data.pageWidth + data.pageMargin;
+        maxX = factors[factors.length - 1] + 1;
+      }
+      return page == xs[0] ? url + data.offsetX : url + data.pageWidth + data.offsetX;
+    }
+    /** @type {number} */
+    tmp = fn[0] - 1;
+    x = xs[xs.length - 1];
+    /** @type {number} */
+    maxX = tmp;
+    for (;maxX >= x;) {
+      factors = data.$flipbook.turn("view", maxX, true);
+      url -= factors.length * data.pageWidth + data.pageMargin;
+      /** @type {number} */
+      maxX = factors[0] - 1;
+    }
+    return page == xs[0] ? url + data.offsetX : url + data.pageWidth + data.offsetX;
+  };
+  /**
+   * @param {number} page
+   * @return {?}
+   */
+  editor.prototype._isPageVisible = function(page) {
+    var data = this._data;
+    if (null === page || (1 > page || page > data.totalPages)) {
+      return false;
+    }
+    var method = data.focusedPage;
+    var pages = this._getPageOffsetLeft(page);
+    return page > method ? pages < data.scrollerWidth : pages + data.pageWidth > 0;
+  };
+  /**
+   * @return {?}
+   */
+  editor.prototype._reusablePage = function() {
+    return this._data.reusablePages.length > 2 ? this._data.reusablePages.shift() : null;
+  };
+  /**
+   * @return {undefined}
+   */
+  editor.prototype._setValues = function() {
+    var data = this._data;
+    if (!data.disabled) {
+      var screen = data.$flipbook.turn("size");
+      /** @type {number} */
+      screen.width = screen.width / data.$flipbook.turn("view").length;
+      data.scrollerWidth = data.$container.width();
+      data.pageHeight = data.$container.height();
+      /** @type {number} */
+      data.pageWidth = Math.round(data.pageHeight * (screen.width / screen.height));
+      /** @type {number} */
+      data.pageMargin = 50;
+      data.totalPages = data.$flipbook.turn("pages");
+    }
+  };
+  /**
+   * @return {undefined}
+   */
+  editor.prototype._eventResize = function() {
+    this.refresh();
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {undefined}
+   */
+  editor.prototype._eventDelegation = function(recurring) {
+    var data = this._data;
+    if (recurring) {
+      if (!data.disabled) {
+        if (!data.hasListeners) {
+          /** @type {boolean} */
+          data.hasListeners = true;
+          $(window).on("resize", $.proxy(this, "_eventResize"));
+          this.$el.on("tap", ".ui-page", $.proxy(this, "_eventTap"));
+          this.$el.on("vmousedown", $.proxy(this, "_eventPress"));
+        }
+      }
+    } else {
+      /** @type {boolean} */
+      data.hasListeners = false;
+      $(window).off("resize", this._eventResize);
+      this.$el.off("tap", this._eventTap);
+      this.$el.off("vmousedown", this._eventPress);
+    }
+  };
+  /**
+   * @param {?} dataAndEvents
+   * @param {number} elements
+   * @return {undefined}
+   */
+  editor.prototype._eventPageTurned = function(dataAndEvents, elements) {
+    var data = this._data;
+    if (data.listenToFlipbook) {
+      /** @type {number} */
+      data.offsetX = 0;
+      this._update(elements);
+    }
+  };
+  /**
+   * @return {undefined}
+   */
+  editor.prototype._eventChangeDisplay = function() {
+    /** @type {boolean} */
+    this._data.forceRefresh = true;
+  };
+  /**
+   * @param {Event} ev
+   * @return {undefined}
+   */
+  editor.prototype._eventTap = function(ev) {
+    var page;
+    var data = this._data;
+    var $page = $(ev.currentTarget);
+    if (!data.moving) {
+      if (page = $page.attr("page")) {
+        data.$flipbook.turn("page", page);
+      }
+    }
+  };
+  /**
+   * @param {Event} e
+   * @return {?}
+   */
+  editor.prototype._eventPress = function(e) {
+    var out = this._data;
+    return this.animation && this.animation.stop(), $(document).on("vmousemove", $.proxy(this, "_eventMove")).on("vmouseup", $.proxy(this, "_eventRelease")), out.x1 = e.pageX, out.x2 = out.x1, out.dxDistance = 0, out.timeStamp1 = e.timeStamp, out.timeStamp2 = e.timeStamp, false;
+  };
+  /**
+   * @param {Event} e
+   * @return {undefined}
+   */
+  editor.prototype._eventMove = function(e) {
+    var data = this._data;
+    /** @type {number} */
+    data.offsetX = data.offsetX + data.x2 - data.x1;
+    /** @type {boolean} */
+    data.done = false;
+    this._update(data.focusedPage, true);
+    /** @type {boolean} */
+    data.done = true;
+    /** @type {boolean} */
+    data.moving = true;
+    data.x1 = data.x2;
+    data.x2 = e.pageX;
+    data.timeStamp1 = data.timeStamp2;
+    data.timeStamp2 = e.timeStamp;
+  };
+  /**
+   * @return {undefined}
+   */
+  editor.prototype._eventRelease = function() {
+    var d = this._data;
+    if ($(document).off("vmousemove", this._eventMove).off("vmouseup", this._eventRelease), d.moving) {
+      var x = d.offsetX;
+      /** @type {number} */
+      d.offsetX = 0;
+      var right = this._getPageOffsetLeft(1, 1);
+      var top = this._getPageOffsetLeft(d.$flipbook.turn("pages"), 1);
+      var dx1 = this._getPageOffsetLeft(d.focusedPage, 1);
+      /** @type {number} */
+      var dx0 = dx1 - x;
+      if (right > dx0) {
+        /** @type {number} */
+        d.offsetX = dx1 - right;
+        this._update(d.focusedPage, true);
+      } else {
+        if (dx0 > top) {
+          /** @type {number} */
+          d.offsetX = dx1 - top;
+          this._update(d.focusedPage, true);
+        } else {
+          var that = this;
+          /** @type {number} */
+          var camelKey = d.timeStamp2 - d.timeStamp1;
+          /** @type {number} */
+          var myDistance = d.x2 - d.x1;
+          var data = this._momentum(myDistance, camelKey, dx1 - right - x, dx1 - top - x, 1);
+          d.offsetX = x;
+          self.animate(this, {
+            from : [0],
+            to : [data.dist],
+            duration : data.time,
+            /**
+             * @param {Array} opcode
+             * @return {undefined}
+             */
+            frame : function(opcode) {
+              d.offsetX = x + opcode[0];
+              /** @type {boolean} */
+              d.done = false;
+              that._update(d.focusedPage, true);
+              /** @type {boolean} */
+              d.done = true;
+            }
+          });
+        }
       }
     }
     setTimeout(function() {
-      c.moving = !1
-    }, 1)
-  }, s.prototype.page = function(a) {
-    this.animation && this.animation.stop();
-    var b = this._data;
-    return b.offsetX = 0, this._update(a), b.forceRefresh = !1, this.$el
-  }, s.prototype.refresh = function() {
-    var a = this._data;
-    return a.done = !1, this._setValues(), this._update(a.focusedPage || a.$flipbook.turn("page"), !0), a.done = !0, a.forceRefresh = !1, this.$el
-  }, s.prototype.disable = function(a) {
-    var b = this._data;
-    return b.disabled = a === !0, b.disabled ? this._eventDelegation(!1) : this._eventDelegation(!0), this.$el
-  }, s.prototype.listenToFlipbook = function(a) {
-    this._data.listenToFlipbook = a
-  }, s.prototype._momentum = function(a, b, c, d) {
-    var e = .002,
-      f = Math.min(Math.abs(a) / b, 1.5),
-      g = f * f / (2 * e);
-    return g *= 0 > a ? -1 : 1, a > 0 && g > c ? (g = c, f = f * c / g) : 0 > a && d > g && (g = d, f = f * d / g), {
-      dist: g,
-      time: Math.round(f / e)
+      /** @type {boolean} */
+      d.moving = false;
+    }, 1);
+  };
+  /**
+   * @param {number} t
+   * @return {?}
+   */
+  editor.prototype.page = function(t) {
+    if (this.animation) {
+      this.animation.stop();
     }
-  }, b.widgetFactory("miniatures", s);
-  var t = b.UIComponent(function(c) {
-    var d = this._data;
-    return d.options = a.extend({
-      selector: ".show-hint",
-      className: "ui-tooltip",
-      positions: "bottom,top,left,right"
-    }, c), this._eventDelegation(!0), b.addDelegateList(c.delegate, this.$el), this.$el
+    var data = this._data;
+    return data.offsetX = 0, this._update(t), data.forceRefresh = false, this.$el;
+  };
+  /**
+   * @return {?}
+   */
+  editor.prototype.refresh = function() {
+    var data = this._data;
+    return data.done = false, this._setValues(), this._update(data.focusedPage || data.$flipbook.turn("page"), true), data.done = true, data.forceRefresh = false, this.$el;
+  };
+  /**
+   * @param {boolean} recurring
+   * @return {?}
+   */
+  editor.prototype.disable = function(recurring) {
+    var data = this._data;
+    return data.disabled = recurring === true, data.disabled ? this._eventDelegation(false) : this._eventDelegation(true), this.$el;
+  };
+  /**
+   * @param {string} value
+   * @return {undefined}
+   */
+  editor.prototype.listenToFlipbook = function(value) {
+    /** @type {string} */
+    this._data.listenToFlipbook = value;
+  };
+  /**
+   * @param {number} dist
+   * @param {number} time
+   * @param {number} maxDistUpper
+   * @param {number} maxDistLower
+   * @return {?}
+   */
+  editor.prototype._momentum = function(dist, time, maxDistUpper, maxDistLower) {
+    /** @type {number} */
+    var friction = 0.002;
+    /** @type {number} */
+    var speed = Math.min(Math.abs(dist) / time, 1.5);
+    /** @type {number} */
+    var newDist = speed * speed / (2 * friction);
+    return newDist *= 0 > dist ? -1 : 1, dist > 0 && newDist > maxDistUpper ? (newDist = maxDistUpper, speed = speed * maxDistUpper / newDist) : 0 > dist && (maxDistLower > newDist && (newDist = maxDistLower, speed = speed * maxDistLower / newDist)), {
+      dist : newDist,
+      time : Math.round(speed / friction)
+    };
+  };
+  self.widgetFactory("miniatures", editor);
+  var a = self.UIComponent(function(options) {
+    var that = this._data;
+    return that.options = $.extend({
+      selector : ".show-hint",
+      className : "ui-tooltip",
+      positions : "bottom,top,left,right"
+    }, options), this._eventDelegation(true), self.addDelegateList(options.delegate, this.$el), this.$el;
   });
-  t.prototype._eventDelegation = function(b) {
-    b ? (this.$el.on("vmouseover", this._data.options.selector, a.proxy(this, "_eventHover")), this.$el.on("vmouseout", this._data.options.selector, a.proxy(this, "_eventNoHover"))) : (this.$el.off("vmouseover", this._eventHover), this.$el.off("vmouseout", this._eventNoHover))
-  }, t.prototype._eventHover = function(b) {
-    this._showHint(a(b.currentTarget))
-  }, t.prototype._eventNoHover = function(b) {
-    $cTarget = a(b.currentTarget), $cTarget.hasClass("has-hint") && this._hideHint($cTarget)
-  }, t.prototype._showHint = function(c) {
-    var d = c.attr("title") || c.attr("v-title");
-    if (d && "" !== d) {
-      var e = this._data,
-        f = e.options.className;
-      if (this._trigger("willShowHint", c) == b.EVENT_PREVENTED) return;
-      e.$currentTarget && (e.$currentTarget.removeClass("has-hint"), e.$currentTarget = null), e.$tooltip || (e.$tooltip = a("<div />", {
-        "class": f
-      }), e.$tooltip.hide(), e.$tooltip.appendTo(a("body"))), e.$tooltip.html(d), e.isTooltipVisible || e.$tooltip.css({
-        visibility: "hidden",
-        display: ""
-      });
-      var g = e.$tooltip.width() + parseInt(e.$tooltip.css("padding-left"), 10) + parseInt(e.$tooltip.css("padding-right"), 10),
-        h = e.$tooltip.height() + parseInt(e.$tooltip.css("padding-top"), 10) + parseInt(e.$tooltip.css("padding-bottom"), 10);
-      e.isTooltipVisible || e.$tooltip.css({
-        display: "none",
-        visibility: ""
-      });
-      for (var i, j = c.offset(), k = c.width(), l = c.height(), m = a(window).width(), n = a(window).height(), o = {
-          x: 0,
-          y: 0
-        }, p = e.options.positions.split(","), q = 0; q < p.length; q++) {
-        switch (p[q]) {
+  /**
+   * @param {boolean} recurring
+   * @return {undefined}
+   */
+  a.prototype._eventDelegation = function(recurring) {
+    if (recurring) {
+      this.$el.on("vmouseover", this._data.options.selector, $.proxy(this, "_eventHover"));
+      this.$el.on("vmouseout", this._data.options.selector, $.proxy(this, "_eventNoHover"));
+    } else {
+      this.$el.off("vmouseover", this._eventHover);
+      this.$el.off("vmouseout", this._eventNoHover);
+    }
+  };
+  /**
+   * @param {Event} ev
+   * @return {undefined}
+   */
+  a.prototype._eventHover = function(ev) {
+    this._showHint($(ev.currentTarget));
+  };
+  /**
+   * @param {Event} ev
+   * @return {undefined}
+   */
+  a.prototype._eventNoHover = function(ev) {
+    $cTarget = $(ev.currentTarget);
+    if ($cTarget.hasClass("has-hint")) {
+      this._hideHint($cTarget);
+    }
+  };
+  /**
+   * @param {Object} context
+   * @return {undefined}
+   */
+  a.prototype._showHint = function(context) {
+    var text = context.attr("title") || context.attr("v-title");
+    if (text && "" !== text) {
+      var that = this._data;
+      var cls = that.options.className;
+      if (this._trigger("willShowHint", context) == self.EVENT_PREVENTED) {
+        return;
+      }
+      if (that.$currentTarget) {
+        that.$currentTarget.removeClass("has-hint");
+        /** @type {null} */
+        that.$currentTarget = null;
+      }
+      if (!that.$tooltip) {
+        that.$tooltip = $("<div />", {
+          "class" : cls
+        });
+        that.$tooltip.hide();
+        that.$tooltip.appendTo($("body"));
+      }
+      that.$tooltip.html(text);
+      if (!that.isTooltipVisible) {
+        that.$tooltip.css({
+          visibility : "hidden",
+          display : ""
+        });
+      }
+      var dx = that.$tooltip.width() + parseInt(that.$tooltip.css("padding-left"), 10) + parseInt(that.$tooltip.css("padding-right"), 10);
+      var padding = that.$tooltip.height() + parseInt(that.$tooltip.css("padding-top"), 10) + parseInt(that.$tooltip.css("padding-bottom"), 10);
+      if (!that.isTooltipVisible) {
+        that.$tooltip.css({
+          display : "none",
+          visibility : ""
+        });
+      }
+      var imageData;
+      var offset = context.offset();
+      var width = context.width();
+      var height = context.height();
+      var x = $(window).width();
+      var n = $(window).height();
+      var pos = {
+        x : 0,
+        y : 0
+      };
+      var codeSegments = that.options.positions.split(",");
+      /** @type {number} */
+      var i = 0;
+      for (;i < codeSegments.length;i++) {
+        switch(codeSegments[i]) {
           case "top":
-            o.x = j.left + k / 2 - g / 2, o.y = j.top - h, i = "ui-tooltip-top";
+            /** @type {number} */
+            pos.x = offset.left + width / 2 - dx / 2;
+            /** @type {number} */
+            pos.y = offset.top - padding;
+            /** @type {string} */
+            imageData = "ui-tooltip-top";
             break;
           case "bottom":
-            o.x = j.left + k / 2 - g / 2, o.y = j.top + l, i = "ui-tooltip-bottom";
+            /** @type {number} */
+            pos.x = offset.left + width / 2 - dx / 2;
+            pos.y = offset.top + height;
+            /** @type {string} */
+            imageData = "ui-tooltip-bottom";
             break;
           case "left":
-            o.x = j.left - g, o.y = j.top + l / 2 - h / 2, i = "ui-tooltip-left";
+            /** @type {number} */
+            pos.x = offset.left - dx;
+            /** @type {number} */
+            pos.y = offset.top + height / 2 - padding / 2;
+            /** @type {string} */
+            imageData = "ui-tooltip-left";
             break;
           case "right":
-            o.x = j.left + k, o.y = j.top + l / 2 - h / 2, i = "ui-tooltip-right"
+            pos.x = offset.left + width;
+            /** @type {number} */
+            pos.y = offset.top + height / 2 - padding / 2;
+            /** @type {string} */
+            imageData = "ui-tooltip-right";
         }
-        if (o.x >= 0 && o.x + g <= m && o.y >= 0 && o.y + h <= n) break
+        if (pos.x >= 0 && (pos.x + dx <= x && (pos.y >= 0 && pos.y + padding <= n))) {
+          break;
+        }
       }
-      e.$tooltip.css({
-        top: o.y,
-        left: o.x
-      }), e.$tooltip.show(), setTimeout(function() {
-        e.$tooltip.attr("class", e.options.className + " ui-tooltip-visible " + i)
-      }, 1), c.addClass("has-hint"), e.isTooltipVisible = !0, "" !== c.attr("title") && (c.attr("v-title", d), c.removeAttr("title")), e.$currentTarget = c, e.hideTimeHandler && clearInterval(e.hideTimeHandler)
+      that.$tooltip.css({
+        top : pos.y,
+        left : pos.x
+      });
+      that.$tooltip.show();
+      setTimeout(function() {
+        that.$tooltip.attr("class", that.options.className + " ui-tooltip-visible " + imageData);
+      }, 1);
+      context.addClass("has-hint");
+      /** @type {boolean} */
+      that.isTooltipVisible = true;
+      if ("" !== context.attr("title")) {
+        context.attr("v-title", text);
+        context.removeAttr("title");
+      }
+      /** @type {Object} */
+      that.$currentTarget = context;
+      if (that.hideTimeHandler) {
+        clearInterval(that.hideTimeHandler);
+      }
     }
-  }, t.prototype._hideHint = function(a) {
-    var b = this._data;
-    b.hideTimeHandler = setTimeout(function() {
-      b.isTooltipVisible = !1, b.$currentTarget = null, a.removeClass("has-hint"), b.$tooltip.removeClass("ui-tooltip-visible"), setTimeout(function() {
-        b.isTooltipVisible || b.$tooltip.hide()
-      }, 200)
-    }, 100)
-  }, t.prototype.hide = function() {
-    var a = this._data;
-    a.isTooltipVisible && (a.isTooltipVisible = !1, a.$currentTarget.removeClass("has-hint"), a.$tooltip.removeClass("ui-tooltip-visible"), a.$tooltip.hide(), a.$currentTarget = null)
-  }, t.prototype.options = function(b) {
-    return void 0 === b ? this._data.options : (this._data.options = a.extend(this._data.options, b), this.$el)
-  }, b.widgetFactory("tooltips", t);
-  var u = b.UIComponent(function(c) {
-    var d = this._data;
-    d.$items = [], d.selectedItem = null, d.options = a.extend({
-      itemCount: 0
-    }, c), b.addDelegateList(c.delegate, this.$el), this._createDom(), this._eventDelegation(), this._addItems()
+  };
+  /**
+   * @param {HTMLElement} $animate
+   * @return {undefined}
+   */
+  a.prototype._hideHint = function($animate) {
+    var data = this._data;
+    /** @type {number} */
+    data.hideTimeHandler = setTimeout(function() {
+      /** @type {boolean} */
+      data.isTooltipVisible = false;
+      /** @type {null} */
+      data.$currentTarget = null;
+      $animate.removeClass("has-hint");
+      data.$tooltip.removeClass("ui-tooltip-visible");
+      setTimeout(function() {
+        if (!data.isTooltipVisible) {
+          data.$tooltip.hide();
+        }
+      }, 200);
+    }, 100);
+  };
+  /**
+   * @return {undefined}
+   */
+  a.prototype.hide = function() {
+    var data = this._data;
+    if (data.isTooltipVisible) {
+      /** @type {boolean} */
+      data.isTooltipVisible = false;
+      data.$currentTarget.removeClass("has-hint");
+      data.$tooltip.removeClass("ui-tooltip-visible");
+      data.$tooltip.hide();
+      /** @type {null} */
+      data.$currentTarget = null;
+    }
+  };
+  /**
+   * @param {number} options
+   * @return {?}
+   */
+  a.prototype.options = function(options) {
+    return void 0 === options ? this._data.options : (this._data.options = $.extend(this._data.options, options), this.$el);
+  };
+  self.widgetFactory("tooltips", a);
+  var instance = self.UIComponent(function(options) {
+    var data = this._data;
+    /** @type {Array} */
+    data.$items = [];
+    /** @type {null} */
+    data.selectedItem = null;
+    data.options = $.extend({
+      itemCount : 0
+    }, options);
+    self.addDelegateList(options.delegate, this.$el);
+    this._createDom();
+    this._eventDelegation();
+    this._addItems();
   });
-  u.prototype._createDom = function() {
-    this.$el.addClass("ui-menu"), this.$el.html('<div class="ui-menu-wrapper"></div>')
-  }, u.prototype._eventDelegation = function() {
-    this.$el.on("vmousedown", a.proxy(this, "_vmousedown")), this.$el.on("vmouseover", ".ui-menu-item", a.proxy(this, "_vmouseoverItem")), this.$el.on("vmouseout", ".ui-menu-item", a.proxy(this, "_vmouseoutItem")), this.$el.on("tap", ".ui-menu-item", a.proxy(this, "_tapItem"))
-  }, u.prototype._addItems = function() {
-    for (var a = this._data, b = 0; b < a.options.itemCount; b++) this._trigger("itemRequested", b)
-  }, u.prototype.addTextItem = function(b) {
-    var c = this.$el.find(".ui-menu-wrapper");
-    $item = a("<div />", {
-      "class": "ui-menu-item",
-      item: this._data.$items.length
-    }), a("<div />", {
-      "class": "ui-menu-item-desc"
-    }).html(b).appendTo($item), $item.appendTo(c), this._data.$items.push($item)
-  }, u.prototype._vmousedown = function(a) {
-    a.stopPropagation()
-  }, u.prototype._vmouseoverItem = function(b) {
-    a(b.currentTarget).addClass("ui-menu-item-hover")
-  }, u.prototype._vmouseoutItem = function(b) {
-    a(b.currentTarget).removeClass("ui-menu-item-hover")
-  }, u.prototype._tapItem = function(b) {
-    var c = a(b.currentTarget).attr("item");
-    this.selectItem(parseInt(c, 10))
-  }, u.prototype._getContentSize = function(a) {
-    var b = this.$el.find(".ui-menu-wrapper");
-    this.$el.css({
-      top: "0px",
-      left: "-10000px",
-      display: "block"
+  /**
+   * @return {undefined}
+   */
+  instance.prototype._createDom = function() {
+    this.$el.addClass("ui-menu");
+    this.$el.html('<div class="ui-menu-wrapper"></div>');
+  };
+  /**
+   * @return {undefined}
+   */
+  instance.prototype._eventDelegation = function() {
+    this.$el.on("vmousedown", $.proxy(this, "_vmousedown"));
+    this.$el.on("vmouseover", ".ui-menu-item", $.proxy(this, "_vmouseoverItem"));
+    this.$el.on("vmouseout", ".ui-menu-item", $.proxy(this, "_vmouseoutItem"));
+    this.$el.on("tap", ".ui-menu-item", $.proxy(this, "_tapItem"));
+  };
+  /**
+   * @return {undefined}
+   */
+  instance.prototype._addItems = function() {
+    var data = this._data;
+    /** @type {number} */
+    var originalEvent = 0;
+    for (;originalEvent < data.options.itemCount;originalEvent++) {
+      this._trigger("itemRequested", originalEvent);
+    }
+  };
+  /**
+   * @param {?} value
+   * @return {undefined}
+   */
+  instance.prototype.addTextItem = function(value) {
+    var container = this.$el.find(".ui-menu-wrapper");
+    $item = $("<div />", {
+      "class" : "ui-menu-item",
+      item : this._data.$items.length
     });
-    var c = {
-      width: b.width(),
-      height: b.height()
+    $("<div />", {
+      "class" : "ui-menu-item-desc"
+    }).html(value).appendTo($item);
+    $item.appendTo(container);
+    this._data.$items.push($item);
+  };
+  /**
+   * @param {?} event
+   * @return {undefined}
+   */
+  instance.prototype._vmousedown = function(event) {
+    event.stopPropagation();
+  };
+  /**
+   * @param {Event} ev
+   * @return {undefined}
+   */
+  instance.prototype._vmouseoverItem = function(ev) {
+    $(ev.currentTarget).addClass("ui-menu-item-hover");
+  };
+  /**
+   * @param {Event} ev
+   * @return {undefined}
+   */
+  instance.prototype._vmouseoutItem = function(ev) {
+    $(ev.currentTarget).removeClass("ui-menu-item-hover");
+  };
+  /**
+   * @param {Event} ev
+   * @return {undefined}
+   */
+  instance.prototype._tapItem = function(ev) {
+    var cDigit = $(ev.currentTarget).attr("item");
+    this.selectItem(parseInt(cDigit, 10));
+  };
+  /**
+   * @param {(Object|boolean|number|string)} height
+   * @return {?}
+   */
+  instance.prototype._getContentSize = function(height) {
+    var $cont = this.$el.find(".ui-menu-wrapper");
+    this.$el.css({
+      top : "0px",
+      left : "-10000px",
+      display : "block"
+    });
+    var end = {
+      width : $cont.width(),
+      height : $cont.height()
     };
-    return a || this.$el.hide(), c
-  }, u.prototype.selectItem = function(a, c) {
-    var d = this._data;
-    return 0 > a || a >= d.$items.length ? !1 : c || this._trigger("itemSelected", a) != b.EVENT_PREVENTED ? (null !== d.selectedItem && d.$items[d.selectedItem].removeClass("ui-selected-item"), d.selectedItem = a, d.$items[a].addClass("ui-selected-item"), this.$el) : !1
-  }, u.prototype.clearSelection = function() {
-    var a = this._data;
-    return null !== a.selectedItem && a.$items[a.selectedItem].removeClass("ui-selected-item"), a.selectedItem = null, this.$el
-  }, u.prototype.showRelativeTo = function(a) {
-    var b = this._data;
-    0 === b.$items.length && this._addItems();
-    var c = this._getContentSize(),
-      d = a.offset();
+    return height || this.$el.hide(), end;
+  };
+  /**
+   * @param {string} index
+   * @param {boolean} itemNode
+   * @return {?}
+   */
+  instance.prototype.selectItem = function(index, itemNode) {
+    var data = this._data;
+    return 0 > index || index >= data.$items.length ? false : itemNode || this._trigger("itemSelected", index) != self.EVENT_PREVENTED ? (null !== data.selectedItem && data.$items[data.selectedItem].removeClass("ui-selected-item"), data.selectedItem = index, data.$items[index].addClass("ui-selected-item"), this.$el) : false;
+  };
+  /**
+   * @return {?}
+   */
+  instance.prototype.clearSelection = function() {
+    var data = this._data;
+    return null !== data.selectedItem && data.$items[data.selectedItem].removeClass("ui-selected-item"), data.selectedItem = null, this.$el;
+  };
+  /**
+   * @param {Object} $slide
+   * @return {?}
+   */
+  instance.prototype.showRelativeTo = function($slide) {
+    var data = this._data;
+    if (0 === data.$items.length) {
+      this._addItems();
+    }
+    var wsize = this._getContentSize();
+    var camera = $slide.offset();
     return this.show({
-      left: d.left + a.width() / 2 - c.width / 2,
-      top: d.top - c.height
-    }), this.$el
-  }, u.prototype.show = function(b) {
-    var c = this;
+      left : camera.left + $slide.width() / 2 - wsize.width / 2,
+      top : camera.top - wsize.height
+    }), this.$el;
+  };
+  /**
+   * @param {Object} options
+   * @return {?}
+   */
+  instance.prototype.show = function(options) {
+    var self = this;
     return this.$el.css({
-      left: "left" in b ? b.left : "auto",
-      top: "top" in b ? b.top : "auto",
-      right: "right" in b ? b.right : "auto",
-      bottom: "bottom" in b ? b.bottom : "auto",
-      display: "block"
+      left : "left" in options ? options.left : "auto",
+      top : "top" in options ? options.top : "auto",
+      right : "right" in options ? options.right : "auto",
+      bottom : "bottom" in options ? options.bottom : "auto",
+      display : "block"
     }), setTimeout(function() {
-      c.$el.addClass("ui-menu-visible")
-    }, 1), a(document).one("vmousedown", a.proxy(this, "hide")), this.$el
-  }, u.prototype.hide = function() {
-    var b = this;
-    return a(document).off("vmousedown", this.hide), this.$el.removeClass("ui-menu-visible"), setTimeout(function() {
-      b.$el.hasClass("ui-menu-visible") || b.$el.hide()
-    }, 500), this.$el
-  }, u.prototype.clear = function() {
-    var a = this._data;
-    return a.$items = [], a.selectedItem = null, this.$el.find(".ui-menu-wrapper").children().remove(), this.$el
-  }, u.prototype.options = function(b) {
-    var c = this._data;
-    return void 0 === b ? c.options : (c.options = a.extend(c.options, b), void 0)
-  }, b.widgetFactory("menu", u)
+      self.$el.addClass("ui-menu-visible");
+    }, 1), $(document).one("vmousedown", $.proxy(this, "hide")), this.$el;
+  };
+  /**
+   * @return {?}
+   */
+  instance.prototype.hide = function() {
+    var field = this;
+    return $(document).off("vmousedown", this.hide), this.$el.removeClass("ui-menu-visible"), setTimeout(function() {
+      if (!field.$el.hasClass("ui-menu-visible")) {
+        field.$el.hide();
+      }
+    }, 500), this.$el;
+  };
+  /**
+   * @return {?}
+   */
+  instance.prototype.clear = function() {
+    var data = this._data;
+    return data.$items = [], data.selectedItem = null, this.$el.find(".ui-menu-wrapper").children().remove(), this.$el;
+  };
+  /**
+   * @param {number} options
+   * @return {?}
+   */
+  instance.prototype.options = function(options) {
+    var that = this._data;
+    return void 0 === options ? that.options : (that.options = $.extend(that.options, options), void 0);
+  };
+  self.widgetFactory("menu", instance);
 }(jQuery);
-//     keymaster.js
-//     (c) 2011-2013 Thomas Fuchs
-//     keymaster.js may be freely distributed under the MIT license.
 
-;
+
+
 (function(global) {
-  var k,
-    _handlers = {},
-    _mods = { 16: false, 18: false, 17: false, 91: false },
-    _scope = 'all',
-    // modifier keys
-    _MODIFIERS = {
-      '⇧': 16,
-      shift: 16,
-      '⌥': 18,
-      alt: 18,
-      option: 18,
-      '⌃': 17,
-      ctrl: 17,
-      control: 17,
-      '⌘': 91,
-      command: 91
-    },
-    // special keys
-    _MAP = {
-      backspace: 8,
-      tab: 9,
-      clear: 12,
-      enter: 13,
-      'return': 13,
-      esc: 27,
-      escape: 27,
-      space: 32,
-      left: 37,
-      up: 38,
-      right: 39,
-      down: 40,
-      del: 46,
-      'delete': 46,
-      home: 36,
-      end: 35,
-      pageup: 33,
-      pagedown: 34,
-      ',': 188,
-      '.': 190,
-      '/': 191,
-      '`': 192,
-      '-': 189,
-      '=': 187,
-      ';': 186,
-      '\'': 222,
-      '[': 219,
-      ']': 221,
-      '\\': 220
-    },
-    code = function(x) {
-      return _MAP[x] || x.toUpperCase().charCodeAt(0);
-    },
-    _downKeys = [];
-
-  for (k = 1; k < 20; k++) _MAP['f' + k] = 111 + k;
-
-  // IE doesn't support Array#indexOf, so have a simple replacement
+  /**
+   * @param {Array} array
+   * @param {number} item
+   * @return {?}
+   */
   function index(array, item) {
     var i = array.length;
-    while (i--)
-      if (array[i] === item) return i;
-    return -1;
+    for (;i--;) {
+      if (array[i] === item) {
+        return i;
+      }
+    }
+    return-1;
   }
-
-  // for comparing mods before unassignment
+  /**
+   * @param {Array} a1
+   * @param {Array} a2
+   * @return {?}
+   */
   function compareArray(a1, a2) {
-    if (a1.length != a2.length) return false;
-    for (var i = 0; i < a1.length; i++) {
-      if (a1[i] !== a2[i]) return false;
+    if (a1.length != a2.length) {
+      return false;
+    }
+    /** @type {number} */
+    var i = 0;
+    for (;i < a1.length;i++) {
+      if (a1[i] !== a2[i]) {
+        return false;
+      }
     }
     return true;
   }
-
-  var modifierMap = {
-    16: 'shiftKey',
-    18: 'altKey',
-    17: 'ctrlKey',
-    91: 'metaKey'
-  };
-
+  /**
+   * @param {Event} event
+   * @return {undefined}
+   */
   function updateModifierKey(event) {
-    for (k in _mods) _mods[k] = event[modifierMap[k]];
-  };
-
-  // handle keydown event
+    for (k in _mods) {
+      _mods[k] = event[modifierMap[k]];
+    }
+  }
+  /**
+   * @param {Event} event
+   * @return {undefined}
+   */
   function dispatch(event) {
-    var key, handler, k, i, modifiersMatch, scope;
+    var key;
+    var handler;
+    var k;
+    var i;
+    var modifiersMatch;
+    var scope;
     key = event.keyCode;
-
     if (index(_downKeys, key) == -1) {
       _downKeys.push(key);
     }
-
-    // if a modifier key, set the key.<modifierkeyname> property to true and return
-    if (key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
+    if (key == 93 || key == 224) {
+      /** @type {number} */
+      key = 91;
+    }
     if (key in _mods) {
+      /** @type {boolean} */
       _mods[key] = true;
-      // 'assignKey' from inside this closure is exported to window.key
-      for (k in _MODIFIERS)
-        if (_MODIFIERS[k] == key) assignKey[k] = true;
+      for (k in _MODIFIERS) {
+        if (_MODIFIERS[k] == key) {
+          /** @type {boolean} */
+          assignKey[k] = true;
+        }
+      }
       return;
     }
     updateModifierKey(event);
-
-    // see if we need to ignore the keypress (filter() can can be overridden)
-    // by default ignore key presses if a select, textarea, or input is focused
-    if (!assignKey.filter.call(this, event)) return;
-
-    // abort if no potentially matching shortcuts found
-    if (!(key in _handlers)) return;
-
+    if (!assignKey.filter.call(this, event)) {
+      return;
+    }
+    if (!(key in _handlers)) {
+      return;
+    }
     scope = getScope();
-
-    // for each potential shortcut
-    for (i = 0; i < _handlers[key].length; i++) {
+    /** @type {number} */
+    i = 0;
+    for (;i < _handlers[key].length;i++) {
       handler = _handlers[key][i];
-
-      // see if it's in the current scope
-      if (handler.scope == scope || handler.scope == 'all') {
-        // check if modifiers match if any
+      if (handler.scope == scope || handler.scope == "all") {
+        /** @type {boolean} */
         modifiersMatch = handler.mods.length > 0;
-        for (k in _mods)
-          if ((!_mods[k] && index(handler.mods, +k) > -1) ||
-            (_mods[k] && index(handler.mods, +k) == -1)) modifiersMatch = false;
-          // call the handler and stop the event if neccessary
-        if ((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch) {
+        for (k in _mods) {
+          if (!_mods[k] && index(handler.mods, +k) > -1 || _mods[k] && index(handler.mods, +k) == -1) {
+            /** @type {boolean} */
+            modifiersMatch = false;
+          }
+        }
+        if (handler.mods.length == 0 && (!_mods[16] && (!_mods[18] && (!_mods[17] && !_mods[91]))) || modifiersMatch) {
           if (handler.method(event, handler) === false) {
-            if (event.preventDefault) event.preventDefault();
-            else event.returnValue = false;
-            if (event.stopPropagation) event.stopPropagation();
-            if (event.cancelBubble) event.cancelBubble = true;
+            if (event.preventDefault) {
+              event.preventDefault();
+            } else {
+              /** @type {boolean} */
+              event.returnValue = false;
+            }
+            if (event.stopPropagation) {
+              event.stopPropagation();
+            }
+            if (event.cancelBubble) {
+              /** @type {boolean} */
+              event.cancelBubble = true;
+            }
           }
         }
       }
     }
-  };
-
-  // unset modifier keys on keyup
+  }
+  /**
+   * @param {?} event
+   * @return {undefined}
+   */
   function clearModifier(event) {
-    var key = event.keyCode,
-      k,
-      i = index(_downKeys, key);
-
-    // remove key from _downKeys
+    var key = event.keyCode;
+    var k;
+    var i = index(_downKeys, key);
     if (i >= 0) {
       _downKeys.splice(i, 1);
     }
-
-    if (key == 93 || key == 224) key = 91;
-    if (key in _mods) {
-      _mods[key] = false;
-      for (k in _MODIFIERS)
-        if (_MODIFIERS[k] == key) assignKey[k] = false;
+    if (key == 93 || key == 224) {
+      /** @type {number} */
+      key = 91;
     }
-  };
-
+    if (key in _mods) {
+      /** @type {boolean} */
+      _mods[key] = false;
+      for (k in _MODIFIERS) {
+        if (_MODIFIERS[k] == key) {
+          /** @type {boolean} */
+          assignKey[k] = false;
+        }
+      }
+    }
+  }
+  /**
+   * @return {undefined}
+   */
   function resetModifiers() {
-    for (k in _mods) _mods[k] = false;
-    for (k in _MODIFIERS) assignKey[k] = false;
-  };
-
-  // parse and assign shortcut
+    for (k in _mods) {
+      /** @type {boolean} */
+      _mods[k] = false;
+    }
+    for (k in _MODIFIERS) {
+      /** @type {boolean} */
+      assignKey[k] = false;
+    }
+  }
+  /**
+   * @param {(Array|string)} key
+   * @param {string} scope
+   * @param {string} method
+   * @return {undefined}
+   */
   function assignKey(key, scope, method) {
-    var keys, mods;
+    var keys;
+    var mods;
     keys = getKeys(key);
     if (method === undefined) {
+      /** @type {string} */
       method = scope;
-      scope = 'all';
+      /** @type {string} */
+      scope = "all";
     }
-
-    // for each shortcut
-    for (var i = 0; i < keys.length; i++) {
-      // set modifier keys if any
+    /** @type {number} */
+    var i = 0;
+    for (;i < keys.length;i++) {
+      /** @type {Array} */
       mods = [];
-      key = keys[i].split('+');
+      key = keys[i].split("+");
       if (key.length > 1) {
         mods = getMods(key);
+        /** @type {Array} */
         key = [key[key.length - 1]];
       }
-      // convert to keycode and...
-      key = key[0]
+      key = key[0];
       key = code(key);
-      // ...store handler
-      if (!(key in _handlers)) _handlers[key] = [];
-      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+      if (!(key in _handlers)) {
+        /** @type {Array} */
+        _handlers[key] = [];
+      }
+      _handlers[key].push({
+        shortcut : keys[i],
+        scope : scope,
+        method : method,
+        key : keys[i],
+        mods : mods
+      });
     }
-  };
-
-  // unbind all handlers for given key in current scope
+  }
+  /**
+   * @param {string} key
+   * @param {Function} scope
+   * @return {undefined}
+   */
   function unbindKey(key, scope) {
-    var multipleKeys, keys,
-      mods = [],
-      i, j, obj;
-
-    multipleKeys = getKeys(key);
-
-    for (j = 0; j < multipleKeys.length; j++) {
-      keys = multipleKeys[j].split('+');
-
+    var list;
+    var keys;
+    /** @type {Array} */
+    var mods = [];
+    var i;
+    var j;
+    var obj;
+    list = getKeys(key);
+    /** @type {number} */
+    j = 0;
+    for (;j < list.length;j++) {
+      keys = list[j].split("+");
       if (keys.length > 1) {
         mods = getMods(keys);
         key = keys[keys.length - 1];
       }
-
       key = code(key);
-
       if (scope === undefined) {
         scope = getScope();
       }
       if (!_handlers[key]) {
         return;
       }
-      for (i = 0; i < _handlers[key].length; i++) {
+      /** @type {number} */
+      i = 0;
+      for (;i < _handlers[key].length;i++) {
         obj = _handlers[key][i];
-        // only clear handlers if correct scope and mods match
         if (obj.scope === scope && compareArray(obj.mods, mods)) {
           _handlers[key][i] = {};
         }
       }
     }
-  };
-
-  // Returns true if the key with code 'keyCode' is currently down
-  // Converts strings into key codes.
+  }
+  /**
+   * @param {(number|string)} keyCode
+   * @return {?}
+   */
   function isPressed(keyCode) {
-    if (typeof(keyCode) == 'string') {
+    if (typeof keyCode == "string") {
       keyCode = code(keyCode);
     }
     return index(_downKeys, keyCode) != -1;
   }
-
+  /**
+   * @return {?}
+   */
   function getPressedKeyCodes() {
     return _downKeys.slice(0);
   }
-
+  /**
+   * @param {Event} event
+   * @return {?}
+   */
   function filter(event) {
     var tagName = (event.target || event.srcElement).tagName;
-    // ignore keypressed in any elements that support keyboard data input
-    return !(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
+    return!(tagName == "INPUT" || (tagName == "SELECT" || tagName == "TEXTAREA"));
   }
-
-  // initialize key.<modifier> to false
-  for (k in _MODIFIERS) assignKey[k] = false;
-
-  // set current scope (default 'all')
-  function setScope(scope) { _scope = scope || 'all' };
-
+  /**
+   * @param {string} scope
+   * @return {undefined}
+   */
+  function setScope(scope) {
+    _scope = scope || "all";
+  }
+  /**
+   * @return {?}
+   */
   function getScope() {
-    return _scope || 'all'
-  };
-
-  // delete all handlers for a given scope
+    return _scope || "all";
+  }
+  /**
+   * @param {?} scope
+   * @return {undefined}
+   */
   function deleteScope(scope) {
-    var key, handlers, i;
-
+    var key;
+    var handlers;
+    var i;
     for (key in _handlers) {
       handlers = _handlers[key];
-      for (i = 0; i < handlers.length;) {
-        if (handlers[i].scope === scope) handlers.splice(i, 1);
-        else i++;
+      /** @type {number} */
+      i = 0;
+      for (;i < handlers.length;) {
+        if (handlers[i].scope === scope) {
+          handlers.splice(i, 1);
+        } else {
+          i++;
+        }
       }
     }
-  };
-
-  // abstract key logic for assign and unassign
-  function getKeys(key) {
+  }
+  /**
+   * @param {string} o
+   * @return {?}
+   */
+  function getKeys(o) {
     var keys;
-    key = key.replace(/\s/g, '');
-    keys = key.split(',');
-    if ((keys[keys.length - 1]) == '') {
-      keys[keys.length - 2] += ',';
+    o = o.replace(/\s/g, "");
+    keys = o.split(",");
+    if (keys[keys.length - 1] == "") {
+      keys[keys.length - 2] += ",";
     }
     return keys;
   }
-
-  // abstract mods logic for assign and unassign
+  /**
+   * @param {string} key
+   * @return {?}
+   */
   function getMods(key) {
     var mods = key.slice(0, key.length - 1);
-    for (var mi = 0; mi < mods.length; mi++)
+    /** @type {number} */
+    var mi = 0;
+    for (;mi < mods.length;mi++) {
       mods[mi] = _MODIFIERS[mods[mi]];
+    }
     return mods;
   }
-
-  // cross-browser events
+  /**
+   * @param {HTMLElement} object
+   * @param {string} event
+   * @param {Function} method
+   * @return {undefined}
+   */
   function addEvent(object, event, method) {
-    if (object.addEventListener)
+    if (object.addEventListener) {
       object.addEventListener(event, method, false);
-    else if (object.attachEvent)
-      object.attachEvent('on' + event, function() { method(window.event) });
-  };
-
-  // set the handlers globally on document
-  addEvent(document, 'keydown', function(event) { dispatch(event) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
-  addEvent(document, 'keyup', clearModifier);
-
-  // reset modifiers to false whenever the window is (re)focused.
-  addEvent(window, 'focus', resetModifiers);
-
-  // store previously defined key
-  var previousKey = global.key;
-
-  // restore previously defined key and return reference to our key object
+    } else {
+      if (object.attachEvent) {
+        object.attachEvent("on" + event, function() {
+          method(window.event);
+        });
+      }
+    }
+  }
+  /**
+   * @return {?}
+   */
   function noConflict() {
     var k = global.key;
     global.key = previousKey;
     return k;
   }
-
-  // set window.key and window.key.set/get/deleteScope, and the default filter
-  global.key = assignKey;
-  global.key.setScope = setScope;
-  global.key.getScope = getScope;
-  global.key.deleteScope = deleteScope;
-  global.key.filter = filter;
-  global.key.isPressed = isPressed;
-  global.key.getPressedKeyCodes = getPressedKeyCodes;
-  global.key.noConflict = noConflict;
-  global.key.unbind = unbindKey;
-
-  if (typeof module !== 'undefined') module.exports = assignKey;
-
-})(this);
-
-
-
-
-function getViewNumber(book, page) {
-  return parseInt((page || book.turn('page')) / 2 + 1, 10);
-}
-
-var isUserInteracting = false;
-
-function bookSlider($superbook) {
-  'use strict';
-
-  // Slider module
-  var doubleDisplay = $superbook.turn('display') == 'double' ? true : false;
-  var pages = $superbook.turn('pages');
-  var numberOfViews = doubleDisplay ? (pages / 2 + 1) : (pages);
-
-  $('#page-slider').slider({
-    min: 1,
-    max: numberOfViews,
-    value: (doubleDisplay ? getViewNumber($superbook) : $superbook.turn('page'))
+  var k;
+  var _handlers = {};
+  var _mods = {
+    16 : false,
+    18 : false,
+    17 : false,
+    91 : false
+  };
+  /** @type {string} */
+  var _scope = "all";
+  var _MODIFIERS = {
+    "\u21e7" : 16,
+    shift : 16,
+    "\u2325" : 18,
+    alt : 18,
+    option : 18,
+    "\u2303" : 17,
+    ctrl : 17,
+    control : 17,
+    "\u2318" : 91,
+    command : 91
+  };
+  var _MAP = {
+    backspace : 8,
+    tab : 9,
+    clear : 12,
+    enter : 13,
+    "return" : 13,
+    esc : 27,
+    escape : 27,
+    space : 32,
+    left : 37,
+    up : 38,
+    right : 39,
+    down : 40,
+    del : 46,
+    "delete" : 46,
+    home : 36,
+    end : 35,
+    pageup : 33,
+    pagedown : 34,
+    "," : 188,
+    "." : 190,
+    "/" : 191,
+    "`" : 192,
+    "-" : 189,
+    "=" : 187,
+    ";" : 186,
+    "'" : 222,
+    "[" : 219,
+    "]" : 221,
+    "\\" : 220
+  };
+  /**
+   * @param {string} key
+   * @return {?}
+   */
+  var code = function(key) {
+    return _MAP[key] || key.toUpperCase().charCodeAt(0);
+  };
+  /** @type {Array} */
+  var _downKeys = [];
+  /** @type {number} */
+  k = 1;
+  for (;k < 20;k++) {
+    _MAP["f" + k] = 111 + k;
+  }
+  var modifierMap = {
+    16 : "shiftKey",
+    18 : "altKey",
+    17 : "ctrlKey",
+    91 : "metaKey"
+  };
+  for (k in _MODIFIERS) {
+    /** @type {boolean} */
+    assignKey[k] = false;
+  }
+  addEvent(document, "keydown", function(event) {
+    dispatch(event);
   });
-
-  $('#page-slider').on('changeValue', function(event, newVal) {
-    //isUserInteracting = true;
+  addEvent(document, "keyup", clearModifier);
+  addEvent(window, "focus", resetModifiers);
+  var previousKey = global.key;
+  /** @type {function ((Array|string), string, string): undefined} */
+  global.key = assignKey;
+  /** @type {function (string): undefined} */
+  global.key.setScope = setScope;
+  /** @type {function (): ?} */
+  global.key.getScope = getScope;
+  /** @type {function (?): undefined} */
+  global.key.deleteScope = deleteScope;
+  /** @type {function (Event): ?} */
+  global.key.filter = filter;
+  /** @type {function ((number|string)): ?} */
+  global.key.isPressed = isPressed;
+  /** @type {function (): ?} */
+  global.key.getPressedKeyCodes = getPressedKeyCodes;
+  /** @type {function (): ?} */
+  global.key.noConflict = noConflict;
+  /** @type {function (string, Function): undefined} */
+  global.key.unbind = unbindKey;
+  if (typeof module !== "undefined") {
+    /** @type {function ((Array|string), string, string): undefined} */
+    module.exports = assignKey;
+  }
+})(this);
+/**
+ * @param {Object} req
+ * @param {number} page
+ * @return {?}
+ */
+function getViewNumber(req, page) {
+  return parseInt((page || req.turn("page")) / 2 + 1, 10);
+}
+/** @type {boolean} */
+var isUserInteracting = false;
+/**
+ * @param {Object} $superbook
+ * @return {undefined}
+ */
+function bookSlider($superbook) {
+  /** @type {boolean} */
+  var offset = $superbook.turn("display") == "double" ? true : false;
+  var Infinity = $superbook.turn("pages");
+  var maxY = offset ? Infinity / 2 + 1 : Infinity;
+  $("#page-slider").slider({
+    min : 1,
+    max : maxY,
+    value : offset ? getViewNumber($superbook) : $superbook.turn("page")
+  });
+  $("#page-slider").on("changeValue", function(types, dataAndEvents) {
     if (!isUserInteracting) {
-      var currentVal = $(this).slider('value');
-      var newPage = newVal;
-      if (doubleDisplay) {
-        var leftPage = newVal * 2 - 2;
-        var rightPage = newVal * 2 - 1;
-        if (currentVal > newVal) {
-          newPage = rightPage;
+      var isFunction = $(this).slider("value");
+      /** @type {number} */
+      var page = dataAndEvents;
+      if (offset) {
+        /** @type {number} */
+        var _page = dataAndEvents * 2 - 2;
+        /** @type {number} */
+        var hash = dataAndEvents * 2 - 1;
+        if (isFunction > dataAndEvents) {
+          /** @type {number} */
+          page = hash;
         } else {
-          newPage = leftPage;
+          /** @type {number} */
+          page = _page;
         }
       }
-      $superbook.unbind('turning', turnAndSlide);
-      if ($.inArray(newPage, $('#superbook').turn('view')) != -1) {
-        //isUserInteracting = false;
-        event.preventDefault();
+      $superbook.unbind("turning", handler);
+      if ($.inArray(page, $("#superbook").turn("view")) != -1) {
+        types.preventDefault();
         return;
       }
-      if ($('#superbook').turn('page', newPage) === false) {
-        //isUserInteracting = false;
-        event.preventDefault();
+      if ($("#superbook").turn("page", page) === false) {
+        types.preventDefault();
       }
-      $superbook.bind('turning', turnAndSlide);
+      $superbook.bind("turning", handler);
     }
+    /** @type {boolean} */
     isUserInteracting = false;
   });
-
-  var turnAndSlide = function(event, page, view) {
+  /**
+   * @param {?} token
+   * @param {number} round
+   * @param {?} execAsap
+   * @return {undefined}
+   */
+  var handler = function(token, round, execAsap) {
+    /** @type {boolean} */
     isUserInteracting = true;
-    var viewNumber = doubleDisplay ? (parseInt((page || $superbook.turn('page')) / 2 + 1, 10)) : page;
-    $('#page-slider').slider('value', viewNumber);
-    //}
-
+    var currenttime = offset ? parseInt((round || $superbook.turn("page")) / 2 + 1, 10) : round;
+    $("#page-slider").slider("value", currenttime);
   };
-  $superbook.bind('turning', turnAndSlide);
-
+  $superbook.bind("turning", handler);
 }
-
+/** @type {boolean} */
 var pushToStateFlag = true;
-
 $(document).ready(function() {
-
-  var $superbook = $('#superbook');
-
-  // Initialize superbook
+  /**
+   * @param {Object} el
+   * @return {undefined}
+   */
+  function click(el) {
+    el.contents().unbind("tap doubletap mouseover vmouseover mouseout vmouseout pinch mouseup vmouseup mousemove vmousemove swipe mousedown vmousedown drag touchstart touchmove touchend dragstart dragend dragover");
+    if (Turn.isTouchDevice) {
+      el.contents().bind("vmousedown vmouseover vmouseout vmouseup vmousemove", function(item) {
+        item.pageX += el.offset().left;
+        item.pageY += el.offset().top;
+        $superbook.trigger(item);
+      });
+    } else {
+      el.contents().bind("mouseover vmouseover mouseout vmouseout mouseup vmouseup mousemove vmousemove", function(item) {
+        item.pageX += el.offset().left;
+        item.pageY += el.offset().top;
+        $(document).trigger(item);
+      });
+      el.contents().bind("mousedown vmousedown", function(item) {
+        item.pageX += el.offset().left;
+        item.pageY += el.offset().top;
+        $superbook.trigger(item);
+      });
+    }
+    $(".turnoff", $("iframe").contents()).on("touchend doubletap mouseover vmouseover mouseout vmouseout pinch mouseup vmouseup mousemove vmousemove swipe mousedown vmousedown drag touchstart touchmove dragstart dragend dragover", function(event) {
+      event.stopPropagation();
+    });
+    $("a", $("iframe").contents()).on("touchend doubletap mouseover vmouseover mouseout vmouseout pinch mouseup vmouseup mousemove vmousemove swipe mousedown vmousedown drag touchstart touchmove dragstart dragend dragover", function(dataAndEvents) {
+      return false;
+    });
+    if (Turn.isTouchDevice) {
+      $("a.page", $("iframe").contents()).off().on("tap", function(dataAndEvents) {
+        var matches = $(this).attr("href");
+        $superbook.turn("page", matches);
+        return false;
+      });
+      $("a:not(.page)", $("iframe").contents()).off().on("tap", function(dataAndEvents) {
+        var url = $(this).attr("href");
+        window.open(url, "_blank");
+        return false;
+      });
+    } else {
+      $("a:not(.page)", $("iframe").contents()).off().on(" click", function(dataAndEvents) {
+        var url = $(this).attr("href");
+        window.open(url, "_blank");
+        return false;
+      });
+      $("a.page", $("iframe").contents()).off().on("click", function(dataAndEvents) {
+        var matches = $(this).attr("href");
+        $superbook.turn("page", matches);
+        return false;
+      });
+    }
+  }
+  var $superbook = $("#superbook");
+  
   $superbook.turn({
-    pageWidth: 1115,
-    pageHeight: 1443,
-    autoCenter: true,
-    responsive: true,
-    display: 'single',
-    animatedAutoCenter: true,
-    smartFlip: true,
-    autoScaleContent: true,
-    swipe: true,
-    iframeSupport: true
+    pageWidth : 1115,
+    pageHeight : 1443,
+    autoCenter : true,
+    responsive : true,
+    display : "single",
+    animatedAutoCenter : true,
+    smartFlip : true,
+    autoScaleContent : true,
+    swipe : true,
+    iframeSupport : true
   });
-
-  $('iframe').each(function(index) {
+  $("iframe").each(function(dataAndEvents) {
+    /**
+     * @return {undefined}
+     */
     this.onload = function() {
-      setEventsInIframe($(this));
+      click($(this));
     };
   });
-
-  var target = document.querySelector('#superbook');
-
-  // create an observer instance
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      if (mutation.type === 'childList') {
-        if (mutation.addedNodes && mutation.addedNodes.length > 0 && mutation.addedNodes[0].className === 'page-wrapper') {
-          var newIframe = $(mutation.addedNodes[0]).find('iframe');
-          if (newIframe.length > 0) {
-            newIframe[0].onload = function() {
-              setEventsInIframe($(this));
+  /** @type {(Element|null)} */
+  var target = document.querySelector("#superbook");
+  /** @type {MutationObserver} */
+  var mutationObserver = new MutationObserver(function(failures) {
+    failures.forEach(function(record) {
+      if (record.type === "childList") {
+        if (record.addedNodes && (record.addedNodes.length > 0 && record.addedNodes[0].className === "page-wrapper")) {
+          var images = $(record.addedNodes[0]).find("iframe");
+          if (images.length > 0) {
+            /**
+             * @return {undefined}
+             */
+            images[0].onload = function() {
+              click($(this));
             };
           }
         }
       }
     });
   });
-
-  // configuration of the observer:
-  var config = {
-    attributes: true,
-    childList: true,
-    characterData: true
+  var mutationConfig = {
+    attributes : true,
+    childList : true,
+    characterData : true
   };
-
-  // pass in the target node, as well as the observer options
-  if ($('#superbook').length) {
-    observer.observe(target, config);
+  if ($("#superbook").length) {
+    mutationObserver.observe(target, mutationConfig);
   }
-
-  function setEventsInIframe(thisIframe) {
-    thisIframe.contents().unbind("tap doubletap mouseover vmouseover mouseout vmouseout pinch mouseup vmouseup mousemove vmousemove swipe mousedown vmousedown drag touchstart touchmove touchend dragstart dragend dragover");
-
-    if (Turn.isTouchDevice) {
-      thisIframe.contents().bind("vmousedown vmouseover vmouseout vmouseup vmousemove", function(e) {
-        e.pageX += thisIframe.offset().left;
-        e.pageY += thisIframe.offset().top;
-        $superbook.trigger(e);
-      });
-
-    } else {
-      // mousemove, mouseup and their virtual events should be used with document only
-      thisIframe.contents().bind("mouseover vmouseover mouseout vmouseout mouseup vmouseup mousemove vmousemove", function(e) {
-        e.pageX += thisIframe.offset().left;
-        e.pageY += thisIframe.offset().top;
-        $(document).trigger(e);
-      });
-      thisIframe.contents().bind("mousedown vmousedown", function(e) {
-        e.pageX += thisIframe.offset().left;
-        e.pageY += thisIframe.offset().top;
-        $superbook.trigger(e);
-      });
-
-    }
-
-    $('.turnoff', $("iframe").contents()).on('touchend doubletap mouseover vmouseover mouseout vmouseout pinch mouseup vmouseup mousemove vmousemove swipe mousedown vmousedown drag touchstart touchmove dragstart dragend dragover', function(e) {
-      e.stopPropagation();
-    });
-
-    $("a", $("iframe").contents()).on('touchend doubletap mouseover vmouseover mouseout vmouseout pinch mouseup vmouseup mousemove vmousemove swipe mousedown vmousedown drag touchstart touchmove dragstart dragend dragover', function(e) {
-      return false;
-    });
-
-    if (Turn.isTouchDevice) {
-      $("a.page", $("iframe").contents()).off().on('tap', function(e) {
-        var pageNo = $(this).attr('href');
-        $superbook.turn('page', pageNo);
-        return false; // prevent anchor click
-      });
-      $("a:not(.page)", $("iframe").contents()).off().on('tap', function(e) {
-        var link = $(this).attr('href');
-        window.open(link, '_blank'); // opens in new window as requested
-        return false; // prevent anchor click
-      });
-    } else {
-      $("a:not(.page)", $("iframe").contents()).off().on(' click', function(e) {
-        var link = $(this).attr('href');
-        window.open(link, '_blank'); // opens in new window as requested
-        return false; // prevent anchor click
-      });
-      $("a.page", $("iframe").contents()).off().on('click', function(e) {
-        var pageNo = $(this).attr('href');
-        $superbook.turn('page', pageNo);
-        return false; // prevent anchor click
-      });
-    }
-  }
-
-  // Prevent drag/scroll physics on iOS Safari with 'touchmove'
   if ($superbook.length > 0) {
-    document.body.addEventListener('touchmove', function(e) {
-      e.preventDefault();
+    document.body.addEventListener("touchmove", function(types) {
+      types.preventDefault();
     });
   }
-
-  // Present superbook elements after turn has been applied.
-  $superbook.fadeIn('slow');
-
-  var bookId = $('#bookname').val();
-  var cookiedPageNo = Cookies.get("" + bookId);
-  var currentPage = $superbook.turn('page');
-  var viewPages = $superbook.turn('view');
-
-  $superbook.turn('page', cookiedPageNo);
-
-  $superbook.bind('turned', function(event, page, view) {
-    Cookies.remove("" + bookId);
-    Cookies.set("" + bookId, parseInt(page));
+  $superbook.fadeIn("slow");
+  var id = $("#bookname").val();
+  var s = Cookies.get("" + id);
+  var page = $superbook.turn("page");
+  var views = $superbook.turn("view");
+  $superbook.turn("page", s);
+  $superbook.bind("turned", function(dataAndEvents, m1, deepDataAndEvents) {
+    Cookies.remove("" + id);
+    Cookies.set("" + id, parseInt(m1));
   });
-
   bookSlider($superbook);
-
   if (Turn.isTouchDevice) {
-    $('body .ui-arrow-next-page').on('tap', function(e) {
-      $superbook.turn('next');
+    $("body .ui-arrow-next-page").on("tap", function(dataAndEvents) {
+      $superbook.turn("next");
     });
-    $('body .ui-arrow-previous-page').on('tap', function(e) {
-      $superbook.turn('previous');
+    $("body .ui-arrow-previous-page").on("tap", function(dataAndEvents) {
+      $superbook.turn("previous");
     });
   } else {
-    $('.ui-arrow-next-page').on('click', function(e) {
-      $superbook.turn('next');
+    $(".ui-arrow-next-page").on("click", function(dataAndEvents) {
+      $superbook.turn("next");
     });
-    $('.ui-arrow-previous-page').on('click', function(e) {
-      $superbook.turn('previous');
+    $(".ui-arrow-previous-page").on("click", function(dataAndEvents) {
+      $superbook.turn("previous");
     });
   }
-
-  // Binding keys: left, right, pageu, pagedown to flipping the book.
-  key('left, pageup, up', function(e) {
+  key("left, pageup, up", function(e) {
     e.preventDefault(e);
-    $superbook.turn('previous');
-
+    $superbook.turn("previous");
   });
-
-  key('right, pagedown, down, space', function(e) {
+  key("right, pagedown, down, space", function(e) {
     e.preventDefault(e);
-    $superbook.turn('next');
+    $superbook.turn("next");
   });
-
-  // Command + pageup, command + pagedown combinations to beginning or end of book
-  key('⌘ + left, ⌘ + pageup, ⌘ + up, ctrl + left, ctrl + pageup, ctrl + up', function(e) {
+  key("\u2318 + left, \u2318 + pageup, \u2318 + up, ctrl + left, ctrl + pageup, ctrl + up", function(e) {
     e.preventDefault(e);
-    $superbook.turn('page', 1);
+    $superbook.turn("page", 1);
   });
-
-  key('⌘ + right, ⌘ + pagedown, ⌘ + down, ctrl + right, ctrl + pagedown, ctrl + down', function(e) {
+  key("\u2318 + right, \u2318 + pagedown, \u2318 + down, ctrl + right, ctrl + pagedown, ctrl + down", function(e) {
     e.preventDefault(e);
-    $superbook.turn('page', $superbook.turn('pages'));
+    $superbook.turn("page", $superbook.turn("pages"));
   });
-
-  // History & has at tabbed interface
-  var hash = window.location.hash;
+  /** @type {string} */
+  var path = window.location.hash;
+  /** @type {boolean} */
   var historyApi = !!(window.history && history.replaceState);
-
   if (historyApi) {
-    if (hash === '') {
-      if (typeof cookiedPageNo !== 'undefined') {
-        hash = '#' + cookiedPageNo;
+    if (path === "") {
+      if (typeof s !== "undefined") {
+        /** @type {string} */
+        path = "#" + s;
       } else {
-        hash = '#' + 1;
+        /** @type {string} */
+        path = "#" + 1;
       }
     }
-
-    history.replaceState(null, null, hash);
-    $superbook.turn('page', hash.substring(1));
+    history.replaceState(null, null, path);
+    $superbook.turn("page", path.substring(1));
   }
-
-  $superbook.bind('turning', function(event, page, view) {
+  $superbook.bind("turning", function(dataAndEvents, stepid, deepDataAndEvents) {
     if (pushToStateFlag) {
-      var newURL = '/#' + page;
-      window.history.pushState('', '', newURL);
-    } 
+      /** @type {string} */
+      var shouldBeHash = "/#" + stepid;
+      window.history.pushState("", "", shouldBeHash);
+    }
+    /** @type {boolean} */
     pushToStateFlag = true;
   });
-
-  $(window).on('popstate', function(e) {
-    var newHash = window.location.hash;
-    var currentHash = '#' + parseInt($superbook.turn('page'));
-
-    if (newHash !== currentHash) {
+  $(window).on("popstate", function(dataAndEvents) {
+    /** @type {string} */
+    var raw = window.location.hash;
+    /** @type {string} */
+    var num = "#" + parseInt($superbook.turn("page"));
+    if (raw !== num) {
+      /** @type {boolean} */
       pushToStateFlag = false;
-      $superbook.turn('page', newHash.substring(1));
+      $superbook.turn("page", raw.substring(1));
     }
-
-
   });
-
 });

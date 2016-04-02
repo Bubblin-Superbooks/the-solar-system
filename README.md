@@ -1,13 +1,15 @@
 # The-Solar-System
-A quick and immersive journey through our Solar System with a soft primer on Gravitational Physics. Must read for aspiring astronomers, star-gazers and science enthusiasts of all ages out there. 
+A quick and immersive journey through our Solar System with a soft primer on Gravitational Physics. A must read for aspiring astronomers, star-gazers and people from all walks of life. I mean you know we're gonna get out there soon! 
 
-Learn how our planetary system works, what it's like in space and how astronomy connects all pieces of science together!
+Learn how our planetary system works, what it's like to be in space and how astronomy started it all.
+
+
 # Superbook
 
 The book is deployed here: [The Solar System](https://bubbl.in/cover/the-solar-system-by-marvin-danig)
 
 # Project
-This book was written using [Bookiza Framework](http://bookiza.io). 
+This book was rewritten using [Bookiza Framework](http://bookiza.io). 
 
 # Development
 
