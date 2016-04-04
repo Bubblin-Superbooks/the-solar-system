@@ -35,8 +35,8 @@ a {
   clear: both;
   text-decoration: none;
   color: #333;
-  margin: .1vw 0;
-  padding: 0.8vw 5%;
+  margin: 1px 0;
+  padding: 8px 5%;
   -webkit-border-radius: 1vw;
   -moz-border-radius: 1vw;
   -o-border-radius: 1vw;
