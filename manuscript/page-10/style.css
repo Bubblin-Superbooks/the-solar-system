@@ -79,12 +79,12 @@ h4 {
   bottom: 0;
   left: 0;
   border: 4.5vw solid rgba(255, 255, 255, 0.1);
-
   border-radius: 50%;
   margin: auto;
   -webkit-animation: spin 10s linear infinite;
   animation: spin 10s linear infinite;
 }
+
 
 .planet2 {
   height: .4vw;
