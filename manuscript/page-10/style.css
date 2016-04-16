@@ -1,13 +1,22 @@
 body {
-  background: #080e24 url(https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/galaxy_starfield.jpg) repeat;
+  background-color: #080e24;
+  background-image: url('//raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/galaxy_starfield.jpg');
+  background-size: 100% 100%;
   color: #aaa;
+  height:100vh;
+  width:100vw;
   text-align: center;
   overflow: hidden;
 }
 
 h2 {
   padding: 0;
-  margin: 10vw
+  margin: 10vw;
+  font-size: 4vw;
+}
+
+h4 {
+  font-size: 3vw; 
 }
 
 .absolute {
