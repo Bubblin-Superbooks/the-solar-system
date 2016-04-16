@@ -78,7 +78,8 @@ h4 {
   right: 0;
   bottom: 0;
   left: 0;
-  border: 4.5vw solid #666;
+  border: 4.5vw solid rgba(255, 255, 255, 0.1);
+
   border-radius: 50%;
   margin: auto;
   -webkit-animation: spin 10s linear infinite;
@@ -121,7 +122,7 @@ h4 {
   right: 0;
   bottom: 0;
   left: 0;
-  border: 4.5vw solid #444;
+  border: 4.5vw solid rgba(255, 25, 255, 0.1);
   border-radius: 50%;
   margin: auto;
   -webkit-animation: spin 20s linear infinite;
@@ -164,7 +165,7 @@ h4 {
   right: 0;
   bottom: 0;
   left: 0;
-  border: 4.5vw solid #543400;
+  border: 4.5vw solid rgba(255, 105, 25, 0.1);
   border-radius: 50%;
   margin: auto;
   -webkit-animation: spin 30s linear infinite;
@@ -179,7 +180,7 @@ h4 {
   right: 0;
   bottom: 0;
   left: 0;
-  border: 4.5vw solid #243434;
+  border: 4.5vw solid rgba(255, 255, 55, 0.1);
   border-radius: 50%;
   margin: auto;
   -webkit-animation: spin 40s linear infinite;
@@ -222,7 +223,7 @@ h4 {
   right: 0;
   bottom: 0;
   left: 0;
-  border: 4.5vw solid #243400;
+  border: 4.5vw solid rgba(155, 255, 155, 0.1);
   border-radius: 50%;
   margin: auto;
   -webkit-animation: spin 50s linear infinite;
@@ -265,7 +266,7 @@ h4 {
   right: 0;
   bottom: 0;
   left: 0;
-  border: 4.5vw solid #002434;
+  border: 4.5vw solid rgba(55, 255, 255, 0.1);
   border-radius: 50%;
   margin: auto;
   -webkit-animation: spin 60s linear infinite;
@@ -308,7 +309,7 @@ h4 {
   right: 0;
   bottom: 0;
   left: 0;
-  border: 4.5vw solid #342434;
+  border: 4.5vw solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   margin: auto;
   -webkit-animation: spin 70s linear infinite;
