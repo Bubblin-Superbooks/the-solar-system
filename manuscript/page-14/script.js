@@ -9,8 +9,8 @@ function doALoadOfStuff() {
     clearTimeout($.data(this, 'timer'));
     $.data(this, 'timer', setTimeout(function() {
       shader.setAttribute("height", height + 'px');
-      $('#shadertoy').removeClass('invisible');
-      
-    }, 1000));
+
+      $('#shadertoy').removeClass('invisible').fadeIn('slow');
+    }, 250));
 
 }
