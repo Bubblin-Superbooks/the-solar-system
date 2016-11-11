@@ -1,6 +1,11 @@
 {
-  "HTML": "html",
-  "CSS": "css",
-  "JS": "js",
-  "HEAD": "html"
+  "mode": {
+    "HTML": "html",
+    "CSS": "css",
+    "JS": "js",
+    "HEAD": "html"
+  },
+  "name": "The Solar System",
+  "type": "text",
+  "book_id": 7
 }

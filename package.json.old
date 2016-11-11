@@ -1,0 +1,35 @@
+{
+  "name": "The-Solar-System",
+  "version": "0.0.2",
+  "description": "Superbook The-Solar-System by ",
+  "keywords": [
+    "superbook",
+    "bookiza",
+    "solar",
+    "system"
+  ],
+  "author": " Marvin Danig <marvin@bubbl.in> (https://bubbl.in/marvin)",
+  "license": "ISC",
+  "homepage": "https://bubbl.in/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marvindanig/The-Solar-System.git"
+  },
+  "dependencies": {
+    "browser-sync": "2.12.10",
+    "gulp": "3.9.1",
+    "gulp-compile-handlebars": "0.6.1",
+    "gulp-concat": "2.6.0",
+    "gulp-haml": "0.1.6",
+    "gulp-if": "2.0.1",
+    "gulp-less": "3.1.0",
+    "gulp-markdown": "1.2.0",
+    "gulp-postcss": "6.1.1",
+    "gulp-sass": "2.3.1",
+    "gulp-stylus": "2.4.0",
+    "js-cookie": "2.1.2",
+    "path": "0.12.7",
+    "shelljs": "0.7.0"
+  },
+  "book_id": 7
+}
