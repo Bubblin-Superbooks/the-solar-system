@@ -16,7 +16,7 @@ h2 {
 }
 
 h4 {
-  font-size: 3vw; 
+  font-size: 3vw;
 }
 
 .absolute {
@@ -78,7 +78,7 @@ h4 {
   right: 0;
   bottom: 0;
   left: 0;
-  border: 4.5vw solid rgba(255, 255, 255, 0.1);
+  border: 4.5vw solid rgba(25, 25, 25, 0.9);
   border-radius: 50%;
   margin: auto;
   -webkit-animation: spin 10s linear infinite;
