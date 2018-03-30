@@ -129,10 +129,10 @@ Contributions are more than welcome.
 3. Commit your changes (`git commit -am 'Added a page on (/topic)'`)
 4. Push to the branch (`git push origin my-new-page`)
 5. Create a new Pull Request
-6. <a href = "mailto:marvin@bubbl.in">Contact me</a> if I don't respond within 24 hours.
+6. [Contact me](mailto:marvin@bubbl.in) if I don't respond within 24 hours.
 
 ## Co-authoring
-Astronomy is a vast field and no single person is in the know of all the knowledge of space out there. If you wish to join me as a co-author and contribute a chapter, feel free to  href = "mailto:marvin@bubbl.in">write to me</a>.
+Astronomy is a vast field and no single person is in the know of all the knowledge of space out there. If you wish to join me as a co-author and contribute a chapter, feel free to [write to me](mailto:marvin@bubbl.in).
 
 ## License
-The content of this project itself is licensed under the <a href="http://creativecommons.org/licenses/by/3.0/us/deed.en_US">Creative Commons Attribution 3.0 </a> license, and the underlying source code used to format and display that content is licensed under the <a href="http://opensource.org/licenses/mit-license.php">MIT license </a>.
+The content of this project itself is licensed under the [Creative Commons Attribution 3.0](http://creativecommons.org/licenses/by/3.0/us/deed.en_US) license, and the underlying source code used to format and display that content is licensed under the [MIT license](http://opensource.org/licenses/mit-license.php)</a>.
