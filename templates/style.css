@@ -1,5 +1,5 @@
 body {
-    font: 4.4vw/1.1 'Crimson Text', serif;
+    font: 4.5vw/1.3 'EB Garamond', serif;
     margin: 0 0;
     overflow: hidden;
     background: #fff;
@@ -52,7 +52,7 @@ p {
 }
 
 a {
-    color: #090;
+    color: #0af;
     outline: 0 none;
     text-decoration: none;
     text-rendering: optimizelegibility;
@@ -62,7 +62,7 @@ a:focus,
 a:active,
 a:hover {
     outline: 0 none;
-    color: #0cf;
+    border-bottom: 1px dotted #0af;
 }
 
 blockquote {
@@ -75,7 +75,7 @@ blockquote {
 }
 
 blockquote:before {
-    color: #0c0;
+    color: #0af;
     content: open-quote;
     font-size: 6vw;
     line-height: 0.1vw;
@@ -84,7 +84,7 @@ blockquote:before {
 }
 
 blockquote:after {
-    color: #0c0;
+    color: #0af;
     content: close-quote;
     font-size: 6vw;
     line-height: 0.4vw;
@@ -98,6 +98,6 @@ p.chapter-begin:first-letter {
   float: left;
   line-height: 10vw;
   font-size: 20vw;
-  color: hsl(90, 70%, 30%);
+  color: #0af;
   font-family: 'UnifrakturMaguntia', cursive;
 }
