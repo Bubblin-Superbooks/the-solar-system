@@ -107,3 +107,8 @@ p.chapter-begin:first-letter {
 .blue {
 	color: #0af;
 }
+
+.centerize {
+	text-align: center;
+	margin: 0 auto;
+}

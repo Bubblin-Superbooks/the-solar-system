@@ -1,11 +1,12 @@
 {
+  "name": "The Solar System",
   "mode": {
     "HTML": "html",
     "CSS": "css",
     "JS": "js",
     "HEAD": "html"
   },
-  "name": "The Solar System",
+  "has_page_numbers": true,
   "type": "text",
   "book_id": 7
 }
