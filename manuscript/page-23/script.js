@@ -1,13 +1,22 @@
 $(document).ready(function() {
+				function viewport() {
+								var e = window, a = 'inner';
+								if (!('innerWidth' in window)) {
+												a = 'client';
+												e = document.documentElement || document.body;
+								}
+								return { width: e[a + 'Width'], height: e[a + 'Height'] };
+				}
+
 				(function() {
 								var webglEl = document.getElementById('webgl');
 								if (!Detector.webgl) {
 												Detector.addGetWebGLMessage(webglEl);
 												return;
 								}
-								THREE.ImageUtils.crossOrigin = '';
-								var width = webglEl.clientWidth;
-								var height = webglEl.clientHeight;
+								THREE.ImageUtils.crossOrigin = ''
+								var width = viewport().width
+								var height = viewport().height
 								webglEl.width = width;
 								webglEl.height = height;
 								var radius = 0.5,

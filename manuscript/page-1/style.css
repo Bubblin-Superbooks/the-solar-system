@@ -7,11 +7,11 @@ body {
 
 h1 {
   color: white;
-  font-size: 10vw;
+  font-size: 9vw;
   font-weight: bold;
   text-transform: uppercase;
   margin-top: 5vw;
-  font-family: 'PT Sans Narrow', serif;
+
 }
 
 h2 a {
