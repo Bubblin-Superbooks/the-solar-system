@@ -1,1 +1,7 @@
-.container { margin: 0 auto 2vw; width: 100%; max-width: 1140px; }
+body{
+	position: absolute;
+	height: 100vh;
+	width: 100vw;
+	will-change: transform;
+	transform: translate3d(0, 0, 0);
+}

@@ -23,3 +23,8 @@ h1 {
 }
 
 .invisible {visibility: hidden;}
+
+#shadertoy{
+	width: 100vw;
+	height: calc(100vw / 1.4 );
+}

@@ -1,6 +1,6 @@
 html, body {
   background: #000 no-repeat;
-  color: #aaa;
+  color: #fff;
   text-align: center;
   overflow: hidden;
   height:100vh;
@@ -29,4 +29,7 @@ html, body {
   bottom:0;
   left:0;
   z-index: 0;
+	width: 200vw;
+	height: calc(100vw / 1.4 );
+	pointer-events: none;
 }
