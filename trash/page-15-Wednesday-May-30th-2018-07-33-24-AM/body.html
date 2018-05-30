@@ -1,0 +1,6 @@
+<script id='vShader' type='x-vertex/x-shader'>
+				uniform float size; uniform float pixelRatio; varying vec3 vPosition; varying float gas; void main(){ vPosition=position; vec4 mvPosition=modelViewMatrix*vec4(position,1.); gl_Position=mvPosition*projectionMatrix; float a=length(position); gas=max(.0,sin(-a/20.)); gl_PointSize=pixelRatio*size*(1.+gas*2.)/length(mvPosition.xyz); }
+</script>
+<script id='fShader' type='x-fragment/x-shader'>
+				varying vec3 vPosition; varying float gas; void main(){ float a=max(.32,.0065*length(vPosition)); float b=distance(gl_PointCoord,vec2(.5)); float gaslook=-(b-.5)*1.2*gas; float starlook=(1.-gas)/(b*10.); float result=gaslook+starlook; gl_FragColor=vec4(.32,.28,a,1.)*result; }
+</script>

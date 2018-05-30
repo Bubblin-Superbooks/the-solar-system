@@ -2,8 +2,4 @@ p.chapter-begin:first-letter {
   display: inline;
   margin: 5vw 2vw .1vw 0;
   float: left;
-  line-height: 11vw;
-  font-size: 22vw;
-  color: hsl(90, 70%, 30%);
-  font-family: 'UnifrakturMaguntia', cursive;
 }
