@@ -4,7 +4,7 @@
   const fse = r('fs-extra')
   const chalk = r('chalk')
 
-  fse.readFile('./license.txt', 'utf8', (err, data) => {
+  fse.readFile('./license.md', 'utf8', (err, data) => {
     if (err) {
       return new Error('Couldn\'t read license information.')
     }
