@@ -1,9 +1,35 @@
+html,
 body {
-    font: 4.4vw/1.2 'EB Garamond', serif;
-    margin: 0 0;
-    overflow: hidden;
-    background: #fff;
-    color: #555;
+  background: #fff;
+  margin: 0 0;
+  overflow: hidden;
+  color: #000;
+  height: 100vh;
+  width: 100vw;
+  font-family: 'EB Garamond', serif;
+  font-style: normal;
+  font-synthesis: none;
+  font-stretch: ultra-condensed;
+  font-variant: no-common-ligatures proportional-nums slashed-zero;
+  font-size: 4vw;
+  line-height: calc(4vw * 1.50);
+  font-kerning: normal;
+  text-rendering: geometricPrecision;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  width: 100%;
+  text-align: center;
+  line-height: calc(2 * 4vw * 1.50);
+}
+
+h5,
+h6 {
+  line-height: calc(1 * 4vw * 1.50);
 }
 
 h1,
@@ -12,97 +38,289 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: 'PT Sans Narrow', serif;
-    margin: 2vw 0;
-    padding: 0;
-}
-
-p {
-    margin: 2vw 0;
+  font-family: 'Montserrat', sans-serif;
+  margin: 0 0;
+  padding: 0;
+  color: #000;
+  font-weight: 100;
 }
 
 h1 {
-	font-size: 6vw;
+  font-size: 8vw;
 }
 
-.leaf {
-    height: 100vh;
-    width: 80%;
-    margin: auto;
+h2 {
+  font-size: 6vw;
 }
 
-.inner {
-    margin: 10% auto;
-    width: 100%;
+h3 {
+  font-size: 5vw;
 }
 
-.flex {
-    display: -webkit-box;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
+h4 {
+  font-size: 4vw;
 }
 
-.justify {
-    text-align: justify;
+h5 {
+  font-size: 4vw;
 }
 
-.center {
-    text-align: center;
+h6 {
+  font-size: 4vw;
 }
 
-.small {
-    font-size: 80%;
+img {
+  border: 0;
+  -ms-interpolation-mode: bicubic;
+  display:block;
+  margin: calc(1/2 * 4vw * 1.50) auto;
+
 }
 
 a {
-    color: #0af;
-    outline: 0 none;
-    text-decoration: none;
-    text-rendering: optimizelegibility;
+  color: #0077ff;
+  outline: 0 none;
+  text-decoration: none;
 }
 
 a:focus,
 a:active,
 a:hover {
-    outline: 0 none;
-    border-bottom: 1px dotted #0af;
+  outline: 0 none;
+  color: #070;
 }
 
-blockquote {
-    margin: 0;
-    padding: 0;
-    quotes: "\201C""\201D""\2018""\2019";
-    color: #666
-    font-weight:100;
+a:active {
+  text-shadow: 0 0 2px #fff;
 }
 
-blockquote:before {
-    color: #0af;
-    content: open-quote;
-    font-size: 6vw;
-    line-height: 0.1vw;
-    margin-right: -0.1vw;
-    vertical-align: -0.9vw;
+p {
+  text-indent: 5vw;
+  margin: 0 0 0 0;
 }
 
-blockquote:after {
-    color: #0af;
-    content: close-quote;
-    font-size: 6vw;
-    line-height: 0.4vw;
-    margin-left: 0.5vw;
-    vertical-align: -0.9vw;
+p.start-chapter {
+  text-indent: 0;
+  margin: calc(5 * 4vw * 1.50 - 2px) auto 0;
 }
 
-p.chapter-begin:first-letter {
+p.start-chapter:first-letter {
   display: inline-block;
-  margin: 4.5vw 1vw .1vw;
+  margin: 0 1vw 0 0;
   float: left;
-  line-height: 10vw;
-  font-size: 18vw;
+  font-size: calc(3 * 4vw); /* three times normal size */
+  line-height: calc(2 * 4vw * 1.50 * 0.95);
+  font-family: 'Berkshire Swash', cursive;
   font-family: 'UnifrakturMaguntia', cursive;
 }
+
+
+blockquote {
+  text-align: center;
+  font-style: italic;
+  position: relative;
+  quotes: "\201C""\201D""\2018""\2019";
+  margin: calc( 1/2 * (150vh *(1115/1443))/100 * 7/5) auto;
+  margin: calc( 1/2 * 4vw * 1.50) 0;
+  margin: 0 0;
+  display: inline-block;
+  width: 100%;
+}
+
+blockquote p, blockquote em {
+  margin: 0 auto !important;
+}
+
+pre,
+code {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-family: 'EB Garamond', serif;
+  font-style: normal;
+  font-synthesis: none;
+  font-stretch: ultra-condensed;
+  font-variant: no-common-ligatures proportional-nums slashed-zero;
+  font-size: 4vw;
+  line-height: calc(4vw * 1.50);
+  font-kerning: normal;
+  text-rendering: geometricPrecision;
+  /*background: pink;*/
+}
+
+ol {
+  margin: calc((4vw * 1.50)/2) 5vw;
+  padding: 0;
+  list-style-type: none;
+  counter-reset: step-counter calc(var(--start) - 1);
+}
+
+ol li {
+  counter-increment: step-counter;
+}
+
+ol li::before {
+  content: counter(step-counter) ". ";
+  margin-right: 1vw;
+  color: black;
+  font-weight: bold;
+  padding: 0.3vw 0.8vw 0.3vw 0;
+}
+
+ol li.split-li {}
+
+ol li.split-li::before {
+  content: '';
+  margin-right: -0.8vw;
+  background-color: rgba(255, 255, 255, 1);
+  color: black;
+  font-weight: bold;
+  padding: 0.3vw 0.8vw 0.3vw 0;
+}
+
+ul {
+  margin: 0 0 0 5vw;
+  padding: 0;
+  list-style: none;
+}
+
+ul li {
+  margin: 0;
+  padding: 0;
+}
+
+hr.section {
+  border: 0;
+  text-align: center;
+  height: calc(4vw * 1.50);
+  /* Take a break of two lines only. */
+  margin: calc((4vw * 1.50)/2) 0;
+}
+
+hr.section::after {
+  content: "";
+}
+
+hr.section::before {
+  content: "❦";
+  color: black;
+}
+
+hr.chapter {
+  border: 0;
+  text-align: center;
+  height: calc(4vw * 1.50);
+  /* Take a break of two lines only. */
+  margin: calc((4vw * 1.50)/2) 0;
+}
+
+hr.chapter::after {
+  content: " ";
+}
+
+hr.chapter::before {
+  content: "❦";
+  color: black;
+}
+
+hr {
+  border: 0;
+  text-align: center;
+  height: calc(4vw * 1.50);
+  /* Take a break of two lines only. */
+  margin: calc((4vw * 1.50)/2) 0;
+}
+
+hr::after {
+  content: "";
+}
+
+hr::before {
+  content: "❦";
+  color: black;
+}
+
+
+/* Page specific wrapper classes. */
+
+.leaf {
+  height: 100%;
+  height: 100vh;
+  width: 100%;
+  width: 100vw;
+  margin: auto;
+}
+
+.inner {
+  margin: calc((100vh - (17 * (4vw * 1.5) + 4vw))/2) auto;
+  width: 85vw;
+  height: calc(17 * (4vw * 1.5) + 4vw);
+  max-height: calc(17 * (4vw * 1.5) + 4vw);
+  break-after: right;
+  display:inline-block;
+  /* background: aliceblue; */  /* enable to see the maximum staging area */
+}
+
+.flex {
+  display: -webkit-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.justify {
+  text-align: justify;
+}
+
+
+/* Helper classes */
+
+p.no-indent {
+  text-indent: 0;
+  /* Continue line on a new page with break on the previous page. */
+}
+
+p.stretch-last-line {
+  text-align-last: justify;
+  /* Not supported on Safari */
+}
+
+p.squeeze-para {
+  letter-spacing: -0.5px;
+  /* Handle orphans and widows manually */
+}
+
+p.stretch-para {
+  letter-spacing: 0.5px;
+  /* Handle orphans and widows manually */
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.pad-vertically {
+  padding: calc(4vw * 1) 0;
+}
+
+.center {
+  text-align: center;
+  margin: inherit auto;
+}
+
+.small {
+  font-size: 80%;
+}
+
+
+/* Old below */
+
+
 
 .blue {
 	color: #0af;
