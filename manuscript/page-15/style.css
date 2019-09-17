@@ -1,0 +1,12 @@
+.note {
+  font-style: italic;
+  font-weight: 100;
+  font-family: monospace;
+  font-stretch: extra-condensed;
+  font-kerning: all;
+  font-size: 50%;
+  position: absolute;
+  bottom: 5vh;
+  left:2vw;
+  padding:1vw 2vh;
+}

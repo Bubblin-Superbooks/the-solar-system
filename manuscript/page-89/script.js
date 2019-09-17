@@ -1,1 +1,1 @@
-$(function(){ $('.lazyYT').lazyYT(); });
+$('.lazyYT').lazyYT();

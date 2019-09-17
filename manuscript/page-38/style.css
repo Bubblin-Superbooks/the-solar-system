@@ -1,101 +1,22 @@
-.centerize {
-  padding: 2vw auto;
-  text-align: center;
-}
-
-.diagram {
-  margin: 4vw auto;
-  width: 70vw;
-  padding: 5vw;
-  position: relative;
-}
-
-.figure {
-  width: 100%;
-  height: 8vh;
-}
-
-.line1 {
-  height: 2px;
-  width: 50vw;
-  margin: 10vw auto;
-  background-color: #444;
-  position: absolute;
-  left: 15vw;
-}
-
-.line1 p {
-  margin: 1px auto;
-  font-size: 2vw;
-  text-align: center;
-  color: #444;
-}
-
-.line2 {
-  height: 2px;
-  width: 25vw;
-  margin: 0vw auto;
-  background-color: #a00;
-  position: absolute;
-  left: 15vw;
-}
-
-.line2 p {
-  margin: 1px auto;
-  font-size: 2vw;
-  text-align: center;
-  color: #a00;
-}
-
-
-.line3 {
-  height: 10vw;
-  width: 2px;
-  margin: 0vw auto;
-  border-right: 2px dotted blue;
-  position: absolute;
-  left: 40vw;
-}
-
-.line3 p {
-  margin: 5vw 1vw;
-  font-size: 3vw;
-  text-align: center;
-  color: blue;
-}
-
-
-
-.earth {
-  height: 20vw;
-  width: 20vw;
-  position: relative;
-  margin: auto;
-  border-radius: 50%;
-  background-color: transparent;
-  border: 2px dotted blue;
-  box-shadow: 0 0 1vw #00aaff;
-  background-image: url('https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/2_no_clouds_1k.jpg');
-  background-size: cover;
-  float: left;
-  position: absolute;
-  color:white;
-}
-
-.moon {
-  position: relative;
-  height: 10vw;
-  width: 10vw;
-  background-color: transparent;
-  margin: 5vw auto;
+h1 {
+  font-size: 5vw;
+  margin: 0;
   padding: 0;
-  background-image: url('https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/small-moon.png');
-  background-size: cover;
-  position: absolute;
-  left: 60vw;
 }
 
-.origin {
-  height: 5vw;
-  width: 10vw;
+h2 {
+  font-size: 4vw;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  padding: 0;
+  margin: 1.5vw 0 3vw 0;
+}
+
+.container {
+  margin: 5vw auto;
+  width: 100%;
+  max-width: 1140px;
 }
