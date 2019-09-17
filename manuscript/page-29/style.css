@@ -1,0 +1,21 @@
+body{
+  margin:0;
+  overflow:hidden;
+  background:black;
+  height: 100vh;
+  width: 100vw;
+}
+
+h1{
+	font-size: 4vw;
+	color: #fff;
+	position: absolute;
+	top: 10vh;
+	left: 10vw;
+}
+
+canvas{
+	width:100vw;
+	pointer-events: none;
+	background: red;
+}

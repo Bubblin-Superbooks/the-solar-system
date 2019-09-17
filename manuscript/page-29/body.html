@@ -1,9 +1,34 @@
-<div class="leaf flex">
-  <div class="inner justify">
-    <p> Apart from sidereal rotation, the Sun along with the Solar System orbits around the Galactic Center (GC) of the <a href="http://en.wikipedia.org/wiki/Milky_Way">Milky Way</a>. At a staggering velocity of 514,000 mph! It is estimated that a full revolution takes about 240 million terrestrial (Earth) years. </p>
-    <p> Given that Sun is only ~4.57 billion years old it has been around the GC only 20 times so far. The time period to go around the galaxy is also called a <a href="http://en.wikipedia.org/wiki/Galactic_year">Galactic Year</a>. Galactic Year(Gyr) is a convenient unit of time used to describe cosmic events in astronomy. For example, life on Earth began only 15 Gyrs ago, Big bang happened 61 Gyrs ago and so on. Surface of the Sun is its photosphere, followed by chromosphere and then the corona. Towards the center of Sun there is a convective zone, a tachocline, a radiative zone and then the Core — the seat of nuclear fusion. Temperature on Sun is thought to vary from about 3800-5800K in the photosphere to ~15.7 million K at the core. </p>
+<h1> An artist's rendition of a galaxy.</h1>
+<script id='vShader' type='x-vertex/x-shader'>
+			  uniform float size;
+  			uniform float pixelRatio;
 
+			  varying vec3 vPosition;
+			  varying float gas;
 
-    </div>
+			  void main(){
+			    vPosition=position;
 
-</div>
+			    vec4 mvPosition=modelViewMatrix*vec4(position,1.);
+			    gl_Position=mvPosition*projectionMatrix;
+
+			    float a=length(position);
+			    gas=max(.0, sin(-a/20.));
+			    gl_PointSize=pixelRatio*size*(1.+gas*2.)/length(mvPosition.xyz);
+			  }
+</script>
+<script id='fShader' type='x-fragment/x-shader'>
+		  varying vec3 vPosition;
+		  varying float gas;
+
+  	void main(){
+		    float a=max(.32, .0065*length(vPosition));
+
+		    float b=distance(gl_PointCoord,vec2(.5));
+		    float gaslook=-(b-.5)*1.2*gas;
+		    float starlook=(1.-gas)/(b*10.);
+		    float result=gaslook+starlook;
+
+		    gl_FragColor=vec4(.32,.28,a,1.)*result;
+  		}
+</script>
