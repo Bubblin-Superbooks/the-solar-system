@@ -38,7 +38,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Squada One', cursive;
   margin: 0 0;
   padding: 0;
   color: #000;
@@ -110,7 +110,7 @@ p.start-chapter:first-letter {
   float: left;
   font-size: calc(3 * 4vw); /* three times normal size */
   line-height: calc(2 * 4vw * 1.50 * 0.95);
-  font-family: 'Berkshire Swash', cursive;
+/*  font-family: 'Berkshire Swash', cursive; */ 
   font-family: 'UnifrakturMaguntia', cursive;
 }
 
@@ -253,7 +253,7 @@ hr::before {
   height: 100vh;
   width: 100%;
   width: 100vw;
-  margin: auto;
+  margin: 0 auto;
 }
 
 .inner {
@@ -277,6 +277,18 @@ hr::before {
   text-align: justify;
 }
 
+.group:before, .group:after {
+  content: "";
+  display: table;
+} 
+
+.group:after {
+  clear: both;
+}
+
+.group {
+  zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+}
 
 /* Helper classes */
 
@@ -323,10 +335,11 @@ p.stretch-para {
 
 
 .blue {
-	color: #0af;
+	color: #06f;
 }
 
 .centerize {
 	text-align: center;
 	margin: 0 auto;
 }
+
