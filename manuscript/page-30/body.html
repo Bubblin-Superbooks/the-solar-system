@@ -1,10 +1,34 @@
-<div class="leaf flex">
-  <div class="inner justify">
-    <p> Given that Sun is only ~4.57 billion years old it has been around the GC only 20 times so far. The time period to go around the galaxy is also called a <a href="http://en.wikipedia.org/wiki/Galactic_year">Galactic Year</a>. Galactic Year(Gyr) is a convenient unit of time used to describe cosmic events in astronomy. For example, life on Earth
-      began only 15 Gyrs ago, Big bang happened 61 Gyrs ago and so on. </p>
-	    <img src="https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/ESO-VLT-Laser-phot-33a-07.jpg" / width="100%">
-    <div class="center small"> (A view of the Milky Way Band from Earth) </div>
+<h1> An artist's rendition of a galaxy.</h1>
+<script id='vShader' type='x-vertex/x-shader'>
+			  uniform float size;
+  			uniform float pixelRatio;
 
-    </div>
+			  varying vec3 vPosition;
+			  varying float gas;
 
-</div>
+			  void main(){
+			    vPosition=position;
+
+			    vec4 mvPosition=modelViewMatrix*vec4(position,1.);
+			    gl_Position=mvPosition*projectionMatrix;
+
+			    float a=length(position);
+			    gas=max(.0, sin(-a/20.));
+			    gl_PointSize=pixelRatio*size*(1.+gas*2.)/length(mvPosition.xyz);
+			  }
+</script>
+<script id='fShader' type='x-fragment/x-shader'>
+		  varying vec3 vPosition;
+		  varying float gas;
+
+  	void main(){
+		    float a=max(.32, .0065*length(vPosition));
+
+		    float b=distance(gl_PointCoord,vec2(.5));
+		    float gaslook=-(b-.5)*1.2*gas;
+		    float starlook=(1.-gas)/(b*10.);
+		    float result=gaslook+starlook;
+
+		    gl_FragColor=vec4(.32,.28,a,1.)*result;
+  		}
+</script>
