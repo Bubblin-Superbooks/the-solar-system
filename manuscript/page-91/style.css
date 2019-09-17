@@ -1,0 +1,10 @@
+.container {
+    margin: 8% auto 0;
+    width: 100%;
+    max-width: 1140px;
+}
+
+.imageNote {
+    font-size: 2.6vw;
+    text-align: center;
+}

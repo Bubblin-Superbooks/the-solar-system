@@ -8,5 +8,18 @@
   },
   "has_page_numbers": true,
   "type": "text",
+  "cover": {
+    "punchline": "A quick and immersive journey through our Solar System",
+    "toc": "",
+    "author_detail": "",
+    "colophon": "",
+    "synopsis": ""
+  },
+  "status": "published",
+  "asset_url": "https://raw.githubusercontent.com/marvindanig/the-solar-system/master/assets",
   "book_id": 7
+  "book_url": "https://bubblin.io/book/the-solar-system-by-marvin-danig"  
 }
+
+
+

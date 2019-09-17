@@ -1,6 +1,6 @@
 body {
   background-color: #080e24;
-  background-image: url('//raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/galaxy_starfield.jpg');
+  background-image: url('//raw.githubusercontent.com/marvindanig/the-solar-system/master/assets/images/galaxy_starfield.jpg');
   background-size: 100% 100%;
   color: #fff;
   height:100vh;
@@ -9,14 +9,32 @@ body {
   overflow: hidden;
 }
 
+.inner{
+  width: 100vw;
+  height: 100vh; 
+  max-height: fit-content;
+  display: block;
+  margin: 0;
+  padding: 0 0 0 0;
+}
+
+
 h2 {
   padding: 0;
-  margin: 10vw;
-  font-size: 4vw;
+  margin: 5vw auto;
+  position: absolute;
+  top: 1vh;  
+  color: white;
+  width: 100%;
 }
 
 h4 {
-  font-size: 3vw;
+  padding: 0;
+  margin: 5vw auto;  
+  position: absolute;
+  bottom: 1vh;  
+  color: white;
+  width: 100%;
 }
 
 .absolute {
@@ -37,7 +55,7 @@ h4 {
   bottom: 0;
   border-radius: 50%;
   background-color: #02a3d8;
-  background-image: url(https://raw.githubusercontent.com/marvindanig/The-Solar-System/master/assets/images/2_no_clouds_1k.jpg);
+  background-image: url(https://raw.githubusercontent.com/marvindanig/the-solar-system/master/assets/images/2_no_clouds_1k.jpg);
   background-size: cover;
   box-shadow: 0 0 5vw #0099e6;
 }

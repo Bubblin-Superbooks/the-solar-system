@@ -1,0 +1,10 @@
+body{
+  margin:0;
+  overflow:hidden;
+  background:black;
+  height: 100vh;
+  width: 100vw;
+  color: #aaa;
+}
+
+.small { margin: 1vw auto; font-size: 80%; }
