@@ -3,18 +3,14 @@ body {
   margin: 0 0;
   overflow: hidden;
   padding: 1vw;
-  color: #aaa;
-  font: 3.4vw/1.2 "PT Sans Narrow", sans-serif;
+  color: #fff;
   overflow: hidden;
   text-align: center;
 }
 
-h1 {
-  font-size: 5vw;
-}
 
-p {
-  margin-top: 10vw;
+h1, h4{
+  color: white;
 }
 
 .dot {
@@ -44,7 +40,13 @@ p {
 }
 
 .annotation {
-  padding: 4vw 2vw;
+  position: absolute;
+  width: 16vw;
+  font-size: 60%;
+  text-indent: 0;
+  margin: 15vw 1vw;
+  text-align: left;
+  display: flex;
 }
 
 .earth {
