@@ -1,7 +1,7 @@
 {
-  "name": "The-Solar-System",
+  "name": "the-solar-system",
   "version": "0.0.8",
-  "description": "Superbook The-Solar-System by marvin",
+  "description": "Superbook the-solar-system by marvin",
   "keywords": [
     "superbook",
     "bookiza"
@@ -11,7 +11,7 @@
   "homepage": "https://bubbl.in/marvin",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marvindanig/The-Solar-System.git"
+    "url": "git+https://github.com/marvindanig/the-solar-system.git"
   },
   "scripts": {
     "postinstall": "node ./crust/scripts/ready.js"

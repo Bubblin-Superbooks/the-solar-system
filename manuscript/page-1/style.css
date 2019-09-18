@@ -11,7 +11,7 @@ body {
 
 .inner{
   width: 100vw;
-  height: 100vh; 
+  height: 100vh;
   max-height: fit-content;
   display: block;
   margin: 0;
@@ -25,10 +25,24 @@ h1 {
   font-size: 300%;
 }
 
+p {
+	color:white;
+	text-indent: 0;
+	margin: 0 auto;
+	padding: 0 auto;
+}
+
+h2 {
+	line-height: 1;
+}
+
 h2 a {
   color: #0af;
   font-size: 4vw;
-  font-weight: 100;
+	font-weight: 100;
+	margin: 0 auto;
+	padding: 0 auto;
+
 }
 
 .tiny {

@@ -1,4 +1,4 @@
-# The-Solar-System
+# the-solar-system
 A quick and immersive journey through our Solar System with a soft primer on Gravitational Physics. A must read for aspiring astronomers, star-gazers and people from all walks of life. I mean you know we're gonna get out there soon! 
 
 Learn how our planetary system works, what it's like to be in space and how astronomy started it all.
@@ -16,8 +16,8 @@ This book was rewritten using [Bookiza Framework](http://bookiza.io).
 Merely install dependencies and run the application using `bookiza server`. The server command will compile and build all pages, set up watchers and serve over `localhost:4567` via browser-sync so that you're able to write/edit continuously and "develop" the book.
 
 ```
-$ git clone https://github.com/marvindanig/The-Solar-System.git
-$ cd The-Solar-System && npm install
+$ git clone https://github.com/marvindanig/the-solar-system.git
+$ cd the-solar-system && npm install
 $ bookiza server
 
 ```
@@ -30,7 +30,7 @@ The manuscript is structured like so:
 
 ```
 
-The-Solar-System/
+the-solar-system/
 ├── README.md
 ├── assets
 │   ├── css
@@ -124,7 +124,7 @@ List of things to do/bugfixes:
 
 Contributions are more than welcome. 
 
-1. Fork it ( https://github.com/bubblin/The-Solar-System/fork )
+1. Fork it ( https://github.com/bubblin/the-solar-system/fork )
 2. Create your feature branch (`git checkout -b my-new-page`)
 3. Commit your changes (`git commit -am 'Added a page on (/topic)'`)
 4. Push to the branch (`git push origin my-new-page`)

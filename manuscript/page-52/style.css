@@ -6,16 +6,15 @@ body{
   width: 100vw;
 }
 
-h1{
-	font-size: 4vw;
-	color: #fff;
-	position: absolute;
-	top: 10vh;
-	left: 10vw;
+h3 {
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 canvas{
 	width:100vw;
+	height:100vh;
 	pointer-events: none;
 	background: red;
 }

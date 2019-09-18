@@ -1,5 +1,5 @@
 .wrapper {
-  margin: 0;
+  margin: calc(1/2 * 4vw * 1.50); auto;
   padding: 0 ;
 }
 
