@@ -1,5 +1,4 @@
-(function(){
-	console.log('Hello')
+(() => {
   $(".math").each(function() {
     var texTxt = $(this).text();
     el = $(this).get(0);
