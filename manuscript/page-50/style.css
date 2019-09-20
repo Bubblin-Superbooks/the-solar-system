@@ -1,0 +1,131 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+/*  font: normal 2vw/1.5 'Titillium Web', sans-serif; */
+  background: linear-gradient(54deg, #9164ff, #8bfff4);
+  color: #3c3f64;
+  overflow-x: hidden;
+  padding-bottom: 5vw; 
+  font-size: 50%;
+}
+
+h1{ font-size: 4vw; line-height: 1; }
+p {
+  text-indent: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.timeline ul li {
+  list-style-type: none;
+  position: relative;
+  width: 0.6vw;
+  margin: 0 auto;
+  padding-top: 5vw;
+  background: #fff;
+}
+.timeline ul li::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%) rotate(45deg);
+  width: 2vw;
+  height: 2vw;
+  z-index: 2;
+  background: #eee;
+}
+.timeline ul li div {
+  position: relative;
+  bottom: 0;
+  width: 40vw;
+  padding: 2vw;
+  background: #fff;
+  box-shadow: 4px 1.3vw 3vw 1px rgba(252, 56, 56, 0.2);
+  border-radius: 0.5vw;
+  display: flex;
+  align-items: center;
+}
+.timeline ul li div time {
+  position: absolute;
+  background: #f5af19;
+  width: 8vw;
+  height: 3vw;
+  top: -1.5vw;
+  border-radius: 0.5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: 2px;
+}
+.timeline ul li div div {
+  height: 10vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.timeline ul li div div p {
+  text-align: center;
+}
+.timeline ul li div .discovery {
+  margin-right: 1vw;
+}
+.timeline ul li:nth-of-type(odd) > div {
+  left: 4.5vw;
+}
+.timeline ul li:nth-of-type(even) > div {
+  left: -44vw;
+}
+
+.timeline ul li div {
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+}
+.timeline ul li:nth-of-type(odd) div {
+  transform: translate3d(10vw, -1vw, 0) rotate(10deg);
+}
+.timeline ul li:nth-of-type(even) div {
+  transform: translate3d(-10vw, -1vw, 0) rotate(10deg);
+}
+.timeline ul li.in-view div {
+  transform: none;
+  visibility: visible;
+  opacity: 1;
+}
+
+@media screen and (max-width: 90vw) {
+  .timeline ul li div {
+    width: 25vw;
+    flex-direction: column;
+  }
+  .timeline ul li div div {
+    width: 80%;
+    margin: 1vw;
+  }
+  .timeline ul li:nth-of-type(even) > div {
+    left: -29vw;
+  }
+}
+@media screen and (max-width: 60vw) {
+  body {
+    background: #8bfff4;
+  }
+
+  .timeline ul li {
+    margin-left: 2vw;
+  }
+  .timeline ul li div {
+    width: calc(100vw - 9vw);
+  }
+  .timeline ul li:nth-of-type(even) > div {
+    left: 4.5vw;
+  }
+}

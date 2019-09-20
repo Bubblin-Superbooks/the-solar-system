@@ -110,7 +110,6 @@ p.start-chapter:first-letter {
   float: left;
   font-size: calc(3 * 4vw); /* three times normal size */
   line-height: calc(2 * 4vw * 1.50 * 0.95);
-/*  font-family: 'Berkshire Swash', cursive; */
   font-family: 'UnifrakturMaguntia', cursive;
 }
 
